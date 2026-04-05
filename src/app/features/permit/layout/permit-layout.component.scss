@@ -1,0 +1,140 @@
+.permit-layout {
+  display: flex;
+  min-height: 100vh;
+  background: #f8fafc;
+}
+
+// ─── Sidebar ─────────────────────────────
+.permit-sidebar {
+  width: 260px;
+  background: linear-gradient(180deg, #1e1b4b 0%, #312e81 100%);
+  display: flex;
+  flex-direction: column;
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  z-index: 10;
+
+  .collapsed & { width: 68px; }
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  overflow: hidden;
+
+  .brand-icon {
+    font-size: 28px;
+    color: #f87171;
+    flex-shrink: 0;
+  }
+
+  .brand-text {
+    white-space: nowrap;
+
+    h2 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.2;
+    }
+
+    span {
+      font-size: 0.72rem;
+      color: #a5b4fc;
+    }
+  }
+}
+
+.collapse-btn {
+  background: none;
+  border: none;
+  color: #a5b4fc;
+  cursor: pointer;
+  border-radius: 8px;
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  transition: all 0.2s;
+
+  .material-icons-round { font-size: 20px; }
+  &:hover { background: rgba(255, 255, 255, 0.1); color: #fff; }
+}
+
+.sidebar-nav {
+  flex: 1;
+  padding: 0.75rem 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.65rem 0.85rem;
+  border-radius: 10px;
+  color: #c7d2fe;
+  font-size: 0.88rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s;
+  white-space: nowrap;
+  overflow: hidden;
+
+  .nav-icon {
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+  }
+
+  &.active {
+    background: rgba(248, 113, 113, 0.15);
+    color: #fca5a5;
+
+    .nav-icon { color: #f87171; }
+  }
+}
+
+.sidebar-footer {
+  padding: 0.75rem 0.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+// ─── Main Content ────────────────────────
+.permit-content {
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto;
+  min-width: 0;
+}
+
+// ─── Responsive ──────────────────────────
+@media (max-width: 768px) {
+  .permit-sidebar {
+    width: 68px;
+
+    .brand-text,
+    .nav-label { display: none; }
+  }
+
+  .permit-content { padding: 1rem; }
+}

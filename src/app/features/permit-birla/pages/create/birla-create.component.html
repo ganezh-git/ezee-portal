@@ -1,0 +1,258 @@
+<div class="page">
+  <div class="page-header">
+    <h1><span class="material-icons-round">add_circle</span> New Permit to Work</h1>
+    <p>P/LD/EHS/05 — Grasim Industries Ltd, Birla Paints Division — Ludhiana</p>
+  </div>
+
+  @if (message) {
+    <div class="alert" [class.success]="messageType==='success'" [class.error]="messageType==='error'">
+      <span class="material-icons-round">{{ messageType === 'success' ? 'check_circle' : 'error' }}</span>
+      {{ message }}
+    </div>
+  }
+
+  @if (loading) {
+    <div class="loading"><span class="material-icons-round spin">progress_activity</span> Loading...</div>
+  } @else {
+    <!-- Step Indicator -->
+    <div class="steps">
+      @for (s of ['Select Type','Details & Hazards','Isolation & PPE','Review']; track s; let i = $index) {
+        <div class="step" [class.active]="step === i+1" [class.done]="step > i+1">
+          <span class="step-num">{{ step > i+1 ? '✓' : i+1 }}</span>
+          <span class="step-label">{{ s }}</span>
+        </div>
+      }
+    </div>
+
+    <!-- STEP 1: Select Permit Type -->
+    @if (step === 1) {
+      <div class="type-heading">
+        <h2>Choose Permit Type</h2>
+        <p>Tap the type of permit you need to raise</p>
+      </div>
+      <div class="type-grid">
+        @for (t of permitTypes; track t.id) {
+          <button class="type-card" [class.selected]="selectedTypeCode === t.code" (click)="selectType(t.code)">
+            <div class="type-icon-wrap">
+              <span class="material-icons-round">{{ typeIcons[t.code] || 'description' }}</span>
+            </div>
+            <span class="type-name">{{ t.short_label }}</span>
+            <span class="type-doc">{{ t.doc_id }}</span>
+            <div class="chip-row">
+              @if (t.requires_fire_watcher) { <span class="chip fire">🔥 Fire Watcher</span> }
+              @if (t.requires_gas_test) { <span class="chip gas">💨 Gas Test</span> }
+              @if (t.sunday_restricted) { <span class="chip sun">🚫 Sunday Restricted</span> }
+            </div>
+          </button>
+        }
+      </div>
+    }
+
+    <!-- STEP 2: Basic Details & Hazards -->
+    @if (step === 2) {
+      <div class="form-card">
+        <h3><span class="material-icons-round">edit_note</span> Work Details</h3>
+
+        <div class="field full">
+          <label>Department</label>
+          <div class="chip-select">
+            @for (d of departments; track d.id) {
+              <button type="button" class="sel-chip" [class.active]="departmentId === d.id" (click)="departmentId = d.id">
+                <span class="material-icons-round" style="font-size:16px">business</span>
+                {{ d.name }}
+              </button>
+            }
+          </div>
+        </div>
+
+        <div class="field full">
+          <label>Work Location</label>
+          <div class="chip-select">
+            @for (l of locations; track l.id) {
+              <button type="button" class="sel-chip" [class.active]="locationId === l.id" (click)="locationId = l.id">
+                <span class="material-icons-round" style="font-size:16px">location_on</span>
+                {{ l.name }}
+              </button>
+            }
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="field">
+            <label>Or Custom Location</label>
+            <input type="text" [(ngModel)]="locationText" placeholder="Type if not in list">
+          </div>
+          <div class="field">
+            <label>Issued Date</label>
+            <input type="date" [(ngModel)]="issuedDate">
+          </div>
+          <div class="field">
+            <label>Issued Time</label>
+            <input type="time" [(ngModel)]="issuedTime">
+          </div>
+          <div class="field">
+            <label>Valid Until Date</label>
+            <input type="date" [(ngModel)]="validDate">
+          </div>
+          <div class="field">
+            <label>Valid Until Time</label>
+            <input type="time" [(ngModel)]="validTime">
+          </div>
+          <div class="field">
+            <label>Permit Initiator</label>
+            <select [(ngModel)]="initiatorId">
+              <option [ngValue]="null">— Select —</option>
+              @for (p of initiators; track p.id) { <option [ngValue]="p.id">{{ p.name }} ({{ p.designation }})</option> }
+            </select>
+          </div>
+        </div>
+        <div class="field full">
+          <label>Work Description <span class="req">*</span></label>
+          <textarea rows="4" [(ngModel)]="workDescription" placeholder="Describe the work in detail..."></textarea>
+        </div>
+        <div class="field full">
+          <label>Specific Hazards &amp; Control Measures</label>
+          <textarea rows="3" [(ngModel)]="specificHazards" placeholder="Filled by Permit Issuer in consultation with competent person..."></textarea>
+        </div>
+        <div class="check-row">
+          <label><input type="checkbox" [(ngModel)]="isProject"> Project Work</label>
+          <label><input type="checkbox" [(ngModel)]="hasAdditionalPermit"> Additional Permit Required</label>
+        </div>
+        @if (hasAdditionalPermit) {
+          <div class="field full"><input type="text" [(ngModel)]="additionalPermitDetails" placeholder="Details of additional permit"></div>
+        }
+
+        <h3><span class="material-icons-round">warning_amber</span> Hazards Identified</h3>
+        <div class="checkbox-grid">
+          @for (h of hazardTypes; track h.id) {
+            <label class="check-box" [class.checked]="selectedHazards.has(h.id)">
+              <input type="checkbox" [checked]="selectedHazards.has(h.id)" (change)="toggleHazard(h.id)">
+              {{ h.label }}
+            </label>
+          }
+        </div>
+      </div>
+      <div class="nav-btns">
+        <button class="btn-outline" (click)="step = 1">← Back</button>
+        <button class="btn-primary" (click)="nextStep()">Next →</button>
+      </div>
+    }
+
+    <!-- STEP 3: Isolation & PPE -->
+    @if (step === 3) {
+      <div class="form-card">
+        <h3><span class="material-icons-round">power_off</span> Isolations Required</h3>
+        <div class="iso-group">
+          <h4>(A) Electrical Including Motor Isolation</h4>
+          <div class="radio-row">
+            <label><input type="radio" name="isoElec" value="YES" [(ngModel)]="isoElectrical"> YES</label>
+            <label><input type="radio" name="isoElec" value="NA" [(ngModel)]="isoElectrical"> N/A</label>
+          </div>
+          @if (isoElectrical === 'YES') {
+            <div class="form-grid">
+              <div class="field"><label>Drive/Panel Involved</label><input type="text" [(ngModel)]="isoElecDrive"></div>
+              <div class="field"><label>How Isolated</label><input type="text" [(ngModel)]="isoElecHow" placeholder="Fuse removed / Isolator off / Tested non-operative"></div>
+            </div>
+          }
+        </div>
+        <div class="iso-group">
+          <h4>(B) Services Isolation</h4>
+          <div class="radio-row">
+            <label><input type="radio" name="isoSvc" value="YES" [(ngModel)]="isoServices"> YES</label>
+            <label><input type="radio" name="isoSvc" value="NA" [(ngModel)]="isoServices"> N/A</label>
+          </div>
+          @if (isoServices === 'YES') {
+            <div class="form-grid">
+              <div class="field"><label>Service (Steam/Air/Water/Other)</label><input type="text" [(ngModel)]="isoServicesType"></div>
+              <div class="field"><label>How Isolated</label><input type="text" [(ngModel)]="isoServicesHow"></div>
+            </div>
+          }
+        </div>
+        <div class="iso-group">
+          <h4>(C) Process Isolation</h4>
+          <div class="radio-row">
+            <label><input type="radio" name="isoProc" value="YES" [(ngModel)]="isoProcess"> YES</label>
+            <label><input type="radio" name="isoProc" value="NA" [(ngModel)]="isoProcess"> N/A</label>
+          </div>
+          @if (isoProcess === 'YES') {
+            <div class="form-grid">
+              <div class="field"><label>Equipment Involved</label><input type="text" [(ngModel)]="isoProcessEquip"></div>
+              <div class="field"><label>How Isolated</label><input type="text" [(ngModel)]="isoProcessHow" placeholder="Valve closed / Line blanked / Drained"></div>
+            </div>
+          }
+        </div>
+        <div class="form-grid">
+          <div class="field"><label>Isolation Requested By</label><input type="text" [(ngModel)]="isoRequestedBy"></div>
+          <div class="field"><label>LOTOTO Owner Name</label><input type="text" [(ngModel)]="lototoOwner"></div>
+        </div>
+
+        <h3><span class="material-icons-round">health_and_safety</span> PPE To Be Used</h3>
+        <div class="checkbox-grid">
+          @for (p of ppeTypes; track p.id) {
+            <label class="check-box" [class.checked]="selectedPpe.has(p.id)">
+              <input type="checkbox" [checked]="selectedPpe.has(p.id)" (change)="togglePpe(p.id)">
+              {{ p.label }}
+            </label>
+          }
+        </div>
+        <div class="field" style="max-width:300px; margin-top:0.5rem">
+          <label>Safety Harness ID Number</label>
+          <input type="text" [(ngModel)]="harnessIdNumber" placeholder="If applicable">
+        </div>
+
+        @if (selectedType?.requires_fire_watcher) {
+          <h3><span class="material-icons-round">local_fire_department</span> Fire Watcher Details</h3>
+          <div class="form-grid">
+            <div class="field"><label>Fire Watcher Name</label><input type="text" [(ngModel)]="fireWatcherName"></div>
+            <div class="field"><label>Mobile Number</label><input type="text" [(ngModel)]="fireWatcherMobile"></div>
+          </div>
+        }
+
+        <h3><span class="material-icons-round">group</span> Working Group Members</h3>
+        @for (m of workingGroupMembers; track trackByIndex($index); let i = $index) {
+          <div class="member-row">
+            <input type="text" [(ngModel)]="workingGroupMembers[i]" placeholder="Member name">
+            <button class="icon-btn" (click)="removeMember(i)" title="Remove"><span class="material-icons-round">close</span></button>
+          </div>
+        }
+        <button class="btn-text" (click)="addMember()">+ Add Member</button>
+
+        <h3><span class="material-icons-round">shield</span> Additional Precautions</h3>
+        <textarea rows="3" [(ngModel)]="additionalPrecautions" placeholder="Recommended by Permit Issuer and EHS Department..."></textarea>
+      </div>
+      <div class="nav-btns">
+        <button class="btn-outline" (click)="prevStep()">← Back</button>
+        <button class="btn-primary" (click)="nextStep()">Review →</button>
+      </div>
+    }
+
+    <!-- STEP 4: Review & Submit -->
+    @if (step === 4) {
+      <div class="form-card review">
+        <h3><span class="material-icons-round">fact_check</span> Review Permit</h3>
+        <div class="review-grid">
+          <div class="rv"><span class="rv-label">Permit Type</span><span>{{ selectedType?.label }}</span></div>
+          <div class="rv"><span class="rv-label">Doc ID</span><span>{{ selectedType?.doc_id }}</span></div>
+          <div class="rv"><span class="rv-label">Issued</span><span>{{ issuedDate }} {{ issuedTime }}</span></div>
+          <div class="rv"><span class="rv-label">Valid Until</span><span>{{ validDate }} {{ validTime }}</span></div>
+          <div class="rv full"><span class="rv-label">Work Description</span><span>{{ workDescription }}</span></div>
+          <div class="rv"><span class="rv-label">Hazards</span><span>{{ selectedHazards.size }} selected</span></div>
+          <div class="rv"><span class="rv-label">PPE</span><span>{{ selectedPpe.size }} selected</span></div>
+          <div class="rv"><span class="rv-label">Electrical Isolation</span><span>{{ isoElectrical }}</span></div>
+          <div class="rv"><span class="rv-label">Services Isolation</span><span>{{ isoServices }}</span></div>
+          <div class="rv"><span class="rv-label">Process Isolation</span><span>{{ isoProcess }}</span></div>
+        </div>
+        <div class="note">
+          <span class="material-icons-round">info</span>
+          Once submitted, the permit will be in <strong>Initiated</strong> status awaiting Issuer and Custodian approval.
+        </div>
+      </div>
+      <div class="nav-btns">
+        <button class="btn-outline" (click)="prevStep()">← Back</button>
+        <button class="btn-primary" (click)="submit()" [disabled]="saving">
+          {{ saving ? 'Creating...' : 'Submit Permit' }}
+        </button>
+      </div>
+    }
+  }
+</div>

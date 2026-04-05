@@ -1,0 +1,129 @@
+<div class="dashboard-page">
+  <div class="page-header">
+    <h1>Dashboard</h1>
+    <p>System overview and recent activity</p>
+  </div>
+
+  @if (loading) {
+    <div class="loading-state">
+      <span class="material-icons-round spin">progress_activity</span>
+      <span>Loading dashboard...</span>
+    </div>
+  } @else if (stats) {
+    <!-- Stat cards -->
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-icon blue"><span class="material-icons-round">people</span></div>
+        <div class="stat-info">
+          <span class="stat-value">{{ stats.activeUsers }}</span>
+          <span class="stat-label">Active Users</span>
+        </div>
+        <span class="stat-badge">{{ stats.totalUsers }} total</span>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon amber"><span class="material-icons-round">schedule</span></div>
+        <div class="stat-info">
+          <span class="stat-value">{{ stats.tempUsers }}</span>
+          <span class="stat-label">Temporary Users</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon green"><span class="material-icons-round">login</span></div>
+        <div class="stat-info">
+          <span class="stat-value">{{ stats.recentLogins24h }}</span>
+          <span class="stat-label">Logins (24h)</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon purple"><span class="material-icons-round">apps</span></div>
+        <div class="stat-info">
+          <span class="stat-value">{{ stats.totalSystems }}</span>
+          <span class="stat-label">Active Modules</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon cyan"><span class="material-icons-round">business</span></div>
+        <div class="stat-info">
+          <span class="stat-value">{{ stats.totalCompanies }}</span>
+          <span class="stat-label">Companies</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon rose"><span class="material-icons-round">shield</span></div>
+        <div class="stat-info">
+          <span class="stat-value">{{ stats.auditEvents7d }}</span>
+          <span class="stat-label">Audit Events (7d)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Two-column layout -->
+    <div class="dash-columns">
+      <!-- Module usage -->
+      <div class="dash-panel">
+        <div class="panel-header">
+          <h2>Module Usage</h2>
+          <span class="material-icons-round">bar_chart</span>
+        </div>
+        <div class="module-list">
+          @for (sys of stats.systemCounts; track sys.slug) {
+            <div class="module-row">
+              <span class="module-name">{{ sys.name }}</span>
+              <div class="module-bar-wrap">
+                <div class="module-bar" [style.width.%]="getBarWidth(sys.user_count)"></div>
+              </div>
+              <span class="module-count">{{ sys.user_count }}</span>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Recent logins -->
+      <div class="dash-panel">
+        <div class="panel-header">
+          <h2>Recent Logins</h2>
+          <span class="material-icons-round">history</span>
+        </div>
+        <div class="login-list">
+          @for (login of stats.recentLoginList; track login.username) {
+            <div class="login-row">
+              <div class="login-avatar">{{ login.full_name.charAt(0) }}</div>
+              <div class="login-info">
+                <span class="login-name">{{ login.full_name }}</span>
+                <span class="login-user">&#64;{{ login.username }}</span>
+              </div>
+              <span class="login-time">{{ login.last_login | date:'short' }}</span>
+            </div>
+          }
+          @if (stats.recentLoginList.length === 0) {
+            <div class="empty-state">No recent logins</div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick actions -->
+    <div class="quick-actions">
+      <h2>Quick Actions</h2>
+      <div class="action-grid">
+        <a routerLink="/admin/users" class="action-card" [queryParams]="{action:'create'}">
+          <span class="material-icons-round">person_add</span>
+          <span>Create User</span>
+        </a>
+        <a routerLink="/admin/users" class="action-card">
+          <span class="material-icons-round">manage_accounts</span>
+          <span>Manage Users</span>
+        </a>
+        <a routerLink="/admin/audit-log" class="action-card">
+          <span class="material-icons-round">receipt_long</span>
+          <span>View Audit Log</span>
+        </a>
+      </div>
+    </div>
+  }
+</div>

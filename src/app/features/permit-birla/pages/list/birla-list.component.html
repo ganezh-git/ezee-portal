@@ -1,0 +1,96 @@
+<div class="page">
+  <div class="page-header">
+    <h1>All Permits</h1>
+    <a routerLink="../create" class="btn-primary">
+      <span class="material-icons-round">add_circle</span> New Permit
+    </a>
+  </div>
+
+  <div class="filters">
+    <select [(ngModel)]="statusFilter" (change)="onFilter()">
+      <option value="">All Statuses</option>
+      <option value="Initiated">Initiated</option>
+      <option value="Issued">Issued</option>
+      <option value="Custodian_Approved">Custodian Approved</option>
+      <option value="Active">Active</option>
+      <option value="Suspended">Suspended</option>
+      <option value="Closed">Closed</option>
+    </select>
+    <select [(ngModel)]="typeFilter" (change)="onFilter()">
+      <option value="">All Types</option>
+      <option value="HEIGHT">Height Work</option>
+      <option value="CONFINED">Confined Space</option>
+      <option value="ELECTRICAL">Electrical</option>
+      <option value="EXCAVATION">Excavation</option>
+      <option value="GENERAL">General</option>
+      <option value="LOTOTO">LOTOTO</option>
+      <option value="LIFTING">Material Lifting</option>
+      <option value="MONOMER_BARREL">Monomer Barrel</option>
+      <option value="MONOMER_TANKER">Monomer Tanker</option>
+      <option value="HOT_WORK">Hot Work</option>
+    </select>
+    <span class="total">{{ total }} permits</span>
+  </div>
+
+  @if (loading) {
+    <div class="loading"><span class="material-icons-round spin">progress_activity</span></div>
+  } @else if (permits.length === 0) {
+    <div class="empty">
+      <span class="material-icons-round">search_off</span>
+      <p>No permits found</p>
+    </div>
+  } @else {
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Permit No</th>
+            <th>Type</th>
+            <th>Department</th>
+            <th>Work Description</th>
+            <th>Initiator</th>
+            <th>Status</th>
+            <th>Issued</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (p of permits; track p.id) {
+            <tr>
+              <td><a [routerLink]="['..','permits', p.id]" class="link">{{ p.permit_no }}</a></td>
+              <td><span class="type-badge">{{ p.short_label || p.type_code }}</span></td>
+              <td>{{ p.department_name || '—' }}</td>
+              <td class="desc">{{ p.work_description }}</td>
+              <td>{{ p.initiator_name || '—' }}</td>
+              <td>
+                <span class="badge" [style.color]="getStatusStyle(p.status).color" [style.background]="getStatusStyle(p.status).bgColor">
+                  {{ getStatusStyle(p.status).label }}
+                </span>
+              </td>
+              <td class="date-col">{{ p.issued_date }}</td>
+              <td class="actions-col">
+                <a [routerLink]="['..','permits', p.id]" class="act-btn view" title="View">
+                  <span class="material-icons-round">visibility</span>
+                </a>
+                <a [routerLink]="['../print', p.id]" target="_blank" class="act-btn print" title="Print">
+                  <span class="material-icons-round">print</span>
+                </a>
+                @if (canApprove(p)) {
+                  <a [routerLink]="['..','permits', p.id]" class="act-btn approve" title="{{ getApproveLabel(p.status) }}">
+                    <span class="material-icons-round">check_circle</span>
+                    <span class="act-label">{{ getApproveLabel(p.status) }}</span>
+                  </a>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    <div class="pagination">
+      <button (click)="prevPage()" [disabled]="page <= 1">← Prev</button>
+      <span>Page {{ page }} of {{ (total / limit | number:'1.0-0') || 1 }}</span>
+      <button (click)="nextPage()" [disabled]="page * limit >= total">Next →</button>
+    </div>
+  }
+</div>

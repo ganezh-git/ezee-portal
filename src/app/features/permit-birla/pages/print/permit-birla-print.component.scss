@@ -1,0 +1,247 @@
+// ─── Birla Opus General Work Permit - Printable Stylesheet ─────
+// Designed to match F/LD/EHS/05/05 format on A3/A4 paper
+
+$border: 1px solid #000;
+$cell-pad: 4px 6px;
+$font: 'Arial', 'Helvetica Neue', sans-serif;
+$green-header: #e8f5e9;
+
+:host { display: block; font-family: $font; font-size: 9pt; color: #000; }
+
+// ─── Print Button (hidden on print) ───
+.no-print {
+  position: fixed; top: 16px; right: 16px; z-index: 1000;
+  button {
+    display: flex; align-items: center; gap: 6px; padding: 10px 20px;
+    background: #7c3aed; color: #fff; border: none; border-radius: 8px;
+    font-weight: 600; font-size: 14px; cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    &:hover { background: #6d28d9; }
+    .material-icons-round { font-size: 20px; }
+  }
+}
+
+.loading { text-align: center; padding: 60px; font-size: 14pt; color: #666; }
+
+// ─── Permit Page Container ─────
+.permit-page {
+  max-width: 1000px; margin: 20px auto; padding: 20px;
+  background: #fff; border: $border;
+}
+
+// ─── Tables base ───
+table { width: 100%; border-collapse: collapse; }
+th, td { border: $border; padding: $cell-pad; vertical-align: top; }
+
+// ─── Header Table ───
+.header-table {
+  margin-bottom: 0;
+  .logo-cell { width: 120px; text-align: center; }
+  .logo-block {
+    .company-name { font-size: 8pt; font-weight: 700; color: #c62828; }
+    .brand-name { font-size: 11pt; font-weight: 900; color: #2e7d32; }
+  }
+  .title-cell { text-align: center; }
+  .co-name { font-size: 10pt; font-weight: 700; }
+  .div-name { font-size: 9pt; font-weight: 600; }
+  .permit-title { font-size: 11pt; font-weight: 900; margin-top: 4px; }
+  .meta-label { font-size: 8pt; font-weight: 600; width: 100px; background: #f5f5f5; }
+  .meta-value { font-size: 8pt; min-width: 120px; }
+  .project-cell { font-size: 8pt; }
+}
+
+// ─── Date Row ───
+.date-row {
+  display: flex; justify-content: space-between; border: $border; border-top: none;
+  padding: 4px 8px; font-size: 8.5pt;
+}
+
+.suspension-notice {
+  border: $border; border-top: none; padding: 3px 8px;
+  font-size: 7.5pt; font-style: italic; background: #fff9c4; text-align: center;
+}
+
+// ─── Section Headers ───
+.section-header {
+  background: $green-header; border: $border; padding: 4px 8px;
+  font-weight: 700; font-size: 8.5pt; margin-top: -1px;
+  &.sm { font-size: 7.5pt; }
+  .sub { font-weight: 400; font-size: 7pt; }
+}
+
+// ─── Work Description ───
+.work-desc-box {
+  border: $border; border-top: none; padding: 8px;
+  min-height: 40px; font-size: 9pt;
+}
+
+.simple-table {
+  margin-top: -1px;
+  td { font-size: 8pt; }
+}
+
+// ─── Checkbox Grids ───
+.checkbox-grid {
+  border: $border; border-top: none; padding: 6px 8px;
+  display: grid; gap: 2px 6px;
+}
+.hazards-grid { grid-template-columns: repeat(5, 1fr); }
+.ppe-grid { grid-template-columns: repeat(5, 1fr); }
+.prec-grid { grid-template-columns: repeat(4, 1fr); }
+
+.cb-item {
+  font-size: 7.5pt; display: flex; align-items: baseline; gap: 2px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+.checkbox { font-size: 12pt; line-height: 1; }
+
+.harness-row {
+  border: $border; border-top: none; padding: 3px 8px;
+  font-size: 8pt; font-weight: 600;
+}
+
+// ─── Text Boxes ───
+.text-box {
+  border: $border; border-top: none; padding: 6px 8px;
+  min-height: 30px; font-size: 8pt;
+  &.sm { min-height: 20px; }
+}
+
+// ─── Underline Fields ───
+.underline-field {
+  display: inline-block; border-bottom: 1px solid #000; min-width: 120px;
+  padding: 0 4px; font-weight: 400;
+  &.long { min-width: 300px; }
+  &.full { width: 100%; display: block; min-height: 16px; margin-top: 2px; }
+}
+
+// ─── Isolation Table ───
+.iso-request-row {
+  border: $border; border-top: none; padding: 4px 8px;
+  font-size: 8pt; display: flex; justify-content: space-between;
+}
+
+.iso-table {
+  margin-top: -1px;
+  th { font-size: 7.5pt; font-weight: 700; background: #e3f2fd; text-align: center; }
+  td { font-size: 7.5pt; }
+  .iso-how { font-weight: 600; margin: 4px 0 2px; }
+}
+
+// ─── Precautions ───
+.prec-subtitle { border: $border; border-top: none; padding: 2px 8px; font-size: 7.5pt; font-weight: 600; }
+.additional-prec {
+  border: $border; border-top: none; padding: 4px 8px; font-size: 7.5pt;
+  .text-box { border-top: none; border-left: none; border-right: none; min-height: 18px; }
+}
+
+// ─── Signatures ───
+.sig-section {
+  border: $border; border-top: none;
+}
+.sig-row {
+  display: flex; gap: 12px; padding: 6px 8px; border-bottom: $border;
+  align-items: center;
+  &:last-child { border-bottom: none; }
+  &.highlight { background: #f3e5f5; }
+  .sig-text { flex: 1; font-size: 7.5pt; }
+  .sig-field { min-width: 250px; }
+  .sig-label { font-size: 7pt; font-weight: 600; }
+  .sig-value { border-bottom: 1px solid #000; min-height: 16px; font-size: 8pt; }
+}
+
+.fire-row {
+  border: $border; border-top: none; padding: 4px 8px; font-size: 7.5pt;
+  .ml { margin-left: 20px; }
+}
+
+.undertaking-text {
+  border: $border; border-top: none; padding: 4px 8px; font-size: 7.5pt; font-style: italic;
+}
+
+.sig-line {
+  border: $border; border-top: none; padding: 4px 8px; font-size: 8pt;
+}
+
+.working-group {
+  border: $border; border-top: none; padding: 4px 8px; font-size: 8pt;
+}
+
+// ─── Suspension / Extension / Trial ───
+.suspension-block, .extension-block, .trial-block {
+  border: $border; border-top: none; padding: 6px 8px; font-size: 7.5pt;
+  .small-text { margin: 2px 0; }
+}
+
+.sig-table {
+  margin-top: 4px;
+  td { font-size: 7.5pt; padding: 3px 6px; }
+}
+
+// ─── Closure Table ───
+.energisation-row {
+  border: $border; border-top: none; padding: 4px 8px; font-size: 7.5pt;
+}
+
+.closure-table {
+  margin-top: -1px;
+  th { font-size: 7pt; font-weight: 700; background: $green-header; text-align: center; padding: 3px 4px; }
+  td { font-size: 7.5pt; padding: 3px 6px; }
+  .center { text-align: center; }
+}
+
+.closure-comments {
+  border: $border; border-top: none; padding: 4px 8px; font-size: 7.5pt;
+}
+
+.closure-text {
+  border: $border; border-top: none; padding: 4px 8px; font-size: 7.5pt; font-weight: 600;
+}
+
+.final-sig {
+  margin-top: -1px;
+  td { font-size: 8pt; padding: 4px 8px; }
+}
+
+// ─── Footer ───
+.footer-note {
+  border: $border; border-top: none; padding: 6px 8px; font-size: 7pt; background: #fafafa;
+}
+
+.doc-ref {
+  display: flex; justify-content: space-between; border: $border; border-top: none;
+  padding: 3px 8px; font-size: 7pt; font-weight: 600; background: #f5f5f5;
+}
+
+// ─── Print Styles ───
+@media print {
+  .no-print { display: none !important; }
+
+  :host { font-size: 8pt; }
+
+  .permit-page {
+    margin: 0; padding: 0; border: none; max-width: 100%;
+  }
+
+  @page {
+    size: A4 portrait;
+    margin: 6mm;
+  }
+
+  body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+  .section-header { background: $green-header !important; }
+  .suspension-notice { background: #fff9c4 !important; }
+  .sig-row.highlight { background: #f3e5f5 !important; }
+  .closure-table th { background: $green-header !important; }
+  .meta-label { background: #f5f5f5 !important; }
+}
+
+// ─── Screen Preview Styling ───
+@media screen {
+  .permit-page {
+    box-shadow: 0 2px 20px rgba(0,0,0,0.12);
+    border-radius: 4px;
+  }
+}

@@ -1,0 +1,308 @@
+<div class="print-actions no-print">
+  <button (click)="print()"><span class="material-icons-round">print</span> Print Permit</button>
+</div>
+
+@if (loading) {
+  <div class="loading">Loading permit...</div>
+} @else {
+<div class="permit-page">
+  <!-- ═══════════ HEADER ═══════════ -->
+  <table class="header-table">
+    <tr>
+      <td class="logo-cell" rowspan="2">
+        <div class="logo-block">
+          <div class="company-name">ADITYA BIRLA</div>
+          <div class="brand-name">GRASIM</div>
+        </div>
+      </td>
+      <td class="title-cell" rowspan="2">
+        <div class="co-name">GRASIM INDUSTRIES LTD</div>
+        <div class="div-name">BIRLA PAINTS DIVISION</div>
+        <div class="permit-title">GENERAL WORK PERMIT</div>
+      </td>
+      <td class="meta-label">Permit no.</td>
+      <td class="meta-value">{{ permit.permit_no || '' }}</td>
+    </tr>
+    <tr>
+      <td class="meta-label">Date</td>
+      <td class="meta-value">{{ permit.issued_date || '' }}</td>
+    </tr>
+    <tr>
+      <td class="project-cell" colspan="2">
+        Project ( tick if Yes) <span class="checkbox">{{ permit.is_project ? '☑' : '☐' }}</span>
+      </td>
+      <td class="meta-label">Dept</td>
+      <td class="meta-value">{{ permit.department_name || '' }}</td>
+    </tr>
+    <tr>
+      <td colspan="2"></td>
+      <td class="meta-label">Location of Work</td>
+      <td class="meta-value">{{ permit.location_name || permit.location_text || '' }}</td>
+    </tr>
+    <tr>
+      <td colspan="2"></td>
+      <td class="meta-label">Cross Ref</td>
+      <td class="meta-value">{{ permit.cross_ref || '' }}</td>
+    </tr>
+  </table>
+
+  <!-- Dates -->
+  <div class="date-row">
+    <div class="date-item">
+      <strong>Issued Date &amp; time:</strong>
+      <span class="underline-field">{{ permit.issued_date || '__/__/____' }} &amp; {{ permit.issued_time || '__:__' }}</span>
+    </div>
+    <div class="date-item">
+      <strong>Valid up to Date &amp; Time:</strong>
+      <span class="underline-field">{{ permit.valid_until_date || '__/__/____' }} &amp; {{ permit.valid_until_time || '__:__' }}</span>
+    </div>
+  </div>
+
+  <div class="suspension-notice">
+    The permit is suspended immediately in case a change of initiator, issuer and co-permittee or any emergency or report of imminent danger/injury.
+  </div>
+
+  <!-- ═══════════ WORK DESCRIPTION ═══════════ -->
+  <div class="section-header">Work Description</div>
+  <div class="work-desc-box">{{ permit.work_description || '' }}</div>
+
+  <!-- Additional Permits -->
+  <table class="simple-table">
+    <tr>
+      <td style="width:55%"><strong>Any additional permit along with General work permit</strong></td>
+      <td style="width:10%">{{ permit.has_additional_permit ? 'Yes' : 'No' }}</td>
+      <td><strong>Details of Permit and No.</strong> {{ permit.additional_permit_details || '' }}</td>
+    </tr>
+  </table>
+
+  <!-- ═══════════ HAZARDS IDENTIFIED ═══════════ -->
+  <div class="section-header">HAZARDS IDENTIFIED <span class="sub">[JOINTLY BY permit initiator, permit issuer, co-permittee/contractor supervisor.]</span></div>
+  <div class="checkbox-grid hazards-grid">
+    @for (h of allHazards; track h.code) {
+      <div class="cb-item">
+        <span class="checkbox">{{ hasHazard(h.code) ? '☑' : '☐' }}</span> {{ h.label }}
+      </div>
+    }
+  </div>
+
+  <!-- ═══════════ PPE TO BE USED ═══════════ -->
+  <div class="section-header">PPE TO BE USED</div>
+  <div class="checkbox-grid ppe-grid">
+    @for (p of allPpe; track p.code) {
+      <div class="cb-item">
+        <span class="checkbox">{{ hasPpe(p.code) ? '☑' : '☐' }}</span> {{ p.label }}
+      </div>
+    }
+  </div>
+  <div class="harness-row">Harness Identification number: <span class="underline-field long">{{ permit.ppe?.[0]?.harness_id_number || '' }}</span></div>
+
+  <!-- ═══════════ SPECIFIC HAZARDS & CONTROL MEASURES ═══════════ -->
+  <div class="section-header sm">SPECIFIC HAZARDS &amp; CONTROL MEASURES <span class="sub">(TO BE FILLED BY "PERMIT ISSUER" IN CONSULTATION WITH COMPETENT PERSON AS REQUIRED e.g. ENGINEERING PERSONNEL FOR ENGINEERING JOBS; ATTACH SEPARATE JSA IF REQUIRED):</span></div>
+  <div class="text-box">{{ permit.specific_hazards || '' }}</div>
+
+  <!-- ═══════════ ISOLATIONS REQUIRED ═══════════ -->
+  <div class="section-header">ISOLATIONS REQUIRED</div>
+  <div class="iso-request-row">
+    <span>Requested by "PERMIT INITIATOR": <span class="underline-field">{{ permit.isolation_requested_by || '' }}</span></span>
+    <span>Name &amp; Signature of LOTOTO owner: <span class="underline-field">{{ permit.lototo_owner_name || '' }}</span></span>
+  </div>
+
+  <table class="iso-table">
+    <thead>
+      <tr>
+        <th>(A) Electrical including motor isolation: {{ permit.isolation_electrical || 'YES/NA' }}</th>
+        <th>(B) Services isolation: {{ permit.isolation_services || 'YES/NA' }}</th>
+        <th>(C) Process isolation: {{ permit.isolation_process || 'YES/NA' }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <div>Drive/panel involved: <strong>{{ permit.isolation_electrical_drive || '' }}</strong></div>
+          <div class="iso-how">How isolated:</div>
+          <div class="cb-item"><span class="checkbox">{{ permit.isolation_electrical_how?.includes('Fuse') ? '☑' : '☐' }}</span> Fuse removed</div>
+          <div class="cb-item"><span class="checkbox">{{ permit.isolation_electrical_how?.includes('Isolator') ? '☑' : '☐' }}</span> Isolator put off &amp; locked</div>
+          <div class="cb-item"><span class="checkbox">{{ permit.isolation_electrical_how?.includes('Tested') ? '☑' : '☐' }}</span> Tested Non-operative</div>
+        </td>
+        <td>
+          <div>Service involved:</div>
+          <div>Steam / Air / Water / Other(specify)</div>
+          <div><strong>{{ permit.isolation_services_type || '' }}</strong></div>
+          <div class="iso-how">How isolated (specify):</div>
+          <div>{{ permit.isolation_services_how || '' }}</div>
+        </td>
+        <td>
+          <div>Equipment involved: <strong>{{ permit.isolation_process_equip || '' }}</strong></div>
+          <div class="iso-how">How isolated:</div>
+          <div class="cb-item"><span class="checkbox">{{ permit.isolation_process_how?.includes('Valve') ? '☑' : '☐' }}</span> Valve closed &amp; tagged</div>
+          <div class="cb-item"><span class="checkbox">{{ permit.isolation_process_how?.includes('blanked') ? '☑' : '☐' }}</span> Line blanked</div>
+          <div class="cb-item"><span class="checkbox">{{ permit.isolation_process_how?.includes('disconnected') ? '☑' : '☐' }}</span> Line disconnected</div>
+          <div class="cb-item"><span class="checkbox">{{ permit.isolation_process_how?.includes('Depressurised') ? '☑' : '☐' }}</span> Depressurised</div>
+          <div class="cb-item"><span class="checkbox">{{ permit.isolation_process_how?.includes('drained') ? '☑' : '☐' }}</span> Material drained</div>
+          <div class="cb-item"><span class="checkbox">{{ permit.isolation_process_how?.includes('Flushed') ? '☑' : '☐' }}</span> Flushed</div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ═══════════ PRECAUTIONS CHECKLIST ═══════════ -->
+  <div class="section-header">PRECAUTIONS CHECKLIST</div>
+  <div class="prec-subtitle">(A) General (Applicable for all jobs)</div>
+  <div class="checkbox-grid prec-grid">
+    @for (p of precautionChecks; track p.key) {
+      <div class="cb-item">
+        <span class="checkbox">{{ getPrec(p.key) ? '☑' : '☐' }}</span> {{ p.label }}
+      </div>
+    }
+  </div>
+
+  <div class="additional-prec">
+    <strong>Any additional precautions recommended by "Permit Issuer" and "EHS Department" during the site visit:</strong>
+    <div class="text-box sm">{{ permit.additional_precautions || '' }}</div>
+  </div>
+
+  <!-- ═══════════ VERIFICATION SIGNATURES ═══════════ -->
+  <div class="sig-section">
+    <div class="sig-row">
+      <div class="sig-text">It is verified that all the above precautions are implemented and the activity can commence.</div>
+      <div class="sig-field">
+        <div class="sig-label">Name &amp; Signature of Permit Initiator:</div>
+        <div class="sig-value">{{ permit.initiator_name || '' }}</div>
+      </div>
+    </div>
+    <div class="sig-row">
+      <div class="sig-text">During the inspection it is verified that all precautions taken are sustained during the conduct of the activity.</div>
+      <div class="sig-field">
+        <div class="sig-label">Name &amp; Signature of "Permit Issuer"</div>
+        <div class="sig-value">{{ permit.issuer_name || '' }}</div>
+      </div>
+    </div>
+    <div class="sig-row highlight">
+      <div class="sig-text">I certify that above have been checked and found satisfactory. The Permit is hereby approved and work is allowed to subjected to compliance of all safety precautions and requirements stipulated in this permit and associated permits and works procedure.</div>
+      <div class="sig-field">
+        <div class="sig-label">Name &amp; Signature of "Permit Custodian"</div>
+        <div class="sig-value">{{ permit.custodian_name || '' }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fireman (for Hot Work) -->
+  <div class="fire-row">
+    <span>Provision of firefighting team and fire tender at the site if required (in case of Hot Work)</span><br>
+    <span>Fireman deputed at the site (please specify the name and mobile number): <span class="underline-field">{{ permit.fire_watcher_name || '' }}</span></span>
+    <span class="ml">Signature of Fire Officer/Fireman: _______________</span>
+  </div>
+
+  <!-- ═══════════ CO-PERMITTEE UNDERTAKING ═══════════ -->
+  <div class="section-header sm">Undertaking by Co-permittee/Contractor's Supervisor /Technician:</div>
+  <div class="undertaking-text">
+    I have understood the Job Safety Analysis (JSA) &amp; all the above given precautions. The same has been briefed to all work team members and undertake to adhere to all of these without fail before, during and on completion of the stated operation.
+  </div>
+  <div class="sig-line">Name &amp; Signature of Co-permittee/Contractor's Supervisor/Technician: <span class="underline-field">{{ permit.co_permittee_name || '' }}</span></div>
+
+  <!-- Working Group -->
+  <div class="working-group">
+    <strong>Working Group Members Name:</strong>
+    <span class="underline-field long">{{ workingGroupList.join(', ') }}</span>
+  </div>
+
+  <!-- ═══════════ WORK SUSPENSION ═══════════ -->
+  <div class="section-header">Work Suspension</div>
+  <div class="suspension-block">
+    <p class="small-text">Permit Initiator, permit Issuer, contractor's, Inspection team supervisor needs to immediately suspend the stated operation in case of any change in work environment in the vicinity of work location or violation of specified precaution and must instantly inform Custodian.</p>
+    <p class="small-text"><strong>WORK SUSPENSION:</strong> The work described in this permit has not been completed and has been suspended. No further work shall be undertaken under this permit.</p>
+    <p>I request the permit to be cancelled or Re-authorized. Reason for suspension:</p>
+    <div class="underline-field full">{{ permit.suspension_reason || '' }}</div>
+
+    <table class="sig-table">
+      <tr>
+        <td>Name of contractor supervisor / technician/ Operator:</td>
+        <td>Signature:</td><td>Time/date:</td>
+      </tr>
+      <tr>
+        <td>Name: Permit Initiator:</td>
+        <td>Signature:</td><td>Time/date:</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- PERMIT EXTENSION -->
+  <div class="extension-block">
+    <strong>Permit Extension:</strong> The permit is extended for same day<br>
+    (Should be taken prior to 2 hr of expiry of permit): &nbsp;&nbsp; Name &amp; Signature of Custodian of Permit Issuer: <span class="underline-field">{{ permit.extended_by_custodian || '' }}</span>
+  </div>
+
+  <!-- TRIAL ENERGISATION -->
+  <div class="trial-block">
+    <strong>TRIAL ENERGISATION:</strong> (REQUIRED IF A TRIAL IS TAKEN WITHOUT FITTING THE SAFETY DEVICES LIKE GUARDS ETC.)<br>
+    Permit Initiator &amp; Co-permittee have to be present at location for trial. They have to ensure that equipment is isolated immediately after the trial.
+  </div>
+
+  <!-- ═══════════ CLOSURE PRECAUTIONS ═══════════ -->
+  <div class="section-header">ENERGISATION APPROVED BY:</div>
+  <div class="energisation-row">
+    Name: Name of LOTOTO Owner: <span class="underline-field">{{ permit.trial_lototo_owner || '' }}</span>
+    &nbsp;&nbsp; Signature: _______________ &nbsp;&nbsp; Time/date: _______________
+  </div>
+
+  <table class="closure-table">
+    <thead>
+      <tr>
+        <th>Sr No</th>
+        <th>PRECAUTIONS TO BE TAKEN FOR CLOSURE</th>
+        <th>Status (Yes / No)</th>
+        <th>Permit Initiator</th>
+        <th>Permit Holder (Co-permittee)</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (item of closureItems; track item.key) {
+        <tr>
+          <td class="center">{{ item.key }}</td>
+          <td>{{ item.label }}</td>
+          <td class="center"></td>
+          <td></td>
+          <td></td>
+        </tr>
+      }
+    </tbody>
+  </table>
+
+  <div class="closure-comments">
+    Above status has been verified and equipment / area is safe for normal operation in all aspects. Add comments if any:
+    <div class="underline-field full">{{ permit.closure_comments || '' }}</div>
+  </div>
+
+  <!-- ═══════════ WORK COMPLETED & CLOSURE ═══════════ -->
+  <div class="section-header">WORK COMPLETED AND CLOSURE</div>
+  <div class="closure-text">
+    The work described in this permit has been completed, all safety devices put back, area cleared and persons for the permitted work withdrawn. The equipment/ area is safe for normal operation.
+  </div>
+
+  <table class="sig-table final-sig">
+    <tr>
+      <td><strong>Name of Co-permittee:</strong> {{ permit.co_permittee_name || '' }}</td>
+      <td>Signature:</td>
+      <td>Time/date:</td>
+    </tr>
+    <tr>
+      <td><strong>Name: Permit Initiator:</strong> {{ permit.initiator_name || '' }}</td>
+      <td>Signature:</td>
+      <td>Time/date:</td>
+    </tr>
+  </table>
+
+  <!-- ═══════════ FOOTER ═══════════ -->
+  <div class="footer-note">
+    <strong>First Copy (White)</strong> – Copy for Display at Site. After completion of task/activity, the Copy should be retained with Permit Initiator.<br>
+    <strong>Second copy (Yellow)</strong> – Copy must be submitted to EHS department prior to start the Work at site.<br>
+    <strong>Third copy (Blue)</strong> – Remains as it is, in the permit book for the record of Permit Issuer and for audit purpose after completion of task/activity (at the end of Day/shift), the Co-permittee and initiator shall fill the closer details in this copy also along with First copy.
+  </div>
+
+  <div class="doc-ref">
+    <span>P/LD/EHS/05</span>
+    <span>VERSION: V-0</span>
+    <span>NOT CONTROLLED IF PRINTED</span>
+  </div>
+</div>
+}

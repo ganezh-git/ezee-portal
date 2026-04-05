@@ -1,0 +1,78 @@
+<div class="permit-list-page">
+  <div class="page-header">
+    <h1>{{ scope === 'my' ? 'My Permits' : 'All Permits' }}</h1>
+    <p>{{ scope === 'my' ? 'Permits you have raised' : 'View and manage all permits' }}</p>
+  </div>
+
+  <!-- Filters -->
+  @if (scope === 'all') {
+    <div class="filters-bar">
+      <div class="search-box">
+        <span class="material-icons-round">search</span>
+        <input type="text" placeholder="Search permits..." [value]="searchQuery" (input)="onSearch($event)">
+      </div>
+      <select [value]="filterType" (change)="filterType = $any($event.target).value; onFilterChange()">
+        <option value="all">All Types</option>
+        @for (t of types; track t.value) { <option [value]="t.value">{{ t.label }}</option> }
+      </select>
+      <select [value]="filterStatus" (change)="filterStatus = $any($event.target).value; onFilterChange()">
+        <option value="all">All Statuses</option>
+        @for (s of statuses; track s) { <option [value]="s">{{ getStatusStyle(s).label }}</option> }
+      </select>
+      <select [value]="filterMode" (change)="filterMode = $any($event.target).value; onFilterChange()">
+        <option value="all">All Modes</option>
+        <option value="N">Normal</option>
+        <option value="B">Breakdown</option>
+        <option value="U">Unplanned</option>
+      </select>
+    </div>
+  }
+
+  <!-- Table -->
+  @if (loading) {
+    <div class="loading-state"><div class="spinner"></div><p>Loading permits...</p></div>
+  } @else {
+    <div class="table-card">
+      <div class="table-info">
+        <span>{{ total }} permit{{ total !== 1 ? 's' : '' }} found</span>
+      </div>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th><th>Type</th><th>Location</th><th>Description</th>
+              <th>Owner</th><th>Dept</th><th>Date</th><th>Mode</th><th>Status</th><th></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (p of permits; track p.id) {
+              <tr>
+                <td><span class="pid" [style.border-color]="p.typeColor">#{{ p.id }}</span></td>
+                <td><span class="type-chip" [style.background]="p.typeColor + '14'" [style.color]="p.typeColor"><span class="material-icons-round">{{ p.typeIcon }}</span>{{ p.typeLabel }}</span></td>
+                <td>{{ p.location }}</td>
+                <td class="desc-td">{{ p.description | slice:0:35 }}{{ p.description.length > 35 ? '...' : '' }}</td>
+                <td>{{ p.permitOwner }}</td>
+                <td>{{ p.department }}</td>
+                <td class="date-td">{{ p.expectedStart }}</td>
+                <td><span class="mode-chip" [style.color]="getModeStyle(p.modeCode).color"><span class="material-icons-round">{{ getModeStyle(p.modeCode).icon }}</span>{{ p.mode }}</span></td>
+                <td><span class="status-chip" [style.background]="getStatusStyle(p.status).bgColor" [style.color]="getStatusStyle(p.status).color">{{ getStatusStyle(p.status).label }}</span></td>
+                <td><a [routerLink]="['../../permits', p.type, p.id]" class="view-link"><span class="material-icons-round">open_in_new</span></a></td>
+              </tr>
+            }
+            @if (permits.length === 0) {
+              <tr><td colspan="10" class="empty-td"><span class="material-icons-round">inbox</span><p>No permits found</p></td></tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      @if (totalPages > 1) {
+        <div class="pagination">
+          <button (click)="prevPage()" [disabled]="page === 1"><span class="material-icons-round">chevron_left</span></button>
+          <span>Page {{ page }} of {{ totalPages }}</span>
+          <button (click)="nextPage()" [disabled]="page >= totalPages"><span class="material-icons-round">chevron_right</span></button>
+        </div>
+      }
+    </div>
+  }
+</div>

@@ -1,0 +1,171 @@
+<div class="page">
+  <div class="page-header">
+    <div>
+      <h1>Analytics &amp; Insights</h1>
+      <p>Birla Opus — Permit-to-Work Performance Overview</p>
+    </div>
+    <a routerLink="../dashboard" class="btn-secondary">
+      <span class="material-icons-round">arrow_back</span> Dashboard
+    </a>
+  </div>
+
+  @if (loading) {
+    <div class="loading"><span class="material-icons-round spin">progress_activity</span> Loading analytics...</div>
+  } @else {
+
+    <!-- KPI Row -->
+    <div class="kpi-row">
+      <div class="kpi-card">
+        <span class="material-icons-round kpi-icon blue">assignment</span>
+        <div class="kpi-val">{{ totalPermits }}</div>
+        <div class="kpi-lbl">Total Permits</div>
+      </div>
+      <div class="kpi-card">
+        <span class="material-icons-round kpi-icon orange">speed</span>
+        <div class="kpi-val">{{ avgPerDay }}</div>
+        <div class="kpi-lbl">Avg / Day (15d)</div>
+      </div>
+      <div class="kpi-card">
+        <span class="material-icons-round kpi-icon green">check_circle</span>
+        <div class="kpi-val">{{ closureRate }}%</div>
+        <div class="kpi-lbl">Closure Rate</div>
+      </div>
+      <div class="kpi-card">
+        <span class="material-icons-round kpi-icon red">pause_circle</span>
+        <div class="kpi-val">{{ suspensionRate }}%</div>
+        <div class="kpi-lbl">Suspension Rate</div>
+      </div>
+      <div class="kpi-card">
+        <span class="material-icons-round kpi-icon purple">apartment</span>
+        <div class="kpi-val trunc">{{ topDept }}</div>
+        <div class="kpi-lbl">Top Department</div>
+      </div>
+      <div class="kpi-card">
+        <span class="material-icons-round kpi-icon amber">category</span>
+        <div class="kpi-val trunc">{{ topType }}</div>
+        <div class="kpi-lbl">Top Permit Type</div>
+      </div>
+    </div>
+
+    <!-- Charts Grid -->
+    <div class="charts-grid">
+      <div class="chart-card wide">
+        <h3><span class="material-icons-round">trending_up</span> Monthly Trend (Created vs Closed)</h3>
+        <canvas #trendChart class="chart-canvas tall"></canvas>
+      </div>
+      <div class="chart-card">
+        <h3><span class="material-icons-round">pie_chart</span> Status Distribution</h3>
+        <canvas #statusPie class="chart-canvas"></canvas>
+      </div>
+      <div class="chart-card wide">
+        <h3><span class="material-icons-round">show_chart</span> Daily Activity (Last 15 Days)</h3>
+        <canvas #dailyLine class="chart-canvas"></canvas>
+      </div>
+      <div class="chart-card">
+        <h3><span class="material-icons-round">radar</span> Permit Type Distribution</h3>
+        <canvas #typeRadar class="chart-canvas tall"></canvas>
+      </div>
+    </div>
+
+    <!-- Status Breakdown Table -->
+    <div class="data-section">
+      <h2><span class="material-icons-round">table_chart</span> Status Breakdown</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Status</th>
+              <th>Count</th>
+              <th>Percentage</th>
+              <th>Distribution</th>
+            </tr>
+          </thead>
+          <tbody>
+            @if (stats?.statusCounts) {
+              @for (s of stats!.statusCounts; track s.status) {
+                <tr>
+                  <td>
+                    <span class="badge" [style.color]="getStatusStyle(s.status).color" [style.background]="getStatusStyle(s.status).bgColor">
+                      <span class="material-icons-round" style="font-size:14px">{{ getStatusStyle(s.status).icon }}</span>
+                      {{ getStatusStyle(s.status).label }}
+                    </span>
+                  </td>
+                  <td class="count-cell">{{ s.count }}</td>
+                  <td>{{ totalPermits ? ((s.count / totalPermits) * 100).toFixed(1) : '0' }}%</td>
+                  <td>
+                    <div class="dist-bar-wrap">
+                      <div class="dist-bar" [style.width.%]="totalPermits ? (s.count / totalPermits * 100) : 0" [style.background]="getStatusStyle(s.status).color"></div>
+                    </div>
+                  </td>
+                </tr>
+              }
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Type Breakdown -->
+    <div class="data-section">
+      <h2><span class="material-icons-round">view_module</span> Permit Type Analysis</h2>
+      <div class="type-analysis">
+        @if (stats?.typeCounts) {
+          @for (t of stats!.typeCounts; track t.code) {
+            <div class="type-row">
+              <div class="type-label">
+                <span class="material-icons-round type-icon">{{ typeIcons[t.code] || 'description' }}</span>
+                <span>{{ t.short_label }}</span>
+              </div>
+              <div class="type-bar-wrap">
+                <div class="type-bar" [style.width.%]="stats!.typeCounts[0]?.count ? (t.count / stats!.typeCounts[0].count * 100) : 0"></div>
+              </div>
+              <span class="type-num">{{ t.count }}</span>
+            </div>
+          }
+        }
+      </div>
+    </div>
+
+    <!-- Department Analysis -->
+    <div class="data-section">
+      <h2><span class="material-icons-round">business</span> Department Performance</h2>
+      <div class="dept-grid">
+        @if (stats?.departmentBreakdown) {
+          @for (d of stats!.departmentBreakdown; track d.code) {
+            <div class="dept-card" [class.top]="d === stats!.departmentBreakdown[0]">
+              @if (d === stats!.departmentBreakdown[0]) {
+                <span class="top-badge">Most Active</span>
+              }
+              <div class="dept-name">{{ d.name }}</div>
+              <div class="dept-count">{{ d.count }}</div>
+              <div class="dept-sub">permits issued</div>
+            </div>
+          }
+        }
+      </div>
+    </div>
+
+    <!-- Overdue Permits -->
+    @if (stats?.overdue?.length) {
+      <div class="data-section alert-section">
+        <h2><span class="material-icons-round">error</span> Overdue Permits ({{ stats!.overdue.length }})</h2>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Permit No</th><th>Type</th><th>Expired On</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody>
+              @for (p of stats!.overdue; track p.id) {
+                <tr>
+                  <td class="permit-link"><a [routerLink]="['../permits', p.id]">{{ p.permit_no }}</a></td>
+                  <td>{{ p.short_label }}</td>
+                  <td>{{ p.valid_until_date }} {{ p.valid_until_time }}</td>
+                  <td><span class="badge" [style.color]="getStatusStyle(p.status).color" [style.background]="getStatusStyle(p.status).bgColor">{{ getStatusStyle(p.status).label }}</span></td>
+                  <td><a [routerLink]="['../permits', p.id]" class="action-link">Review</a></td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    }
+  }
+</div>

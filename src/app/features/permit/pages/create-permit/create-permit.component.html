@@ -1,0 +1,203 @@
+<div class="create-permit">
+  <div class="page-header">
+    <h1>New Work Permit</h1>
+    <p>Request a new safety work permit</p>
+  </div>
+
+  @if (success) {
+    <div class="alert success">
+      <span class="material-icons-round">check_circle</span>
+      <span>{{ success }}</span>
+    </div>
+  }
+  @if (error) {
+    <div class="alert error">
+      <span class="material-icons-round">error</span>
+      <span>{{ error }}</span>
+    </div>
+  }
+
+  <!-- Wizard Steps -->
+  <div class="wizard-steps">
+    <div class="step" [class.active]="currentStep >= 1" [class.completed]="currentStep > 1">
+      <div class="step-circle">@if (currentStep > 1) { <span class="material-icons-round">check</span> } @else { 1 }</div>
+      <span>Permit Type</span>
+    </div>
+    <div class="step-line" [class.active]="currentStep > 1"></div>
+    <div class="step" [class.active]="currentStep >= 2" [class.completed]="currentStep > 2">
+      <div class="step-circle">@if (currentStep > 2) { <span class="material-icons-round">check</span> } @else { 2 }</div>
+      <span>Work Details</span>
+    </div>
+    <div class="step-line" [class.active]="currentStep > 2"></div>
+    <div class="step" [class.active]="currentStep >= 3">
+      <div class="step-circle">3</div>
+      <span>Review & Submit</span>
+    </div>
+  </div>
+
+  <form [formGroup]="permitForm" (ngSubmit)="onSubmit()" class="wizard-form">
+
+    <!-- Step 1: Permit Type & Mode -->
+    @if (currentStep === 1) {
+      <div class="step-content">
+        <h2>Select Permit Type & Mode</h2>
+
+        <div class="type-grid">
+          @for (type of permitTypes; track type.value) {
+            <label class="type-card" [class.selected]="permitForm.get('type')?.value === type.value" [style.--type-color]="type.color">
+              <input type="radio" formControlName="type" [value]="type.value">
+              <div class="type-icon" [style.background]="type.color + '18'" [style.color]="type.color">
+                <span class="material-icons-round">{{ type.icon }}</span>
+              </div>
+              <span class="type-label">{{ type.label }}</span>
+              @if (type.gwmRequired) {
+                <span class="gwm-badge">GWM on holidays</span>
+              }
+            </label>
+          }
+        </div>
+
+        <div class="section-title">Work Mode</div>
+        <div class="mode-grid">
+          <label class="mode-card" [class.selected]="permitForm.get('mode')?.value === 'Normal'">
+            <input type="radio" formControlName="mode" value="Normal">
+            <span class="material-icons-round">schedule</span>
+            <div class="mode-info">
+              <strong>Normal</strong>
+              <span>Planned work during office hours</span>
+            </div>
+          </label>
+          <label class="mode-card" [class.selected]="permitForm.get('mode')?.value === 'Breakdown'">
+            <input type="radio" formControlName="mode" value="Breakdown">
+            <span class="material-icons-round">bolt</span>
+            <div class="mode-info">
+              <strong>Breakdown</strong>
+              <span>Urgent repair (8am–5pm)</span>
+            </div>
+          </label>
+          <label class="mode-card" [class.selected]="permitForm.get('mode')?.value === 'Unplanned'">
+            <input type="radio" formControlName="mode" value="Unplanned">
+            <span class="material-icons-round">priority_high</span>
+            <div class="mode-info">
+              <strong>Unplanned</strong>
+              <span>After-hours work (5pm–8am)</span>
+            </div>
+          </label>
+        </div>
+
+        @if (isHotWork) {
+          <div class="section-title">Fire Guard</div>
+          <div class="form-group">
+            <select formControlName="fireGuard" class="form-select">
+              <option value="Fire Guard Not Required">Not Required</option>
+              <option value="Fire Guard Required">Required</option>
+            </select>
+          </div>
+        }
+      </div>
+    }
+
+    <!-- Step 2: Work Details -->
+    @if (currentStep === 2) {
+      <div class="step-content">
+        <h2>Work Details</h2>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Work Location</label>
+            <select formControlName="location" class="form-select">
+              <option value="" disabled>Select location</option>
+              @for (loc of locations; track loc.id) {
+                <option [value]="loc.loc">{{ loc.loc.replace('_', ' ') }}</option>
+              }
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Expected Start Date</label>
+            <input type="date" formControlName="expectedStart" class="form-input">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Job Description</label>
+          <textarea formControlName="description" rows="4" class="form-input" placeholder="Describe the work to be performed..."></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Expected End Time</label>
+            <input type="text" formControlName="expectedEnd" class="form-input" placeholder="e.g. 5:00pm">
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- Step 3: Review & Submit -->
+    @if (currentStep === 3) {
+      <div class="step-content">
+        <h2>Review & Submit</h2>
+        <div class="review-card">
+          <div class="review-row">
+            <span class="review-label">Permit Type</span>
+            <span class="review-value">
+              @if (selectedType) {
+                <span class="material-icons-round" [style.color]="selectedType.color">{{ selectedType.icon }}</span>
+                {{ selectedType.label }}
+              }
+            </span>
+          </div>
+          <div class="review-row">
+            <span class="review-label">Work Mode</span>
+            <span class="review-value">{{ permitForm.get('mode')?.value }}</span>
+          </div>
+          <div class="review-row">
+            <span class="review-label">Location</span>
+            <span class="review-value">{{ permitForm.get('location')?.value }}</span>
+          </div>
+          <div class="review-row">
+            <span class="review-label">Description</span>
+            <span class="review-value">{{ permitForm.get('description')?.value }}</span>
+          </div>
+          <div class="review-row">
+            <span class="review-label">Expected Start</span>
+            <span class="review-value">{{ permitForm.get('expectedStart')?.value }}</span>
+          </div>
+          <div class="review-row">
+            <span class="review-label">Expected End</span>
+            <span class="review-value">{{ permitForm.get('expectedEnd')?.value }}</span>
+          </div>
+          @if (isHotWork) {
+            <div class="review-row">
+              <span class="review-label">Fire Guard</span>
+              <span class="review-value">{{ permitForm.get('fireGuard')?.value }}</span>
+            </div>
+          }
+        </div>
+      </div>
+    }
+
+    <!-- Navigation -->
+    <div class="wizard-nav">
+      @if (currentStep > 1) {
+        <button type="button" class="btn-secondary" (click)="prevStep()">
+          <span class="material-icons-round">arrow_back</span> Back
+        </button>
+      }
+      <div class="nav-spacer"></div>
+      @if (currentStep < totalSteps) {
+        <button type="button" class="btn-primary" (click)="nextStep()" [disabled]="!canProceed()">
+          Next <span class="material-icons-round">arrow_forward</span>
+        </button>
+      }
+      @if (currentStep === totalSteps) {
+        <button type="submit" class="btn-submit" [disabled]="permitForm.invalid || loading">
+          @if (loading) {
+            <div class="btn-spinner"></div> Submitting...
+          } @else {
+            <span class="material-icons-round">send</span> Submit Permit
+          }
+        </button>
+      }
+    </div>
+  </form>
+</div>

@@ -1,0 +1,165 @@
+.dashboard-page {
+  padding: 2rem 2.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.page-header {
+  margin-bottom: 2rem;
+  h1 { font-size: 1.5rem; font-weight: 700; color: #0f172a; }
+  p  { font-size: 0.9rem; color: #64748b; margin-top: 0.15rem; }
+}
+
+.loading-state {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  justify-content: center;
+  padding: 4rem;
+  color: #64748b;
+  .spin { animation: spin 1s linear infinite; }
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+// ─── Stat cards ───────────────────────────
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1.25rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 0.75rem;
+  position: relative;
+}
+
+.stat-icon {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  display: grid; place-items: center;
+  .material-icons-round { font-size: 20px; color: #fff; }
+
+  &.blue   { background: #3b82f6; }
+  &.amber  { background: #f59e0b; }
+  &.green  { background: #10b981; }
+  &.purple { background: #8b5cf6; }
+  &.cyan   { background: #06b6d4; }
+  &.rose   { background: #f43f5e; }
+}
+
+.stat-info {
+  display: flex; flex-direction: column;
+  .stat-value { font-size: 1.5rem; font-weight: 700; color: #0f172a; line-height: 1; }
+  .stat-label { font-size: 0.78rem; color: #64748b; margin-top: 0.2rem; }
+}
+
+.stat-badge {
+  position: absolute;
+  top: 0.75rem; right: 0.75rem;
+  background: #f1f5f9; color: #64748b;
+  padding: 0.15rem 0.5rem; border-radius: 6px;
+  font-size: 0.7rem; font-weight: 500;
+}
+
+// ─── Two-column panels ────────────────────
+.dash-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.dash-panel {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1.25rem;
+}
+
+.panel-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 1rem;
+  h2 { font-size: 0.95rem; font-weight: 650; color: #0f172a; }
+  .material-icons-round { font-size: 20px; color: #94a3b8; }
+}
+
+// Module usage bars
+.module-list { display: flex; flex-direction: column; gap: 0.6rem; }
+
+.module-row {
+  display: flex; align-items: center; gap: 0.75rem;
+  .module-name { width: 140px; font-size: 0.82rem; color: #334155; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .module-bar-wrap { flex: 1; height: 6px; background: #f1f5f9; border-radius: 3px; overflow: hidden; }
+  .module-bar { height: 100%; background: linear-gradient(90deg, #3b82f6, #06b6d4); border-radius: 3px; min-width: 2px; transition: width 0.4s ease; }
+  .module-count { font-size: 0.8rem; font-weight: 600; color: #0f172a; width: 24px; text-align: right; }
+}
+
+// Recent logins
+.login-list { display: flex; flex-direction: column; gap: 0.5rem; }
+
+.login-row {
+  display: flex; align-items: center; gap: 0.7rem;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid #f1f5f9;
+
+  &:last-child { border-bottom: none; }
+}
+
+.login-avatar {
+  width: 32px; height: 32px; border-radius: 8px;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  color: #fff; font-weight: 700; font-size: 0.8rem;
+  display: grid; place-items: center; flex-shrink: 0;
+}
+
+.login-info {
+  flex: 1; display: flex; flex-direction: column;
+  .login-name { font-size: 0.85rem; font-weight: 550; color: #0f172a; }
+  .login-user { font-size: 0.75rem; color: #94a3b8; }
+}
+
+.login-time { font-size: 0.75rem; color: #64748b; white-space: nowrap; }
+
+.empty-state {
+  text-align: center; padding: 2rem; color: #94a3b8; font-size: 0.85rem;
+}
+
+// ─── Quick actions ────────────────────────
+.quick-actions {
+  h2 { font-size: 0.95rem; font-weight: 650; color: #0f172a; margin-bottom: 1rem; }
+}
+
+.action-grid {
+  display: flex; gap: 1rem; flex-wrap: wrap;
+}
+
+.action-card {
+  display: flex; align-items: center; gap: 0.6rem;
+  padding: 0.75rem 1.25rem;
+  background: #fff; border: 1px solid #e2e8f0; border-radius: 10px;
+  color: #334155; font-size: 0.875rem; font-weight: 550;
+  text-decoration: none; transition: all 0.2s;
+
+  .material-icons-round { font-size: 20px; color: #3b82f6; }
+
+  &:hover {
+    border-color: #3b82f6;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+    transform: translateY(-1px);
+  }
+}
+
+// ─── Responsive ───────────────────────────
+@media (max-width: 768px) {
+  .dashboard-page { padding: 1.5rem 1rem; }
+  .stat-grid { grid-template-columns: 1fr 1fr; }
+  .dash-columns { grid-template-columns: 1fr; }
+}

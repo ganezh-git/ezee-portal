@@ -1,0 +1,44 @@
+<div class="permit-layout" [class.collapsed]="sidebarCollapsed">
+  <!-- Sidebar -->
+  <aside class="permit-sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-brand">
+        <span class="material-icons-round brand-icon">assignment</span>
+        @if (!sidebarCollapsed) {
+          <div class="brand-text">
+            <h2>Permit System</h2>
+            <span>Safety Work Permits</span>
+          </div>
+        }
+      </div>
+      <button class="collapse-btn" (click)="toggleSidebar()">
+        <span class="material-icons-round">{{ sidebarCollapsed ? 'chevron_right' : 'chevron_left' }}</span>
+      </button>
+    </div>
+
+    <nav class="sidebar-nav">
+      @for (item of navItems; track item.route) {
+        <a [routerLink]="item.route" routerLinkActive="active" class="nav-item" [title]="item.label">
+          <span class="material-icons-round nav-icon">{{ item.icon }}</span>
+          @if (!sidebarCollapsed) {
+            <span class="nav-label">{{ item.label }}</span>
+          }
+        </a>
+      }
+    </nav>
+
+    <div class="sidebar-footer">
+      <a routerLink="/portal" class="nav-item" title="Back to Portal">
+        <span class="material-icons-round nav-icon">arrow_back</span>
+        @if (!sidebarCollapsed) {
+          <span class="nav-label">Back to Portal</span>
+        }
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="permit-content">
+    <router-outlet />
+  </main>
+</div>

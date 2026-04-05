@@ -1,0 +1,118 @@
+<div class="permit-detail">
+  @if (loading) {
+    <div class="loading-state"><div class="spinner"></div><p>Loading permit...</p></div>
+  }
+
+  @if (permit) {
+    <div class="detail-header">
+      <a routerLink="../../permits" class="back-link"><span class="material-icons-round">arrow_back</span> Back</a>
+      <div class="header-info">
+        <div class="header-title">
+          <span class="type-badge" [style.background]="permit.typeColor + '14'" [style.color]="permit.typeColor">
+            <span class="material-icons-round">{{ permit.typeIcon }}</span> {{ permit.typeLabel }}
+          </span>
+          <h1>Permit #{{ permit.id }}</h1>
+        </div>
+        <span class="status-badge" [style.background]="statusStyle.bgColor" [style.color]="statusStyle.color">
+          <span class="material-icons-round">{{ statusStyle.icon }}</span> {{ statusStyle.label }}
+        </span>
+      </div>
+    </div>
+
+    @if (message) {
+      <div class="alert" [class.success]="messageType === 'success'" [class.error]="messageType === 'error'">
+        <span class="material-icons-round">{{ messageType === 'success' ? 'check_circle' : 'error' }}</span> {{ message }}
+      </div>
+    }
+
+    <div class="detail-grid">
+      <div class="info-card">
+        <h3>Permit Information</h3>
+        <div class="info-rows">
+          <div class="info-row"><span class="lbl">Location</span><span class="val">{{ permit.location }}</span></div>
+          <div class="info-row"><span class="lbl">Description</span><span class="val">{{ permit.description }}</span></div>
+          <div class="info-row"><span class="lbl">Mode</span><span class="val mode-val" [style.color]="modeStyle.color"><span class="material-icons-round">{{ modeStyle.icon }}</span>{{ permit.mode }}</span></div>
+          <div class="info-row"><span class="lbl">Department</span><span class="val">{{ permit.department }}</span></div>
+          <div class="info-row"><span class="lbl">Request Date</span><span class="val">{{ permit.requestDate }} {{ permit.requestTime }}</span></div>
+          <div class="info-row"><span class="lbl">Expected Start</span><span class="val">{{ permit.expectedStart }}</span></div>
+          <div class="info-row"><span class="lbl">Expected End</span><span class="val">{{ permit.expectedEnd }}</span></div>
+          @if (permit.permitNumber) { <div class="info-row"><span class="lbl">Permit Number</span><span class="val">{{ permit.permitNumber }}</span></div> }
+          @if (permit.fireGuard) { <div class="info-row"><span class="lbl">Fire Guard</span><span class="val">{{ permit.fireGuard }}</span></div> }
+        </div>
+      </div>
+
+      <div class="info-card">
+        <h3>People</h3>
+        <div class="info-rows">
+          <div class="info-row"><span class="lbl">Permit Owner</span><span class="val">{{ permit.permitOwner }}</span></div>
+          @if (permit.permitOwner2) { <div class="info-row"><span class="lbl">Owner 2</span><span class="val">{{ permit.permitOwner2 }}</span></div> }
+          @if (permit.permitOwner3) { <div class="info-row"><span class="lbl">Owner 3</span><span class="val">{{ permit.permitOwner3 }}</span></div> }
+          @if (permit.permitUser1) { <div class="info-row"><span class="lbl">User 1</span><span class="val">{{ permit.permitUser1 }}</span></div> }
+          @if (permit.permitUser2) { <div class="info-row"><span class="lbl">User 2</span><span class="val">{{ permit.permitUser2 }}</span></div> }
+          @if (permit.permitUser3) { <div class="info-row"><span class="lbl">User 3</span><span class="val">{{ permit.permitUser3 }}</span></div> }
+          @if (permit.securityName) { <div class="info-row"><span class="lbl">Security Officer</span><span class="val">{{ permit.securityName }}</span></div> }
+          @if (permit.closedBy) { <div class="info-row"><span class="lbl">Closed By</span><span class="val">{{ permit.closedBy }}</span></div> }
+        </div>
+      </div>
+
+      <div class="info-card">
+        <h3>Timeline</h3>
+        <div class="timeline">
+          <div class="tl-item done"><div class="tl-dot"></div><div class="tl-content"><strong>Requested</strong><span>{{ permit.requestDate }} {{ permit.requestTime }}</span></div></div>
+          @if (permit.managerApprovalTime && permit.managerApprovalTime !== '00:00:00') {
+            <div class="tl-item done"><div class="tl-dot"></div><div class="tl-content"><strong>Manager Approved</strong><span>{{ permit.managerApprovalTime }}</span></div></div>
+          }
+          @if (permit.issueDate) {
+            <div class="tl-item done"><div class="tl-dot"></div><div class="tl-content"><strong>Confirmed</strong><span>{{ permit.issueDate }} {{ permit.issueTime }}</span></div></div>
+          }
+          @if (permit.securityCloseDate) {
+            <div class="tl-item done"><div class="tl-dot"></div><div class="tl-content"><strong>{{ permit.securityReturn || 'Closed' }}</strong><span>{{ permit.securityCloseDate }} {{ permit.securityCloseTime }}</span></div></div>
+          }
+        </div>
+      </div>
+
+      @if (permit.remarks || permit.securityRemarks || permit.closureComment) {
+        <div class="info-card">
+          <h3>Remarks</h3>
+          <div class="info-rows">
+            @if (permit.remarks) { <div class="info-row"><span class="lbl">Permit Remarks</span><span class="val">{{ permit.remarks }}</span></div> }
+            @if (permit.securityRemarks) { <div class="info-row"><span class="lbl">Security Remarks</span><span class="val">{{ permit.securityRemarks }}</span></div> }
+            @if (permit.closureComment) { <div class="info-row"><span class="lbl">Closure Comment</span><span class="val">{{ permit.closureComment }}</span></div> }
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Confirm Action -->
+    @if (canConfirm) {
+      @if (!showConfirmForm) {
+        <button class="btn-primary" (click)="showConfirmForm = true" style="margin-top: 1.5rem">
+          <span class="material-icons-round">check_circle</span> Confirm & Issue Permit
+        </button>
+      } @else {
+        <div class="confirm-card">
+          <h3>Confirm Permit</h3>
+          <form [formGroup]="confirmForm" (ngSubmit)="onConfirm()">
+            <div class="form-grid">
+              <div class="fg"><label>Permit Number</label><input formControlName="permitNumber" class="fi" placeholder="Physical permit #"></div>
+              <div class="fg"><label>Permit Owner 2</label><input formControlName="permitOwner2" class="fi" placeholder="Optional"></div>
+              <div class="fg"><label>Permit Owner 3</label><input formControlName="permitOwner3" class="fi" placeholder="Optional"></div>
+              <div class="fg"><label>Permit User 1</label><input formControlName="permitUser1" class="fi" placeholder="Worker name"></div>
+              <div class="fg"><label>Permit User 2</label><input formControlName="permitUser2" class="fi" placeholder="Worker name"></div>
+              <div class="fg"><label>Permit User 3</label><input formControlName="permitUser3" class="fi" placeholder="Worker name"></div>
+              <div class="fg"><label>LOTO Required</label><select formControlName="loto" class="fi"><option value="">Not Required</option><option value="Required">Required</option></select></div>
+              <div class="fg"><label>Ladder Required</label><select formControlName="ladder" class="fi"><option value="">Not Required</option><option value="Required">Required</option></select></div>
+              <div class="fg full"><label>Remarks</label><textarea formControlName="remarks" class="fi" rows="2" placeholder="Any special instructions..."></textarea></div>
+            </div>
+            <div class="form-actions">
+              <button type="button" class="btn-secondary" (click)="showConfirmForm = false">Cancel</button>
+              <button type="submit" class="btn-primary" [disabled]="saving">
+                @if (saving) { Confirming... } @else { <span class="material-icons-round">check</span> Confirm Permit }
+              </button>
+            </div>
+          </form>
+        </div>
+      }
+    }
+  }
+</div>

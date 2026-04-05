@@ -1,0 +1,89 @@
+<!-- Top Navigation -->
+<nav class="portal-nav">
+  <div class="nav-inner">
+    <div class="nav-left">
+      <a routerLink="/" class="nav-brand">
+        <div class="brand-icon-wrap">
+          <span class="material-icons-round">hub</span>
+        </div>
+        <span class="brand-name">EZEE<span>Portal</span></span>
+      </a>
+    </div>
+
+    <div class="nav-right">
+      @if (isAdmin()) {
+        <a routerLink="/admin" class="nav-icon-btn" title="Admin Console">
+          <span class="material-icons-round">admin_panel_settings</span>
+        </a>
+      }
+
+      <button class="user-avatar" [matMenuTriggerFor]="userMenu">
+        <span class="avatar-letter">{{ user?.fullName?.charAt(0) || 'U' }}</span>
+      </button>
+
+      <mat-menu #userMenu="matMenu">
+        <div class="user-menu-header">
+          <div class="menu-avatar">{{ user?.fullName?.charAt(0) || 'U' }}</div>
+          <div class="menu-info">
+            <strong>{{ user?.fullName }}</strong>
+            <small>{{ user?.role | titlecase }} &bull; {{ user?.userType | titlecase }}</small>
+          </div>
+        </div>
+        <mat-divider></mat-divider>
+        <button mat-menu-item disabled>
+          <mat-icon>person</mat-icon>
+          <span>Profile</span>
+        </button>
+        <button mat-menu-item (click)="logout()">
+          <mat-icon>logout</mat-icon>
+          <span>Sign Out</span>
+        </button>
+      </mat-menu>
+    </div>
+  </div>
+</nav>
+
+<!-- Portal Content -->
+<div class="portal-content">
+  <div class="portal-header">
+    <div class="greeting">
+      <h1>Welcome back, <span>{{ user?.fullName }}</span></h1>
+      <p>Select a module to access your enterprise tools</p>
+    </div>
+    <div class="header-stats">
+      <div class="stat">
+        <span class="stat-value">{{ accessibleSystems.length }}</span>
+        <span class="stat-label">Modules</span>
+      </div>
+      <div class="stat">
+        <span class="stat-value">{{ user?.role | titlecase }}</span>
+        <span class="stat-label">Role</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="systems-grid">
+    @for (system of accessibleSystems; track system.slug) {
+      <div class="system-card" (click)="navigateToSystem(system)" tabindex="0"
+           (keydown.enter)="navigateToSystem(system)"
+           [style.--card-color]="system.color">
+        <div class="card-icon">
+          <span class="material-icons-round">{{ system.icon }}</span>
+        </div>
+        <div class="card-body">
+          <h3>{{ system.name }}</h3>
+          <p>{{ system.description }}</p>
+        </div>
+        <span class="material-icons-round card-arrow">east</span>
+      </div>
+    }
+  </div>
+
+  @if (accessibleSystems.length === 0) {
+    <div class="no-access">
+      <span class="material-icons-round">lock</span>
+      <h3>No Systems Assigned</h3>
+      <p>Contact your administrator to get access to enterprise modules.</p>
+    </div>
+  }
+</div>

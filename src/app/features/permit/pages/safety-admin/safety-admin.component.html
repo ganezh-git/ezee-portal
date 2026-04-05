@@ -1,0 +1,182 @@
+<div class="safety-admin-page">
+  <div class="page-header">
+    <h1><span class="material-icons-round">admin_panel_settings</span> Safety Administration</h1>
+    <p>Manage locked permits, work locations, and declared holidays</p>
+  </div>
+
+  @if (message) {
+    <div class="alert" [class.success]="messageType === 'success'" [class.error]="messageType === 'error'">
+      <span class="material-icons-round">{{ messageType === 'success' ? 'check_circle' : 'error' }}</span> {{ message }}
+    </div>
+  }
+
+  <div class="tabs">
+    <button [class.active]="activeTab === 'locked'" (click)="switchTab('locked')">
+      <span class="material-icons-round">lock</span> Locked Permits
+    </button>
+    <button [class.active]="activeTab === 'locations'" (click)="switchTab('locations')">
+      <span class="material-icons-round">location_on</span> Locations
+    </button>
+    <button [class.active]="activeTab === 'holidays'" (click)="switchTab('holidays')">
+      <span class="material-icons-round">event</span> Holidays
+    </button>
+  </div>
+
+  @if (loading) {
+    <div class="loading-state"><div class="spinner"></div><p>Loading...</p></div>
+  } @else {
+    <!-- Locked Permits Tab -->
+    @if (activeTab === 'locked') {
+      <div class="panel">
+        @if (lockedPermits.length === 0) {
+          <div class="empty-state">
+            <span class="material-icons-round">lock_open</span>
+            <h3>No Locked Permits</h3>
+            <p>All permits are operating normally</p>
+          </div>
+        } @else {
+          <div class="card-list">
+            @for (p of lockedPermits; track p.id) {
+              <div class="locked-card">
+                <div class="locked-card-header">
+                  <span class="type-badge" [style.background]="p.typeColor + '14'" [style.color]="p.typeColor">{{ p.typeLabel }}</span>
+                  <span class="locked-badge"><span class="material-icons-round">lock</span> Locked</span>
+                </div>
+                <h4>Permit #{{ p.id }}</h4>
+                <p class="desc">{{ p.description }}</p>
+                <div class="meta">
+                  <span><span class="material-icons-round">location_on</span> {{ p.location }}</span>
+                  <span><span class="material-icons-round">person</span> {{ p.permitOwner }}</span>
+                  <span><span class="material-icons-round">event</span> {{ p.expectedStart }}</span>
+                </div>
+                @if (p.securityRemarks) {
+                  <p class="remark"><strong>Security:</strong> {{ p.securityRemarks }}</p>
+                }
+                <button class="btn-unlock" (click)="unlockPermit(p)">
+                  <span class="material-icons-round">lock_open</span> Release Lock
+                </button>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    }
+
+    <!-- Locations Tab -->
+    @if (activeTab === 'locations') {
+      <div class="panel">
+        <div class="panel-toolbar">
+          <h3>Work Locations</h3>
+          <button class="btn-add" (click)="showAddLocation = !showAddLocation">
+            <span class="material-icons-round">{{ showAddLocation ? 'close' : 'add' }}</span>
+            {{ showAddLocation ? 'Cancel' : 'Add Location' }}
+          </button>
+        </div>
+
+        @if (showAddLocation) {
+          <div class="add-form">
+            <div class="form-row">
+              <div class="field">
+                <label>Location Name <span class="req">*</span></label>
+                <input type="text" [(ngModel)]="newLocation.loc" placeholder="e.g. Plant A - Workshop" />
+              </div>
+              <div class="field">
+                <label>Department</label>
+                <input type="text" [(ngModel)]="newLocation.dept" placeholder="e.g. Production" />
+              </div>
+              <button class="btn-save" (click)="addLocation()">
+                <span class="material-icons-round">check</span> Save
+              </button>
+            </div>
+          </div>
+        }
+
+        <div class="locations-grid">
+          @for (loc of locations; track loc.id) {
+            <div class="location-card" [class.locked]="loc.locks === 'Locked'">
+              <div class="loc-icon">
+                <span class="material-icons-round">{{ loc.locks === 'Locked' ? 'lock' : 'location_on' }}</span>
+              </div>
+              <div class="loc-info">
+                <h4>{{ loc.loc }}</h4>
+                <p>{{ loc.dept || 'No department' }}</p>
+                <span class="loc-status" [class.open]="loc.locks !== 'Locked'" [class.locked-st]="loc.locks === 'Locked'">
+                  {{ loc.locks === 'Locked' ? 'Locked' : 'Open' }}
+                </span>
+              </div>
+              <div class="loc-actions">
+                @if (loc.locks === 'Locked') {
+                  <button class="btn-sm unlock" (click)="unlockLocation(loc)" title="Unlock">
+                    <span class="material-icons-round">lock_open</span>
+                  </button>
+                } @else {
+                  <button class="btn-sm lock" (click)="lockLocation(loc)" title="Lock">
+                    <span class="material-icons-round">lock</span>
+                  </button>
+                }
+              </div>
+            </div>
+          }
+          @if (locations.length === 0) {
+            <div class="empty-state small">
+              <span class="material-icons-round">location_off</span>
+              <p>No locations configured</p>
+            </div>
+          }
+        </div>
+      </div>
+    }
+
+    <!-- Holidays Tab -->
+    @if (activeTab === 'holidays') {
+      <div class="panel">
+        <div class="panel-toolbar">
+          <h3>Declared Holidays</h3>
+          <button class="btn-add" (click)="showAddHoliday = !showAddHoliday">
+            <span class="material-icons-round">{{ showAddHoliday ? 'close' : 'add' }}</span>
+            {{ showAddHoliday ? 'Cancel' : 'Add Holiday' }}
+          </button>
+        </div>
+
+        @if (showAddHoliday) {
+          <div class="add-form">
+            <div class="form-row">
+              <div class="field">
+                <label>Date <span class="req">*</span></label>
+                <input type="date" [(ngModel)]="newHoliday.holiday_date" />
+              </div>
+              <div class="field">
+                <label>Description <span class="req">*</span></label>
+                <input type="text" [(ngModel)]="newHoliday.description" placeholder="e.g. Independence Day" />
+              </div>
+              <button class="btn-save" (click)="addHoliday()">
+                <span class="material-icons-round">check</span> Save
+              </button>
+            </div>
+          </div>
+        }
+
+        <div class="holidays-list">
+          @for (h of holidays; track h.id) {
+            <div class="holiday-row">
+              <div class="holiday-date">
+                <span class="material-icons-round">event</span>
+                {{ h.holiday_date }}
+              </div>
+              <div class="holiday-desc">{{ h.description }}</div>
+              <button class="btn-sm remove" (click)="removeHoliday(h)" title="Remove">
+                <span class="material-icons-round">delete</span>
+              </button>
+            </div>
+          }
+          @if (holidays.length === 0) {
+            <div class="empty-state small">
+              <span class="material-icons-round">event_busy</span>
+              <p>No holidays declared</p>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  }
+</div>

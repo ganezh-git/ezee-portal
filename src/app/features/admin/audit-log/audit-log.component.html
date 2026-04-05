@@ -1,0 +1,70 @@
+<div class="audit-page">
+  <div class="page-header">
+    <h1>Audit Log</h1>
+    <p>{{ total }} events tracked</p>
+  </div>
+
+  <div class="filters-bar">
+    <select (change)="onFilterAction($any($event.target).value)">
+      <option value="">All Actions</option>
+      <option value="user_create">User Create</option>
+      <option value="user_update">User Update</option>
+      <option value="password_reset">Password Reset</option>
+      <option value="systems_update">System Access</option>
+      <option value="temp_register">Temp Registration</option>
+    </select>
+  </div>
+
+  <div class="log-container">
+    @if (loading) {
+      <div class="loading-state">
+        <span class="material-icons-round spin">progress_activity</span>
+        Loading...
+      </div>
+    } @else {
+      <div class="log-timeline">
+        @for (entry of logs; track entry.id) {
+          <div class="log-entry">
+            <div class="log-icon" [style.background]="getActionColor(entry.action)">
+              <span class="material-icons-round">{{ getActionIcon(entry.action) }}</span>
+            </div>
+            <div class="log-body">
+              <div class="log-main">
+                <span class="log-action">{{ entry.action }}</span>
+                @if (entry.username) {
+                  <span class="log-user">by &#64;{{ entry.username }}</span>
+                }
+              </div>
+              <p class="log-details">{{ entry.details }}</p>
+              <div class="log-meta">
+                <span>{{ entry.created_at | date:'medium' }}</span>
+                @if (entry.ip_address) {
+                  <span>&bull; {{ entry.ip_address }}</span>
+                }
+              </div>
+            </div>
+          </div>
+        }
+
+        @if (logs.length === 0) {
+          <div class="empty-state">
+            <span class="material-icons-round">receipt_long</span>
+            <p>No audit events found</p>
+          </div>
+        }
+      </div>
+    }
+  </div>
+
+  @if (total > limit) {
+    <div class="pagination">
+      <button class="page-btn" [disabled]="page <= 1" (click)="prevPage()">
+        <span class="material-icons-round">chevron_left</span>
+      </button>
+      <span class="page-info">Page {{ page }} of {{ totalPages }}</span>
+      <button class="page-btn" [disabled]="page >= totalPages" (click)="nextPage()">
+        <span class="material-icons-round">chevron_right</span>
+      </button>
+    </div>
+  }
+</div>

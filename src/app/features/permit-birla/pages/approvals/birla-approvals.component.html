@@ -1,0 +1,165 @@
+<div class="page">
+  <div class="page-header">
+    <div>
+      <h1><span class="material-icons-round">approval</span> Approvals</h1>
+      <p>Pending permits awaiting your action</p>
+    </div>
+    <a routerLink="../dashboard" class="btn-back">
+      <span class="material-icons-round">arrow_back</span> Dashboard
+    </a>
+  </div>
+
+  @if (message) {
+    <div class="alert" [class.success]="messageType==='success'" [class.error]="messageType==='error'">
+      <span class="material-icons-round">{{ messageType === 'success' ? 'check_circle' : 'error' }}</span>
+      {{ message }}
+    </div>
+  }
+
+  @if (loading) {
+    <div class="loading"><span class="material-icons-round spin">progress_activity</span> Loading approvals...</div>
+  } @else {
+
+    <!-- Summary Tabs -->
+    <div class="summary-tabs">
+      @if (canIssuerApprove()) {
+        <div class="tab" [class.active]="initiatedCount > 0">
+          <span class="material-icons-round">verified</span>
+          <div class="tab-info">
+            <span class="tab-count">{{ initiatedCount }}</span>
+            <span class="tab-label">Awaiting Issuer</span>
+          </div>
+        </div>
+      }
+      @if (canCustodianApprove()) {
+        <div class="tab" [class.active]="issuedCount > 0">
+          <span class="material-icons-round">gavel</span>
+          <div class="tab-info">
+            <span class="tab-count">{{ issuedCount }}</span>
+            <span class="tab-label">Awaiting Custodian</span>
+          </div>
+        </div>
+      }
+      @if (canActivate()) {
+        <div class="tab" [class.active]="custodianApprovedCount > 0">
+          <span class="material-icons-round">play_circle</span>
+          <div class="tab-info">
+            <span class="tab-count">{{ custodianApprovedCount }}</span>
+            <span class="tab-label">Awaiting Activation</span>
+          </div>
+        </div>
+      }
+    </div>
+
+    @if (permits.length === 0) {
+      <div class="empty-state">
+        <span class="material-icons-round">task_alt</span>
+        <h3>All caught up!</h3>
+        <p>No permits need your approval right now.</p>
+      </div>
+    } @else {
+      <div class="approval-list">
+        @for (p of permits; track p.id) {
+          <div class="approval-card" [class.expanded]="activePermitId === p.id">
+            <div class="card-top">
+              <div class="card-left">
+                <span class="material-icons-round type-icon">{{ typeIcons[p.type_code] || 'description' }}</span>
+                <div class="card-info">
+                  <div class="permit-no">{{ p.permit_no }}</div>
+                  <div class="permit-meta">
+                    <span class="type-chip">{{ p.short_label || p.type_code }}</span>
+                    @if (p.department_name) { <span class="dept-chip">{{ p.department_name }}</span> }
+                  </div>
+                  <div class="desc">{{ p.work_description }}</div>
+                  <div class="dates">
+                    <span><span class="material-icons-round" style="font-size:14px">calendar_today</span> {{ p.issued_date }}</span>
+                    <span><span class="material-icons-round" style="font-size:14px">schedule</span> {{ p.valid_until_date }} {{ p.valid_until_time }}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="card-actions">
+                <span class="status-badge" [style.color]="getStatusStyle(p.status).color" [style.background]="getStatusStyle(p.status).bgColor">
+                  {{ getStatusStyle(p.status).label }}
+                </span>
+                <div class="action-group">
+                  <a [routerLink]="['../permits', p.id]" class="btn-sm view" title="View Details">
+                    <span class="material-icons-round">visibility</span>
+                  </a>
+                  <a [routerLink]="['../print', p.id]" target="_blank" class="btn-sm print" title="Print">
+                    <span class="material-icons-round">print</span>
+                  </a>
+                  @if (activePermitId !== p.id) {
+                    <button class="btn-action-approve" [class]="getActionColor(p.status)" (click)="openAction(p)">
+                      <span class="material-icons-round">{{ getActionIcon(p.status) }}</span>
+                      {{ getActionLabel(p.status) }}
+                    </button>
+                  }
+                </div>
+              </div>
+            </div>
+
+            <!-- Expanded Action Panel -->
+            @if (activePermitId === p.id) {
+              <div class="action-panel">
+                <div class="panel-header">
+                  <h4>
+                    <span class="material-icons-round">{{ getActionIcon(p.status) }}</span>
+                    {{ getActionLabel(p.status) }}
+                  </h4>
+                  <button class="btn-close" (click)="cancelAction()">
+                    <span class="material-icons-round">close</span>
+                  </button>
+                </div>
+
+                @if (activeAction === 'Initiated') {
+                  <div class="panel-body">
+                    <label>Select Issuer <span class="req">*</span></label>
+                    <select [(ngModel)]="selectedIssuerId">
+                      <option [ngValue]="null">— Select Issuer —</option>
+                      @for (is of issuers; track is.id) {
+                        <option [ngValue]="is.id">{{ is.name }} ({{ is.designation }})</option>
+                      }
+                    </select>
+                    <label>Signature (optional)</label>
+                    <app-signature-pad [(ngModel)]="signature"></app-signature-pad>
+                  </div>
+                }
+
+                @if (activeAction === 'Issued') {
+                  <div class="panel-body">
+                    <label>Select Custodian <span class="req">*</span></label>
+                    <select [(ngModel)]="selectedCustodianId">
+                      <option [ngValue]="null">— Select Custodian —</option>
+                      @for (c of custodians; track c.id) {
+                        <option [ngValue]="c.id">{{ c.name }} ({{ c.designation }})</option>
+                      }
+                    </select>
+                    <label>Signature (optional)</label>
+                    <app-signature-pad [(ngModel)]="signature"></app-signature-pad>
+                  </div>
+                }
+
+                @if (activeAction === 'Custodian_Approved') {
+                  <div class="panel-body">
+                    <label>Co-Permittee Name <span class="req">*</span></label>
+                    <input type="text" [(ngModel)]="coPermitteeName" placeholder="Contractor Supervisor / Technician">
+                    <label>Signature (optional)</label>
+                    <app-signature-pad [(ngModel)]="signature"></app-signature-pad>
+                  </div>
+                }
+
+                <div class="panel-footer">
+                  <button class="btn-cancel" (click)="cancelAction()">Cancel</button>
+                  <button class="btn-confirm" [class]="getActionColor(activeAction)" (click)="confirmAction()" [disabled]="isConfirmDisabled">
+                    <span class="material-icons-round">{{ acting ? 'hourglass_empty' : 'check' }}</span>
+                    {{ acting ? 'Processing...' : 'Confirm' }}
+                  </button>
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    }
+  }
+</div>

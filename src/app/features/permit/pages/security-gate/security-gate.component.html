@@ -1,0 +1,112 @@
+<div class="security-page">
+  <div class="page-header">
+    <div>
+      <h1><span class="material-icons-round">security</span> Security Gate</h1>
+      <p>Close active permits at site exit</p>
+    </div>
+    <div class="search-bar">
+      <span class="material-icons-round">search</span>
+      <input type="text" placeholder="Search permits..." [(ngModel)]="searchQuery" />
+    </div>
+  </div>
+
+  @if (message) {
+    <div class="alert" [class.success]="messageType === 'success'" [class.error]="messageType === 'error'">
+      <span class="material-icons-round">{{ messageType === 'success' ? 'check_circle' : 'error' }}</span> {{ message }}
+    </div>
+  }
+
+  @if (loading) {
+    <div class="loading-state"><div class="spinner"></div><p>Loading active permits...</p></div>
+  } @else {
+    <div class="permits-table-wrap">
+      <table class="permits-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Type</th>
+            <th>Location</th>
+            <th>Permit Owner</th>
+            <th>Start Date</th>
+            <th>Mode</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (p of filtered; track p.id) {
+            <tr>
+              <td class="id-cell">#{{ p.id }}</td>
+              <td><span class="type-badge" [style.background]="p.typeColor + '14'" [style.color]="p.typeColor">{{ p.typeLabel }}</span></td>
+              <td>{{ p.location }}</td>
+              <td>{{ p.permitOwner }}</td>
+              <td>{{ p.expectedStart }}</td>
+              <td><span class="mode-chip" [style.color]="getModeStyle(p.modeCode).color">{{ p.mode }}</span></td>
+              <td>
+                @let st = getStatusStyle(p.status);
+                <span class="status-chip" [style.background]="st.bgColor" [style.color]="st.color">
+                  <span class="material-icons-round">{{ st.icon }}</span> {{ st.label }}
+                </span>
+              </td>
+              <td>
+                @if (!isClosing(p)) {
+                  <div class="actions-row">
+                    <button class="btn-close" (click)="startClose(p)">
+                      <span class="material-icons-round">lock</span> Close
+                    </button>
+                    <a [routerLink]="['../permits', p.type, p.id]" class="btn-view">
+                      <span class="material-icons-round">visibility</span>
+                    </a>
+                  </div>
+                }
+              </td>
+            </tr>
+            @if (isClosing(p)) {
+              <tr class="close-form-row">
+                <td colspan="8">
+                  <div class="close-form">
+                    <h4>Close Permit #{{ p.id }}</h4>
+                    <div class="form-grid">
+                      <div class="field">
+                        <label>Return Status</label>
+                        <select [(ngModel)]="closeForm.returnStatus">
+                          @for (opt of returnOptions; track opt) {
+                            <option [value]="opt">{{ opt }}</option>
+                          }
+                        </select>
+                      </div>
+                      <div class="field">
+                        <label>Security Name <span class="req">*</span></label>
+                        <input type="text" [(ngModel)]="closeForm.securityName" placeholder="Enter your name" />
+                      </div>
+                      <div class="field full">
+                        <label>Remarks</label>
+                        <textarea [(ngModel)]="closeForm.remarks" rows="2" placeholder="Optional remarks..."></textarea>
+                      </div>
+                    </div>
+                    <div class="form-actions">
+                      <button class="btn-confirm" (click)="confirmClose(p)">
+                        <span class="material-icons-round">check</span> Confirm Close
+                      </button>
+                      <button class="btn-cancel" (click)="cancelClose()">Cancel</button>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            }
+          }
+          @if (filtered.length === 0) {
+            <tr>
+              <td colspan="8" class="empty-td">
+                <div class="empty-state">
+                  <span class="material-icons-round">verified_user</span>
+                  <p>No active permits at the gate</p>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

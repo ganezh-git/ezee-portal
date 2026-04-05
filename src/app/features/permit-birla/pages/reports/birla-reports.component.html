@@ -1,0 +1,140 @@
+<div class="page">
+  <div class="page-header">
+    <div>
+      <h1><span class="material-icons-round">summarize</span> Reports &amp; Export</h1>
+      <p>Generate, view and download permit reports</p>
+    </div>
+    <a routerLink="../dashboard" class="btn-back">
+      <span class="material-icons-round">arrow_back</span> Dashboard
+    </a>
+  </div>
+
+  @if (loading) {
+    <div class="loading"><span class="material-icons-round spin">progress_activity</span> Loading...</div>
+  } @else {
+
+    <!-- Filter Panel -->
+    <div class="filter-card">
+      <h3><span class="material-icons-round">filter_alt</span> Report Filters</h3>
+      <div class="filter-grid">
+        <div class="field">
+          <label>From Date</label>
+          <input type="date" [(ngModel)]="fromDate">
+        </div>
+        <div class="field">
+          <label>To Date</label>
+          <input type="date" [(ngModel)]="toDate">
+        </div>
+        <div class="field">
+          <label>Status</label>
+          <select [(ngModel)]="filterStatus">
+            <option value="">All Statuses</option>
+            @for (s of statuses; track s) {
+              <option [value]="s">{{ getStatusStyle(s).label }}</option>
+            }
+          </select>
+        </div>
+        <div class="field">
+          <label>Permit Type</label>
+          <select [(ngModel)]="filterType">
+            <option value="">All Types</option>
+            @for (t of types; track t.id) {
+              <option [value]="t.code">{{ t.short_label }}</option>
+            }
+          </select>
+        </div>
+        <div class="field">
+          <label>Department</label>
+          <select [(ngModel)]="filterDept">
+            <option value="">All Departments</option>
+            @for (d of departments; track d.id) {
+              <option [value]="d.code">{{ d.name }}</option>
+            }
+          </select>
+        </div>
+      </div>
+      <div class="filter-actions">
+        <button class="btn-primary" (click)="generateReport()" [disabled]="exporting">
+          <span class="material-icons-round">{{ exporting ? 'hourglass_empty' : 'search' }}</span>
+          {{ exporting ? 'Generating...' : 'Generate Report' }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Results -->
+    @if (showResults) {
+      <!-- Summary strip -->
+      <div class="summary-strip">
+        <div class="sum-card">
+          <span class="sum-val">{{ summaryStats.total }}</span>
+          <span class="sum-lbl">Total</span>
+        </div>
+        <div class="sum-card active">
+          <span class="sum-val">{{ summaryStats.active }}</span>
+          <span class="sum-lbl">Active</span>
+        </div>
+        <div class="sum-card pending">
+          <span class="sum-val">{{ summaryStats.pending }}</span>
+          <span class="sum-lbl">Pending</span>
+        </div>
+        <div class="sum-card closed">
+          <span class="sum-val">{{ summaryStats.closed }}</span>
+          <span class="sum-lbl">Closed</span>
+        </div>
+        <button class="download-btn" (click)="downloadCsv()" [disabled]="!reportData.length">
+          <span class="material-icons-round">download</span> Download CSV
+        </button>
+      </div>
+
+      @if (reportData.length === 0) {
+        <div class="empty-state">
+          <span class="material-icons-round">search_off</span>
+          <h3>No permits found</h3>
+          <p>Try adjusting your filter criteria</p>
+        </div>
+      } @else {
+        <div class="table-card">
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>Permit No</th>
+                  <th>Type</th>
+                  <th>Status</th>
+                  <th>Department</th>
+                  <th>Work Description</th>
+                  <th>Issued</th>
+                  <th>Valid Until</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (r of reportData; track r.id) {
+                  <tr>
+                    <td class="permit-no">{{ r.permit_no }}</td>
+                    <td>
+                      <span class="type-chip">
+                        <span class="material-icons-round" style="font-size:16px">{{ typeIcons[r.permit_type_code] || 'description' }}</span>
+                        {{ r.type_label || r.permit_type_code }}
+                      </span>
+                    </td>
+                    <td>
+                      <span class="status-badge" [style.color]="getStatusStyle(r.status).color" [style.background]="getStatusStyle(r.status).bgColor">
+                        {{ getStatusStyle(r.status).label }}
+                      </span>
+                    </td>
+                    <td>{{ r.department_name || '—' }}</td>
+                    <td class="desc-cell">{{ r.work_description?.substring(0, 60) }}{{ r.work_description?.length > 60 ? '...' : '' }}</td>
+                    <td class="date-cell">{{ r.issued_date }}</td>
+                    <td class="date-cell">{{ r.valid_until_date }}</td>
+                    <td><a [routerLink]="['../permits', r.id]" class="view-link">View</a></td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      }
+    }
+  }
+</div>

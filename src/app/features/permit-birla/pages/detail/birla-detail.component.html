@@ -1,0 +1,255 @@
+<div class="page">
+  @if (loading) {
+    <div class="loading"><span class="material-icons-round spin">progress_activity</span> Loading permit...</div>
+  } @else if (!permit) {
+    <div class="empty">Permit not found</div>
+  } @else {
+    <!-- Header -->
+    <div class="detail-header">
+      <div>
+        <h1>{{ permit.permit_no }}</h1>
+        <p>{{ permit.type_label }} — {{ permit.doc_id }}</p>
+      </div>
+      <div class="header-actions">
+        <span class="status-badge" [style.color]="getStatusStyle(permit.status).color" [style.background]="getStatusStyle(permit.status).bgColor">
+          <span class="material-icons-round" style="font-size:16px">{{ getStatusStyle(permit.status).icon }}</span>
+          {{ getStatusStyle(permit.status).label }}
+        </span>
+        <button class="btn-icon" (click)="printPermit()" title="Print">
+          <span class="material-icons-round">print</span>
+        </button>
+      </div>
+    </div>
+
+    @if (message) {
+      <div class="alert" [class.success]="messageType==='success'" [class.error]="messageType==='error'">{{ message }}</div>
+    }
+
+    <!-- Details Grid -->
+    <div class="card">
+      <h3>Work Details</h3>
+      <div class="detail-grid">
+        <div class="dg"><span class="dg-label">Department</span><span>{{ permit.department_name || '—' }}</span></div>
+        <div class="dg"><span class="dg-label">Location</span><span>{{ permit.location_name || permit.location_text || '—' }}</span></div>
+        <div class="dg"><span class="dg-label">Issued</span><span>{{ permit.issued_date }} {{ permit.issued_time }}</span></div>
+        <div class="dg"><span class="dg-label">Valid Until</span><span>{{ permit.valid_until_date }} {{ permit.valid_until_time }}</span></div>
+        <div class="dg"><span class="dg-label">Project</span><span>{{ permit.is_project ? 'Yes' : 'No' }}</span></div>
+        <div class="dg"><span class="dg-label">Cross Ref</span><span>{{ permit.cross_ref || '—' }}</span></div>
+        <div class="dg full"><span class="dg-label">Work Description</span><span>{{ permit.work_description }}</span></div>
+        @if (permit.specific_hazards) {
+          <div class="dg full"><span class="dg-label">Specific Hazards &amp; Control Measures</span><span>{{ permit.specific_hazards }}</span></div>
+        }
+      </div>
+    </div>
+
+    <!-- Hazards & PPE -->
+    @if (permit.hazards?.length || permit.ppe?.length) {
+      <div class="card">
+        @if (permit.hazards?.length) {
+          <h3>Hazards Identified</h3>
+          <div class="tag-list">
+            @for (h of permit.hazards; track h.hazard_type_id) {
+              <span class="tag hazard">{{ h.label }}</span>
+            }
+          </div>
+        }
+        @if (permit.ppe?.length) {
+          <h3>PPE Required</h3>
+          <div class="tag-list">
+            @for (p of permit.ppe; track p.ppe_type_id) {
+              <span class="tag ppe">{{ p.label }}</span>
+            }
+          </div>
+        }
+      </div>
+    }
+
+    <!-- Isolation -->
+    <div class="card">
+      <h3>Isolations</h3>
+      <div class="detail-grid">
+        <div class="dg"><span class="dg-label">(A) Electrical</span><span>{{ permit.isolation_electrical }} {{ permit.isolation_electrical_drive ? '— ' + permit.isolation_electrical_drive : '' }}</span></div>
+        <div class="dg"><span class="dg-label">(B) Services</span><span>{{ permit.isolation_services }} {{ permit.isolation_services_type ? '— ' + permit.isolation_services_type : '' }}</span></div>
+        <div class="dg"><span class="dg-label">(C) Process</span><span>{{ permit.isolation_process }} {{ permit.isolation_process_equip ? '— ' + permit.isolation_process_equip : '' }}</span></div>
+        <div class="dg"><span class="dg-label">LOTOTO Owner</span><span>{{ permit.lototo_owner_name || '—' }}</span></div>
+      </div>
+    </div>
+
+    <!-- Signatories -->
+    <div class="card">
+      <h3>Signatories &amp; Approval Flow</h3>
+      <div class="sign-flow">
+        <div class="sign-step" [class.done]="permit.initiator_signed_at">
+          <span class="material-icons-round">{{ permit.initiator_signed_at ? 'check_circle' : 'radio_button_unchecked' }}</span>
+          <div>
+            <strong>Initiator</strong>
+            <span>{{ permit.initiator_name || 'Pending' }}</span>
+            @if (permit.initiator_signed_at) { <small>{{ permit.initiator_signed_at }}</small> }
+            @if (permit.initiator_signature) { <img [src]="permit.initiator_signature" class="sig-img" alt="signature"> }
+          </div>
+        </div>
+        <div class="sign-arrow">→</div>
+        <div class="sign-step" [class.done]="permit.issuer_signed_at">
+          <span class="material-icons-round">{{ permit.issuer_signed_at ? 'check_circle' : 'radio_button_unchecked' }}</span>
+          <div>
+            <strong>Issuer</strong>
+            <span>{{ permit.issuer_name || 'Pending' }}</span>
+            @if (permit.issuer_signed_at) { <small>{{ permit.issuer_signed_at }}</small> }
+            @if (permit.issuer_signature) { <img [src]="permit.issuer_signature" class="sig-img" alt="signature"> }
+          </div>
+        </div>
+        <div class="sign-arrow">→</div>
+        <div class="sign-step" [class.done]="permit.custodian_signed_at">
+          <span class="material-icons-round">{{ permit.custodian_signed_at ? 'check_circle' : 'radio_button_unchecked' }}</span>
+          <div>
+            <strong>Custodian</strong>
+            <span>{{ permit.custodian_name || 'Pending' }}</span>
+            @if (permit.custodian_signed_at) { <small>{{ permit.custodian_signed_at }}</small> }
+            @if (permit.custodian_signature) { <img [src]="permit.custodian_signature" class="sig-img" alt="signature"> }
+          </div>
+        </div>
+        <div class="sign-arrow">→</div>
+        <div class="sign-step" [class.done]="permit.co_permittee_signed_at">
+          <span class="material-icons-round">{{ permit.co_permittee_signed_at ? 'check_circle' : 'radio_button_unchecked' }}</span>
+          <div>
+            <strong>Co-Permittee</strong>
+            <span>{{ permit.co_permittee_name || 'Pending' }}</span>
+            @if (permit.co_permittee_signature) { <img [src]="permit.co_permittee_signature" class="sig-img" alt="signature"> }
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Working Group -->
+    @if (workingGroupList.length) {
+      <div class="card">
+        <h3>Working Group Members</h3>
+        <ul class="member-list">
+          @for (m of workingGroupList; track m) { <li>{{ m }}</li> }
+        </ul>
+      </div>
+    }
+
+    <!-- Workflow Actions -->
+    @if (permit.status !== 'Closed' && permit.status !== 'Cancelled') {
+      <div class="card actions-card">
+        <h3>Actions</h3>
+        <div class="action-btns">
+          @if (permit.status === 'Initiated' && canApproveAsIssuer()) {
+            <button class="btn-action blue" (click)="showAction = 'issuer'">Approve as Issuer</button>
+          }
+          @if (permit.status === 'Issued' && canApproveAsCustodian()) {
+            <button class="btn-action purple" (click)="showAction = 'custodian'">Approve as Custodian</button>
+          }
+          @if (permit.status === 'Custodian_Approved' && canActivate()) {
+            <button class="btn-action green" (click)="showAction = 'activate'">Activate (Co-Permittee Sign)</button>
+          }
+          @if ((permit.status === 'Active' || permit.status === 'Extended') && canSuspendOrClose()) {
+            <button class="btn-action red" (click)="showAction = 'suspend'">Suspend</button>
+            <button class="btn-action gray" (click)="showAction = 'close'">Close Permit</button>
+          }
+          @if ((permit.status === 'Active' || permit.status === 'Extended') && canSafetyHold()) {
+            <button class="btn-action amber" (click)="showAction = 'safety-hold'">
+              <span class="material-icons-round" style="font-size:16px">front_hand</span> Safety Hold
+            </button>
+          }
+          @if (permit.status === 'Suspended' && canSafetyHold()) {
+            <button class="btn-action green" (click)="doResume()">
+              <span class="material-icons-round" style="font-size:16px">play_circle</span> Resume Permit
+            </button>
+          }
+        </div>
+
+        @if (!canApproveAsIssuer() && !canApproveAsCustodian() && !canActivate() && !canSuspendOrClose()) {
+          <p class="no-action-msg">
+            <span class="material-icons-round">info</span>
+            You do not have permission to perform workflow actions on this permit.
+          </p>
+        }
+
+        @if (showAction === 'issuer') {
+          <div class="action-form">
+            <label>Select Issuer</label>
+            <select [(ngModel)]="selectedIssuerId">
+              <option [ngValue]="null">— Select —</option>
+              @for (p of issuers; track p.id) { <option [ngValue]="p.id">{{ p.name }} ({{ p.designation }})</option> }
+            </select>
+            <label>Signature (optional)</label>
+            <app-signature-pad [(ngModel)]="signature"></app-signature-pad>
+            <button class="btn-primary" (click)="approveAsIssuer()" [disabled]="acting || !selectedIssuerId">Confirm</button>
+          </div>
+        }
+        @if (showAction === 'custodian') {
+          <div class="action-form">
+            <label>Select Custodian</label>
+            <select [(ngModel)]="selectedCustodianId">
+              <option [ngValue]="null">— Select —</option>
+              @for (p of custodians; track p.id) { <option [ngValue]="p.id">{{ p.name }} ({{ p.designation }})</option> }
+            </select>
+            <label>Signature (optional)</label>
+            <app-signature-pad [(ngModel)]="signature"></app-signature-pad>
+            <button class="btn-primary" (click)="approveAsCustodian()" [disabled]="acting || !selectedCustodianId">Confirm</button>
+          </div>
+        }
+        @if (showAction === 'activate') {
+          <div class="action-form">
+            <label>Co-Permittee Name</label>
+            <input type="text" [(ngModel)]="coPermitteeName" placeholder="Contractor Supervisor / Technician">
+            <label>Signature (optional)</label>
+            <app-signature-pad [(ngModel)]="signature"></app-signature-pad>
+            <button class="btn-primary" (click)="activate()" [disabled]="acting || !coPermitteeName.trim()">Activate</button>
+          </div>
+        }
+        @if (showAction === 'suspend') {
+          <div class="action-form">
+            <label>Suspension Reason</label>
+            <textarea [(ngModel)]="suspendReason" rows="2"></textarea>
+            <button class="btn-action red" (click)="suspend()" [disabled]="acting || !suspendReason.trim()">Suspend Permit</button>
+          </div>
+        }
+        @if (showAction === 'safety-hold') {
+          <div class="action-form safety-hold-form">
+            <h4><span class="material-icons-round" style="color:#d97706">front_hand</span> Safety Hold</h4>
+            <p class="form-hint">This will immediately suspend the permit for a safety concern. The permit can be resumed after the issue is resolved.</p>
+            <label>Reason for Safety Hold <span class="req">*</span></label>
+            <textarea [(ngModel)]="safetyHoldReason" rows="3" placeholder="Describe the safety concern..."></textarea>
+            <button class="btn-action amber" (click)="doSafetyHold()" [disabled]="acting || !safetyHoldReason.trim()">
+              <span class="material-icons-round" style="font-size:16px">front_hand</span> Confirm Safety Hold
+            </button>
+          </div>
+        }
+        @if (showAction === 'close') {
+          <div class="action-form">
+            <h4>Closure Checklist</h4>
+            <label class="check"><input type="checkbox" [(ngModel)]="closureDebris"> (A) Debris, tools removed and area cleaned</label>
+            <label class="check"><input type="checkbox" [(ngModel)]="closureTools"> (B) Tools and tackles removed</label>
+            <label class="check"><input type="checkbox" [(ngModel)]="closureSolvent"> (C) All solvent pipelines fitted with jumpers</label>
+            <label class="check"><input type="checkbox" [(ngModel)]="closureLototo"> (D) LOTOTO removed &amp; electricity restored</label>
+            <label class="check"><input type="checkbox" [(ngModel)]="closureEquipReady"> (E) Equipment is ready for operation</label>
+            <label class="check"><input type="checkbox" [(ngModel)]="closureAreaCordoned"> (F) Incomplete work area cordoned off</label>
+            <textarea [(ngModel)]="closureComments" rows="2" placeholder="Additional comments..."></textarea>
+            <label>Signature (optional)</label>
+            <app-signature-pad [(ngModel)]="signature"></app-signature-pad>
+            <button class="btn-primary" (click)="closePermit()" [disabled]="acting">Close Permit</button>
+          </div>
+        }
+      </div>
+    }
+
+    <!-- Audit Log -->
+    @if (permit.auditLog?.length) {
+      <div class="card">
+        <h3>Audit Log</h3>
+        <div class="audit-list">
+          @for (log of permit.auditLog; track log.id) {
+            <div class="audit-item">
+              <span class="audit-action">{{ log.action }}</span>
+              <span class="audit-detail">{{ log.details }}</span>
+              <span class="audit-time">{{ log.performed_at }}</span>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  }
+</div>

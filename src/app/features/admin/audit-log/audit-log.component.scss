@@ -1,0 +1,84 @@
+.audit-page {
+  padding: 2rem 2.5rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.page-header {
+  margin-bottom: 1.5rem;
+  h1 { font-size: 1.5rem; font-weight: 700; color: #0f172a; }
+  p { font-size: 0.85rem; color: #64748b; margin-top: 0.1rem; }
+}
+
+.filters-bar {
+  margin-bottom: 1.25rem;
+  select {
+    padding: 0.55rem 0.75rem; border: 1px solid #e2e8f0; border-radius: 9px;
+    background: #fff; color: #334155; font-size: 0.85rem; cursor: pointer;
+  }
+}
+
+.log-container {
+  background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.5rem;
+}
+
+.loading-state {
+  display: flex; align-items: center; justify-content: center;
+  gap: 0.5rem; padding: 3rem; color: #64748b;
+  .spin { animation: spin 1s linear infinite; }
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+// ─── Timeline ─────────────────────────────
+.log-timeline {
+  display: flex; flex-direction: column; gap: 0;
+}
+
+.log-entry {
+  display: flex; gap: 1rem; padding: 1rem 0;
+  border-bottom: 1px solid #f1f5f9;
+  &:last-child { border-bottom: none; }
+}
+
+.log-icon {
+  width: 36px; height: 36px; border-radius: 9px;
+  display: grid; place-items: center; flex-shrink: 0;
+  .material-icons-round { font-size: 18px; color: #fff; }
+}
+
+.log-body { flex: 1; }
+
+.log-main {
+  display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;
+  .log-action { font-size: 0.875rem; font-weight: 600; color: #0f172a; font-family: 'Consolas', monospace; }
+  .log-user { font-size: 0.8rem; color: #3b82f6; }
+}
+
+.log-details {
+  font-size: 0.82rem; color: #64748b; margin: 0.2rem 0 0.3rem;
+}
+
+.log-meta {
+  display: flex; gap: 0.5rem; font-size: 0.75rem; color: #94a3b8;
+}
+
+.empty-state {
+  text-align: center; padding: 3rem; color: #94a3b8;
+  .material-icons-round { font-size: 3rem; margin-bottom: 0.5rem; }
+}
+
+// ─── Pagination ───────────────────────────
+.pagination {
+  display: flex; align-items: center; justify-content: center; gap: 0.75rem;
+  padding: 1rem 0;
+}
+
+.page-btn {
+  width: 36px; height: 36px; border: 1px solid #e2e8f0; border-radius: 8px;
+  background: #fff; cursor: pointer; display: grid; place-items: center;
+  color: #334155; transition: all 0.15s;
+  &:hover:not(:disabled) { background: #f1f5f9; color: #3b82f6; }
+  &:disabled { opacity: 0.4; cursor: not-allowed; }
+}
+
+.page-info { font-size: 0.85rem; color: #64748b; }

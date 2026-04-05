@@ -1,0 +1,286 @@
+<div class="users-page">
+  <div class="page-header">
+    <div>
+      <h1>User Management</h1>
+      <p>{{ total }} users total</p>
+    </div>
+    <button class="btn-primary" (click)="openCreateModal()">
+      <span class="material-icons-round">person_add</span>
+      Create User
+    </button>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters-bar">
+    <div class="search-box">
+      <span class="material-icons-round">search</span>
+      <input type="text" placeholder="Search users..." [value]="searchQuery" (input)="onSearch($any($event.target).value)">
+    </div>
+    <select (change)="onFilterRole($any($event.target).value)">
+      <option value="">All Roles</option>
+      <option value="super_admin">Super Admin</option>
+      <option value="admin">Admin</option>
+      <option value="manager">Manager</option>
+      <option value="user">User</option>
+      <option value="viewer">Viewer</option>
+    </select>
+    <select (change)="onFilterStatus($any($event.target).value)">
+      <option value="">All Status</option>
+      <option value="active">Active</option>
+      <option value="inactive">Inactive</option>
+    </select>
+  </div>
+
+  <!-- Users table -->
+  <div class="table-container">
+    @if (loading) {
+      <div class="loading-state">
+        <span class="material-icons-round spin">progress_activity</span>
+        Loading...
+      </div>
+    } @else {
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>User</th>
+            <th>Role</th>
+            <th>Department</th>
+            <th>Type</th>
+            <th>Status</th>
+            <th>Last Login</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (user of users; track user.id) {
+            <tr>
+              <td class="user-cell">
+                <div class="user-avatar-sm">{{ user.full_name.charAt(0) }}</div>
+                <div class="user-info">
+                  <span class="user-name">{{ user.full_name }}</span>
+                  <span class="user-username">&#64;{{ user.username }}</span>
+                </div>
+              </td>
+              <td><span class="role-badge" [class]="getRoleBadgeClass(user.role)">{{ user.role | titlecase }}</span></td>
+              <td>{{ user.department || '—' }}</td>
+              <td><span class="type-label">{{ user.user_type | titlecase }}</span></td>
+              <td>
+                @if (user.is_active) {
+                  <span class="status-dot active"></span> Active
+                } @else {
+                  <span class="status-dot inactive"></span> Inactive
+                }
+              </td>
+              <td class="date-cell">{{ user.last_login ? (user.last_login | date:'medium') : 'Never' }}</td>
+              <td class="actions-cell">
+                <button class="icon-btn" title="Edit" (click)="openEditModal(user.id)">
+                  <span class="material-icons-round">edit</span>
+                </button>
+                <button class="icon-btn" title="System Access" (click)="openSystemsModal(user.id)">
+                  <span class="material-icons-round">apps</span>
+                </button>
+                <button class="icon-btn" title="Reset Password" (click)="openPasswordModal(user.id)">
+                  <span class="material-icons-round">lock_reset</span>
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+
+      @if (users.length === 0) {
+        <div class="empty-state">
+          <span class="material-icons-round">person_off</span>
+          <p>No users found</p>
+        </div>
+      }
+    }
+  </div>
+
+  <!-- Pagination -->
+  @if (total > limit) {
+    <div class="pagination">
+      <button class="page-btn" [disabled]="page <= 1" (click)="prevPage()">
+        <span class="material-icons-round">chevron_left</span>
+      </button>
+      <span class="page-info">Page {{ page }} of {{ totalPages }}</span>
+      <button class="page-btn" [disabled]="page >= totalPages" (click)="nextPage()">
+        <span class="material-icons-round">chevron_right</span>
+      </button>
+    </div>
+  }
+</div>
+
+<!-- ═══ Modal Backdrop ═══ -->
+@if (showModal) {
+  <div class="modal-backdrop" (click)="closeModal()">
+    <div class="modal-panel" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>
+          @switch (modalMode) {
+            @case ('create') { Create User }
+            @case ('edit') { Edit User }
+            @case ('systems') { System Access }
+            @case ('password') { Reset Password }
+          }
+        </h2>
+        <button class="icon-btn" (click)="closeModal()">
+          <span class="material-icons-round">close</span>
+        </button>
+      </div>
+
+      @if (message) {
+        <div class="modal-message" [class]="messageType">
+          <span class="material-icons-round">{{ messageType === 'success' ? 'check_circle' : 'error' }}</span>
+          {{ message }}
+        </div>
+      }
+
+      <!-- Create / Edit form -->
+      @if (modalMode === 'create' || modalMode === 'edit') {
+        <form [formGroup]="userForm" (ngSubmit)="saveUser()" class="modal-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Username</label>
+              <input type="text" formControlName="username" placeholder="e.g. john.doe">
+            </div>
+            @if (modalMode === 'create') {
+              <div class="form-group">
+                <label>Password</label>
+                <input type="password" formControlName="password" placeholder="Min 6 characters">
+              </div>
+            }
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Full Name *</label>
+              <input type="text" formControlName="full_name" placeholder="Full name">
+            </div>
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" formControlName="email" placeholder="Email address">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Phone</label>
+              <input type="text" formControlName="phone" placeholder="Phone number">
+            </div>
+            <div class="form-group">
+              <label>Department</label>
+              <select formControlName="department">
+                <option value="">Select department</option>
+                @for (dept of departments; track dept) {
+                  <option [value]="dept">{{ dept }}</option>
+                }
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Designation</label>
+              <select formControlName="designation">
+                <option value="">Select designation</option>
+                @for (desig of designations; track desig.id) {
+                  <option [value]="desig.id">{{ desig.label }}</option>
+                }
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Role</label>
+              <select formControlName="role">
+                <option value="user">User</option>
+                <option value="viewer">Viewer</option>
+                <option value="manager">Manager</option>
+                <option value="admin">Admin</option>
+                <option value="super_admin">Super Admin</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>User Type</label>
+              <select formControlName="user_type">
+                <option value="permanent">Permanent</option>
+                <option value="temporary">Temporary</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Status</label>
+              <select formControlName="is_active">
+                <option [value]="1">Active</option>
+                <option [value]="0">Inactive</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- System access checkboxes -->
+          <div class="form-section">
+            <label class="section-label">Module Access</label>
+            <div class="system-chips">
+              @for (sys of systems; track sys.id) {
+                <button type="button" class="system-chip" [class.selected]="isSystemSelected(sys.id)" (click)="toggleSystem(sys.id)">
+                  <span class="material-icons-round">{{ isSystemSelected(sys.id) ? 'check_circle' : 'radio_button_unchecked' }}</span>
+                  {{ sys.name }}
+                </button>
+              }
+            </div>
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" class="btn-secondary" (click)="closeModal()">Cancel</button>
+            <button type="submit" class="btn-primary" [disabled]="userForm.invalid || saving">
+              @if (saving) { Saving... } @else { {{ modalMode === 'create' ? 'Create User' : 'Save Changes' }} }
+            </button>
+          </div>
+        </form>
+      }
+
+      <!-- Systems modal -->
+      @if (modalMode === 'systems' && selectedUser) {
+        <div class="modal-form">
+          <p class="modal-desc">Manage module access for <strong>{{ selectedUser.user.full_name }}</strong></p>
+          <div class="system-chips large">
+            @for (sys of systems; track sys.id) {
+              <button type="button" class="system-chip" [class.selected]="isSystemSelected(sys.id)" (click)="toggleSystem(sys.id)">
+                <span class="material-icons-round">{{ isSystemSelected(sys.id) ? 'check_circle' : 'radio_button_unchecked' }}</span>
+                {{ sys.name }}
+              </button>
+            }
+          </div>
+          <div class="modal-actions">
+            <button class="btn-secondary" (click)="closeModal()">Cancel</button>
+            <button class="btn-primary" [disabled]="saving" (click)="saveSystems()">
+              @if (saving) { Saving... } @else { Save Access }
+            </button>
+          </div>
+        </div>
+      }
+
+      <!-- Password reset modal -->
+      @if (modalMode === 'password' && selectedUser) {
+        <form [formGroup]="passwordForm" (ngSubmit)="resetPassword()" class="modal-form">
+          <p class="modal-desc">Reset password for <strong>{{ selectedUser.user.full_name }}</strong> (&#64;{{ selectedUser.user.username }})</p>
+          <div class="form-group">
+            <label>New Password</label>
+            <input type="password" formControlName="password" placeholder="Min 6 characters">
+          </div>
+          <div class="form-group">
+            <label>Confirm Password</label>
+            <input type="password" formControlName="confirm" placeholder="Repeat password">
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn-secondary" (click)="closeModal()">Cancel</button>
+            <button type="submit" class="btn-primary" [disabled]="passwordForm.invalid || saving">
+              @if (saving) { Resetting... } @else { Reset Password }
+            </button>
+          </div>
+        </form>
+      }
+    </div>
+  </div>
+}

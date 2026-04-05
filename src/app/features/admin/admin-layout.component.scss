@@ -1,0 +1,102 @@
+.admin-shell {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+// ─── Sidebar ───────────────────────────────
+.admin-sidebar {
+  width: 240px;
+  background: #0f172a;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  border-right: 1px solid #1e293b;
+}
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.25rem 1rem;
+  border-bottom: 1px solid #1e293b;
+
+  .brand-back {
+    width: 32px;
+    height: 32px;
+    display: grid;
+    place-items: center;
+    border-radius: 8px;
+    color: #94a3b8;
+    transition: all 0.2s;
+
+    .material-icons-round { font-size: 18px; }
+
+    &:hover { background: #1e293b; color: #e2e8f0; }
+  }
+
+  .brand-text {
+    display: flex;
+    flex-direction: column;
+
+    .brand-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #f1f5f9;
+      letter-spacing: -0.3px;
+    }
+
+    .brand-sub {
+      font-size: 0.7rem;
+      color: #64748b;
+      font-weight: 500;
+    }
+  }
+}
+
+.sidebar-nav {
+  flex: 1;
+  padding: 0.75rem 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.6rem 0.75rem;
+  border-radius: 8px;
+  color: #94a3b8;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.15s;
+  text-decoration: none;
+
+  .material-icons-round { font-size: 20px; }
+
+  &:hover {
+    background: #1e293b;
+    color: #e2e8f0;
+  }
+
+  &.active {
+    background: #1d4ed8;
+    color: #fff;
+
+    .material-icons-round { color: #fff; }
+  }
+}
+
+.sidebar-footer {
+  padding: 0.5rem;
+  border-top: 1px solid #1e293b;
+}
+
+// ─── Main content area ─────────────────────
+.admin-main {
+  flex: 1;
+  overflow-y: auto;
+  background: #f8fafc;
+}

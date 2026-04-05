@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6"/>
+      <stop offset="100%" stop-color="#6366f1"/>
+    </linearGradient>
+    <linearGradient id="shine" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <!-- Rounded square background -->
+  <rect width="512" height="512" rx="96" fill="url(#bg)"/>
+  <rect width="512" height="512" rx="96" fill="url(#shine)"/>
+  <!-- Letter E stylized -->
+  <g fill="#ffffff">
+    <!-- Main vertical bar -->
+    <rect x="128" y="96" width="56" height="320" rx="12"/>
+    <!-- Top horizontal -->
+    <rect x="128" y="96" width="256" height="52" rx="12"/>
+    <!-- Middle horizontal (shorter, branded accent) -->
+    <rect x="128" y="230" width="200" height="52" rx="12"/>
+    <!-- Bottom horizontal -->
+    <rect x="128" y="364" width="256" height="52" rx="12"/>
+  </g>
+  <!-- Small accent dot (brand mark) -->
+  <circle cx="380" cy="256" r="24" fill="#ffffff" opacity="0.9"/>
+</svg>

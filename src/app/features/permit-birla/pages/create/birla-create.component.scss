@@ -1,0 +1,141 @@
+.page { max-width: 920px; margin: 0 auto; }
+.page-header { margin-bottom: 1.5rem;
+  h1 { font-size: 1.5rem; font-weight: 800; color: #1e293b; display: flex; align-items: center; gap: 0.4rem;
+    .material-icons-round { color: #3b82f6; font-size: 28px; }
+  }
+  p { font-size: 0.82rem; color: #64748b; margin-top: 0.1rem; }
+}
+.loading { text-align: center; padding: 4rem; color: #64748b; }
+.spin { animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.alert { padding: 0.85rem 1.1rem; border-radius: 12px; font-size: 0.88rem; font-weight: 500; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;
+  &.success { background: linear-gradient(135deg, #dcfce7, #d1fae5); color: #166534; border: 1px solid #86efac; }
+  &.error { background: linear-gradient(135deg, #fee2e2, #fecaca); color: #991b1b; border: 1px solid #fca5a5; }
+}
+
+/* ─── Stepper ─────────────────────────── */
+.steps { display: flex; gap: 0; margin-bottom: 2rem; background: #f1f5f9; border-radius: 16px; padding: 0.3rem; box-shadow: inset 0 1px 3px rgba(0,0,0,0.04); }
+.step { flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.4rem; padding: 0.7rem 0.5rem; border-radius: 13px; color: #94a3b8; font-size: 0.82rem; transition: all 0.3s; cursor: default;
+  &.active { background: linear-gradient(135deg, #3b82f6, #2563eb); color: #fff; box-shadow: 0 4px 16px rgba(59,130,246,0.35); font-weight: 700; }
+  &.done { background: linear-gradient(135deg, #dcfce7, #bbf7d0); color: #16a34a; font-weight: 600; }
+}
+.step-num { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: 0.78rem; background: rgba(0,0,0,0.06); }
+.step.active .step-num { background: rgba(255,255,255,0.25); }
+.step.done .step-num { background: rgba(0,0,0,0.06); }
+.step-label { @media (max-width: 600px) { display: none; } }
+
+/* ─── Step 1: Large Touch Type Cards ──── */
+.type-heading { text-align: center; margin-bottom: 1.75rem;
+  h2 { font-size: 1.2rem; font-weight: 800; color: #1e293b; }
+  p { font-size: 0.85rem; color: #64748b; margin-top: 0.2rem; }
+}
+.type-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; }
+.type-card { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 0.6rem; background: #fff; border: 2px solid #e2e8f0; border-radius: 18px; padding: 1.5rem 1rem; cursor: pointer; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; overflow: hidden;
+  &::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at top right, rgba(59,130,246,0.03), transparent 70%); pointer-events: none; }
+  &:hover { border-color: #93c5fd; transform: translateY(-4px); box-shadow: 0 12px 32px rgba(59,130,246,0.12); }
+  &:active { transform: translateY(-1px); }
+  &.selected { border-color: #3b82f6; background: linear-gradient(150deg, #eff6ff, #dbeafe); box-shadow: 0 6px 24px rgba(59,130,246,0.2);
+    .type-icon-wrap { background: linear-gradient(135deg, #3b82f6, #2563eb); box-shadow: 0 4px 12px rgba(59,130,246,0.3);
+      .material-icons-round { color: #fff; }
+    }
+  }
+}
+.type-icon-wrap { width: 60px; height: 60px; border-radius: 18px; display: grid; place-items: center; background: linear-gradient(135deg, #eff6ff, #dbeafe); transition: all 0.3s;
+  .material-icons-round { font-size: 30px; color: #3b82f6; transition: color 0.3s; }
+}
+.type-name { font-size: 0.92rem; font-weight: 700; color: #1e293b; line-height: 1.2; }
+.type-doc { font-size: 0.72rem; color: #94a3b8; font-weight: 500; }
+.chip-row { display: flex; gap: 0.35rem; flex-wrap: wrap; justify-content: center; margin-top: 0.15rem; }
+.chip { font-size: 0.68rem; padding: 0.18rem 0.5rem; border-radius: 6px; white-space: nowrap; font-weight: 600;
+  &.fire { background: #fee2e2; color: #dc2626; }
+  &.gas { background: #dbeafe; color: #2563eb; }
+  &.sun { background: #fef3c7; color: #d97706; }
+}
+
+/* ─── Form Card ───────────────────────── */
+.form-card { background: #fff; border-radius: 18px; padding: 1.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.03); margin-bottom: 1rem; border: 1px solid #f1f5f9;
+  h3 { font-size: 1.05rem; font-weight: 700; color: #1e293b; margin-top: 1.75rem; margin-bottom: 0.85rem; display: flex; align-items: center; gap: 0.4rem; padding-bottom: 0.5rem; border-bottom: 2px solid #dbeafe;
+    &:first-child { margin-top: 0; }
+    .material-icons-round { font-size: 22px; color: #3b82f6; }
+  }
+}
+.form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.85rem; }
+.field { display: flex; flex-direction: column; gap: 0.35rem;
+  &.full { grid-column: 1 / -1; }
+  label { font-size: 0.72rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; }
+  .req { color: #dc2626; }
+  input, select, textarea { padding: 0.6rem 0.75rem; border: 1.5px solid #e2e8f0; border-radius: 12px; font-size: 0.88rem; outline: none; transition: all 0.2s; background: #fafbfc; min-height: 44px;
+    &:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.08); background: #fff; }
+    &::placeholder { color: #c1c9d4; }
+  }
+  textarea { resize: vertical; min-height: 80px; }
+}
+.check-row { display: flex; gap: 1rem; margin: 1rem 0; flex-wrap: wrap;
+  label { display: flex; align-items: center; gap: 0.4rem; font-size: 0.88rem; cursor: pointer; padding: 0.55rem 0.9rem; border-radius: 12px; background: #f8fafc; border: 1.5px solid #e2e8f0; transition: all 0.2s;
+    &:hover { background: #fff3e0; border-color: #ffcc80; }
+    input { width: 18px; height: 18px; accent-color: #3b82f6; }
+  }
+}
+
+/* ─── Chip Select (Dept/Location) ──────── */
+.chip-select { display: flex; flex-wrap: wrap; gap: 0.45rem; padding: 0.5rem; background: #f8fafc; border-radius: 14px; border: 1px solid #f1f5f9; }
+.sel-chip { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.5rem 0.9rem; border: 1.5px solid transparent; border-radius: 10px; background: #fff; font-size: 0.82rem; font-weight: 500; color: #475569; cursor: pointer; transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); min-height: 38px; box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+  &:hover { border-color: #93c5fd; background: #f0f7ff; transform: translateY(-1px); box-shadow: 0 3px 8px rgba(59,130,246,0.08); }
+  &:active { transform: translateY(0); }
+  &.active { border-color: #3b82f6; background: linear-gradient(135deg, #eff6ff, #dbeafe); color: #1e40af; font-weight: 700; box-shadow: 0 2px 10px rgba(59,130,246,0.15); transform: translateY(-1px);
+    .material-icons-round { color: #3b82f6; }
+  }
+  .material-icons-round { color: #cbd5e1; transition: color 0.2s; }
+}
+
+/* ─── Toggle Grids (Hazards/PPE) ──────── */
+.checkbox-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 0.5rem; }
+.check-box { display: flex; align-items: center; gap: 0.4rem; padding: 0.55rem 0.75rem; border-radius: 10px; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; background: #f8fafc; border: 1.5px solid transparent; min-height: 44px;
+  &:hover { background: #eff6ff; border-color: #bfdbfe; }
+  &.checked { background: linear-gradient(135deg, #eff6ff, #dbeafe); color: #1e40af; font-weight: 600; border-color: #3b82f6; box-shadow: 0 1px 4px rgba(59,130,246,0.1); }
+  input { width: 18px; height: 18px; accent-color: #3b82f6; }
+}
+
+/* ─── Isolation Groups ────────────────── */
+.iso-group { margin-bottom: 1.25rem; padding-bottom: 1.25rem; border-bottom: 1px solid #f1f5f9;
+  h4 { font-size: 0.9rem; font-weight: 600; color: #475569; margin-bottom: 0.6rem; }
+}
+.radio-row { display: flex; gap: 0.6rem; margin-bottom: 0.6rem;
+  label { display: flex; align-items: center; gap: 0.35rem; font-size: 0.88rem; cursor: pointer; padding: 0.5rem 1rem; border-radius: 10px; background: #f8fafc; border: 1.5px solid #e2e8f0; transition: all 0.2s; min-height: 44px;
+    &:hover { background: #eff6ff; border-color: #93c5fd; }
+  }
+  input { width: 18px; height: 18px; accent-color: #3b82f6; }
+}
+
+/* ─── Members ─────────────────────────── */
+.member-row { display: flex; gap: 0.5rem; margin-bottom: 0.5rem;
+  input { flex: 1; padding: 0.55rem 0.7rem; border: 1.5px solid #e2e8f0; border-radius: 10px; font-size: 0.88rem; min-height: 44px; outline: none; background: #fafbfc;
+    &:focus { border-color: #3b82f6; background: #fff; }
+  }
+}
+.icon-btn { width: 44px; height: 44px; border-radius: 10px; background: #fef2f2; border: 1.5px solid #fecaca; cursor: pointer; display: grid; place-items: center; color: #dc2626; transition: all 0.15s;
+  &:hover { background: #fee2e2; border-color: #fca5a5; }
+  .material-icons-round { font-size: 20px; }
+}
+.btn-text { background: none; border: none; color: #3b82f6; font-weight: 600; font-size: 0.88rem; cursor: pointer; padding: 0.5rem 0; display: flex; align-items: center; gap: 0.25rem;
+  &:hover { color: #1d4ed8; }
+}
+
+/* ─── Review ──────────────────────────── */
+.review-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; }
+.rv { display: flex; flex-direction: column; gap: 0.2rem; padding: 0.7rem 0.85rem; background: linear-gradient(135deg, #f8fafc, #f1f5f9); border-radius: 12px; border: 1px solid #e2e8f0;
+  &.full { grid-column: 1 / -1; }
+}
+.rv-label { font-size: 0.72rem; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.03em; }
+.note { margin-top: 1.25rem; padding: 0.85rem 1rem; background: #fffbeb; border-radius: 10px; font-size: 0.88rem; color: #92400e; display: flex; align-items: flex-start; gap: 0.4rem; }
+
+/* ─── Nav Buttons ─────────────────────── */
+.nav-btns { display: flex; justify-content: space-between; margin-top: 1.25rem; gap: 0.75rem; }
+.btn-primary { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.7rem 1.6rem; background: linear-gradient(135deg, #3b82f6, #2563eb); color: #fff; border: none; border-radius: 12px; font-weight: 700; font-size: 0.92rem; cursor: pointer; min-height: 48px; box-shadow: 0 3px 12px rgba(59,130,246,0.25); transition: all 0.2s;
+  &:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(59,130,246,0.35); }
+  &:active { transform: translateY(0); }
+  &:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+}
+.btn-outline { padding: 0.7rem 1.6rem; background: #fff; color: #475569; border: 1.5px solid #cbd5e1; border-radius: 12px; font-weight: 600; font-size: 0.92rem; cursor: pointer; min-height: 48px; transition: all 0.2s;
+  &:hover { background: #f8fafc; border-color: #94a3b8; }
+}

@@ -1,0 +1,331 @@
+// ==========================================
+// EZEE Portal - Premium Dashboard
+// ==========================================
+
+// --- NAV ---
+.portal-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid var(--ezee-border);
+  height: 64px;
+  padding: 0 1.5rem;
+}
+
+.nav-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.nav-left .nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  .brand-icon-wrap {
+    width: 34px;
+    height: 34px;
+    background: linear-gradient(135deg, #3b82f6, #06b6d4);
+    border-radius: 9px;
+    display: grid;
+    place-items: center;
+
+    .material-icons-round { font-size: 19px; color: #fff; }
+  }
+
+  .brand-name {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--ezee-primary);
+    letter-spacing: -0.3px;
+
+    span { color: var(--ezee-accent); }
+  }
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.nav-icon-btn {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  color: var(--ezee-text-muted);
+  transition: all 0.2s;
+
+  .material-icons-round { font-size: 22px; }
+
+  &:hover {
+    background: #f1f5f9;
+    color: var(--ezee-accent);
+  }
+}
+
+.user-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  border: none;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+
+  .avatar-letter {
+    color: #fff;
+    font-size: 0.9rem;
+    font-weight: 700;
+  }
+
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+  }
+}
+
+.user-menu-header {
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+
+  .menu-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 9px;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.85rem;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+  }
+
+  .menu-info {
+    display: flex;
+    flex-direction: column;
+
+    strong { font-size: 0.9rem; color: var(--ezee-text); }
+    small { font-size: 0.78rem; color: var(--ezee-text-muted); }
+  }
+}
+
+// --- CONTENT ---
+.portal-content {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2.5rem 2rem 4rem;
+}
+
+.portal-header {
+  margin-bottom: 2.5rem;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.5rem;
+
+  .greeting h1 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--ezee-text);
+
+    span { color: var(--ezee-accent); }
+  }
+
+  .greeting p {
+    color: var(--ezee-text-muted);
+    font-size: 0.95rem;
+    margin-top: 0.2rem;
+  }
+}
+
+.header-stats {
+  display: flex;
+  gap: 1.5rem;
+  flex-shrink: 0;
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    background: #f8fafc;
+    border: 1px solid var(--ezee-border);
+    border-radius: 10px;
+
+    .stat-value {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--ezee-accent);
+    }
+
+    .stat-label {
+      font-size: 0.72rem;
+      font-weight: 500;
+      color: var(--ezee-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+  }
+}
+
+// --- SYSTEM CARDS ---
+.systems-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.system-card {
+  --card-color: #3b82f6;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  background: #fff;
+  border: 1px solid var(--ezee-border);
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  outline: none;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--card-color);
+    opacity: 0;
+    transition: opacity 0.25s;
+  }
+
+  &:hover {
+    border-color: color-mix(in srgb, var(--card-color) 20%, transparent);
+    box-shadow: 0 8px 30px color-mix(in srgb, var(--card-color) 12%, transparent);
+    transform: translateY(-3px);
+
+    &::before { opacity: 1; }
+
+    .card-icon {
+      background: color-mix(in srgb, var(--card-color) 12%, transparent);
+    }
+
+    .card-arrow {
+      opacity: 1;
+      transform: translateX(0);
+      color: var(--card-color);
+    }
+  }
+
+  &:focus-visible {
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--card-color) 20%, transparent);
+  }
+
+  .card-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    background: color-mix(in srgb, var(--card-color) 8%, transparent);
+    transition: background 0.25s;
+
+    .material-icons-round {
+      font-size: 24px;
+      color: var(--card-color);
+    }
+  }
+
+  .card-body {
+    flex: 1;
+    min-width: 0;
+
+    h3 {
+      font-size: 0.95rem;
+      font-weight: 650;
+      color: var(--ezee-text);
+      margin-bottom: 0.15rem;
+    }
+
+    p {
+      font-size: 0.82rem;
+      color: var(--ezee-text-muted);
+      line-height: 1.4;
+    }
+  }
+
+  .card-arrow {
+    font-size: 18px;
+    color: #cbd5e1;
+    opacity: 0;
+    transform: translateX(-6px);
+    transition: all 0.25s;
+    flex-shrink: 0;
+  }
+}
+
+// --- NO ACCESS ---
+.no-access {
+  text-align: center;
+  padding: 5rem 2rem;
+
+  .material-icons-round {
+    font-size: 3.5rem;
+    color: #cbd5e1;
+    margin-bottom: 1rem;
+  }
+
+  h3 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--ezee-text-muted);
+    margin-bottom: 0.4rem;
+  }
+
+  p {
+    color: #94a3b8;
+    font-size: 0.9rem;
+  }
+}
+
+// --- RESPONSIVE ---
+@media (max-width: 768px) {
+  .portal-content {
+    padding: 1.5rem 1rem;
+  }
+
+  .portal-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .header-stats {
+    width: 100%;
+  }
+
+  .systems-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .portal-header .greeting h1 {
+    font-size: 1.3rem;
+  }
+}

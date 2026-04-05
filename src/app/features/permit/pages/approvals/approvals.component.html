@@ -1,0 +1,64 @@
+<div class="approvals-page">
+  <div class="page-header">
+    <h1>Permit Approvals</h1>
+    <p>Review and approve pending work permits</p>
+  </div>
+
+  @if (message) {
+    <div class="alert" [class.success]="messageType === 'success'" [class.error]="messageType === 'error'">
+      <span class="material-icons-round">{{ messageType === 'success' ? 'check_circle' : 'error' }}</span> {{ message }}
+    </div>
+  }
+
+  <div class="tabs">
+    <button [class.active]="activeTab === 'department'" (click)="switchTab('department')">My Department</button>
+    <button [class.active]="activeTab === 'all'" (click)="switchTab('all')">All Departments</button>
+    <button [class.active]="activeTab === 'gwm'" (click)="switchTab('gwm')">GWM / Holiday</button>
+    <button [class.active]="activeTab === 'unplanned'" (click)="switchTab('unplanned')">Unplanned</button>
+  </div>
+
+  @if (loading) {
+    <div class="loading-state"><div class="spinner"></div><p>Loading approvals...</p></div>
+  } @else {
+    <div class="permits-grid">
+      @for (p of pendingPermits; track p.id) {
+        <div class="approval-card">
+          <div class="card-top">
+            <span class="type-chip" [style.background]="p.typeColor + '14'" [style.color]="p.typeColor">
+              <span class="material-icons-round">{{ p.typeIcon }}</span> {{ p.typeLabel }}
+            </span>
+            <span class="mode-chip" [style.color]="getModeStyle(p.modeCode).color">
+              <span class="material-icons-round">{{ getModeStyle(p.modeCode).icon }}</span> {{ p.mode }}
+            </span>
+          </div>
+          <h4>Permit #{{ p.id }}</h4>
+          <p class="desc">{{ p.description }}</p>
+          <div class="card-meta">
+            <div><span class="material-icons-round">location_on</span> {{ p.location }}</div>
+            <div><span class="material-icons-round">person</span> {{ p.permitOwner }}</div>
+            <div><span class="material-icons-round">business</span> {{ p.department }}</div>
+            <div><span class="material-icons-round">event</span> {{ p.expectedStart }}</div>
+          </div>
+          <div class="card-actions">
+            <button class="btn-approve" (click)="approve(p)" [disabled]="isProcessing(p)">
+              <span class="material-icons-round">check</span> Approve
+            </button>
+            <button class="btn-reject" (click)="reject(p)" [disabled]="isProcessing(p)">
+              <span class="material-icons-round">close</span> Reject
+            </button>
+            <a [routerLink]="['../permits', p.type, p.id]" class="btn-view">
+              <span class="material-icons-round">visibility</span>
+            </a>
+          </div>
+        </div>
+      }
+      @if (pendingPermits.length === 0) {
+        <div class="empty-state">
+          <span class="material-icons-round">task_alt</span>
+          <h3>All caught up!</h3>
+          <p>No permits pending approval</p>
+        </div>
+      }
+    </div>
+  }
+</div>

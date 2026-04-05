@@ -1,0 +1,149 @@
+<div class="reports-page">
+  <div class="page-header">
+    <h1><span class="material-icons-round">assessment</span> Permit Reports</h1>
+    <p>Generate and export permit reports with custom filters</p>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters-card">
+    <h3>Filters</h3>
+    <div class="filters-grid">
+      <div class="field">
+        <label>Permit Type</label>
+        <select [(ngModel)]="filters.type">
+          <option value="">All Types</option>
+          @for (t of permitTypes; track t.value) {
+            <option [value]="t.value">{{ t.label }}</option>
+          }
+        </select>
+      </div>
+      <div class="field">
+        <label>Status</label>
+        <select [(ngModel)]="filters.status">
+          <option value="">All Statuses</option>
+          @for (st of statusKeys; track st) {
+            <option [value]="st">{{ statusConfig[st].label }}</option>
+          }
+        </select>
+      </div>
+      <div class="field">
+        <label>Mode</label>
+        <select [(ngModel)]="filters.mode">
+          <option value="">All Modes</option>
+          <option value="N">Normal</option>
+          <option value="B">Breakdown</option>
+          <option value="U">Unplanned</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Department</label>
+        <input type="text" [(ngModel)]="filters.department" placeholder="Filter by dept..." />
+      </div>
+      <div class="field">
+        <label>From Date</label>
+        <input type="date" [(ngModel)]="filters.from" />
+      </div>
+      <div class="field">
+        <label>To Date</label>
+        <input type="date" [(ngModel)]="filters.to" />
+      </div>
+    </div>
+    <div class="filter-actions">
+      <button class="btn-search" (click)="search()" [disabled]="loading">
+        <span class="material-icons-round">search</span> Generate Report
+      </button>
+      <button class="btn-reset" (click)="reset()">
+        <span class="material-icons-round">refresh</span> Reset
+      </button>
+    </div>
+  </div>
+
+  @if (loading) {
+    <div class="loading-state"><div class="spinner"></div><p>Generating report...</p></div>
+  }
+
+  @if (results) {
+    <!-- Summary Cards -->
+    <div class="summary-section">
+      <div class="summary-header">
+        <h3>Report Summary</h3>
+        <span class="total-badge">{{ results.total }} permits found</span>
+        <button class="btn-export" (click)="exportCsv()">
+          <span class="material-icons-round">download</span> Export CSV
+        </button>
+      </div>
+
+      <div class="summary-grid">
+        <!-- By Type Chart -->
+        <div class="chart-card">
+          <h4>By Permit Type</h4>
+          <div class="bar-chart">
+            @for (e of summaryEntries; track e.label) {
+              <div class="bar-row">
+                <span class="bar-label">{{ e.label }}</span>
+                <div class="bar-track">
+                  <div class="bar-fill" [style.width.%]="(e.value / maxTypeCount) * 100" [style.background]="e.color"></div>
+                </div>
+                <span class="bar-value">{{ e.value }}</span>
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- By Status -->
+        <div class="chart-card">
+          <h4>By Status</h4>
+          <div class="status-grid">
+            @for (e of statusEntries; track e.label) {
+              <div class="stat-item">
+                <span class="stat-dot" [style.background]="e.color"></span>
+                <span class="stat-label">{{ e.label }}</span>
+                <span class="stat-value">{{ e.value }}</span>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Results Table -->
+    <div class="results-card">
+      <div class="table-wrap">
+        <table class="results-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Type</th>
+              <th>Location</th>
+              <th>Description</th>
+              <th>Mode</th>
+              <th>Status</th>
+              <th>Owner</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (p of results.permits; track p.id) {
+              <tr>
+                <td class="id-cell">#{{ p.id }}</td>
+                <td><span class="type-badge" [style.background]="p.typeColor + '14'" [style.color]="p.typeColor">{{ p.typeLabel }}</span></td>
+                <td>{{ p.location }}</td>
+                <td class="desc-cell">{{ p.description }}</td>
+                <td>{{ p.mode }}</td>
+                <td>
+                  @let st = getStatusStyle(p.status);
+                  <span class="status-chip" [style.background]="st.bgColor" [style.color]="st.color">{{ st.label }}</span>
+                </td>
+                <td>{{ p.permitOwner }}</td>
+                <td>{{ p.expectedStart }}</td>
+              </tr>
+            }
+            @if (results.permits.length === 0) {
+              <tr><td colspan="8" class="empty-cell">No permits match the criteria</td></tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  }
+</div>

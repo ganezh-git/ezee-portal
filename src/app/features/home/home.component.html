@@ -1,0 +1,147 @@
+<!-- Navigation Bar -->
+<nav class="navbar">
+  <div class="nav-container">
+    <a routerLink="/" class="nav-brand">
+      <div class="brand-logo">
+        <span class="material-icons-round">hub</span>
+      </div>
+      <span class="brand-text">EZEE<span class="brand-accent">Portal</span></span>
+    </a>
+    <div class="nav-links">
+      <a href="#features" class="nav-link">Features</a>
+      <a href="#stats" class="nav-link">Why Us</a>
+      <a href="#contact" class="nav-link">Contact</a>
+      <a routerLink="/login" class="nav-btn nav-btn-outline">Sign In</a>
+      <a routerLink="/register" class="nav-btn nav-btn-primary">Free Demo</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="hero">
+  <div class="hero-bg">
+    <div class="hero-gradient"></div>
+    <div class="hero-grid"></div>
+    <div class="hero-glow"></div>
+  </div>
+
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="material-icons-round badge-icon">auto_awesome</span>
+      Enterprise-Grade Platform
+    </div>
+
+    <h1 class="hero-title">
+      Enterprise Management<br>
+      <span class="hero-highlight">Simplified.</span>
+    </h1>
+
+    <p class="hero-desc">
+      One unified platform for permits, inventory, fleet, safety, visitors, and more.
+      Built for modern enterprises that demand reliability and control.
+    </p>
+
+    <div class="hero-actions">
+      <a routerLink="/login" class="btn btn-hero-primary">
+        <span class="material-icons-round">arrow_forward</span>
+        Get Started
+      </a>
+      <a routerLink="/register" class="btn btn-hero-secondary">
+        <span class="material-icons-round">play_circle</span>
+        Try Free Demo
+      </a>
+    </div>
+
+    <div class="hero-trust">
+      <span class="material-icons-round trust-icon">verified</span>
+      Trusted by manufacturing &amp; enterprise operations
+    </div>
+  </div>
+</section>
+
+<!-- Stats Section -->
+<section class="stats-section" id="stats">
+  <div class="stats-container">
+    @for (stat of stats; track stat.label) {
+      <div class="stat-item">
+        <span class="stat-value">{{ stat.value }}</span>
+        <span class="stat-label">{{ stat.label }}</span>
+      </div>
+    }
+  </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section" id="features">
+  <div class="section-container">
+    <div class="section-header">
+      <span class="section-badge">MODULES</span>
+      <h2 class="section-title">Everything your enterprise needs</h2>
+      <p class="section-desc">Comprehensive suite of interconnected modules, each designed to streamline a critical area of your operations.</p>
+    </div>
+
+    <div class="features-grid">
+      @for (feature of features; track feature.title) {
+        <div class="feature-card">
+          <div class="feature-icon" [style.background]="feature.color + '15'" [style.color]="feature.color">
+            <span class="material-icons-round">{{ feature.icon }}</span>
+          </div>
+          <h3 class="feature-title">{{ feature.title }}</h3>
+          <p class="feature-desc">{{ feature.desc }}</p>
+          <div class="feature-link" [style.color]="feature.color">
+            <span>Learn more</span>
+            <span class="material-icons-round">arrow_forward</span>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+  <div class="cta-container">
+    <div class="cta-content">
+      <h2>Ready to transform your operations?</h2>
+      <p>Start with a free demo account. No credit card required. Full access for 12 hours.</p>
+      <div class="cta-actions">
+        <a routerLink="/register" class="btn btn-cta-primary">
+          <span class="material-icons-round">rocket_launch</span>
+          Start Free Demo
+        </a>
+        <a routerLink="/login" class="btn btn-cta-secondary">
+          Sign In
+          <span class="material-icons-round">arrow_forward</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer" id="contact">
+  <div class="footer-container">
+    <div class="footer-brand">
+      <div class="footer-logo">
+        <span class="material-icons-round">hub</span>
+        <span>EZEE<strong>Portal</strong></span>
+      </div>
+      <p class="footer-tagline">Enterprise Management &amp; Library Software Solutions</p>
+    </div>
+
+    <div class="footer-contact">
+      <div class="contact-item">
+        <span class="material-icons-round">email</span>
+        <span>ganesh.ezee&#64;gmail.com</span>
+      </div>
+      <div class="contact-item">
+        <span class="material-icons-round">phone</span>
+        <span>+91 72990 72900</span>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>&copy; 2026 Ezee Technologies. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
