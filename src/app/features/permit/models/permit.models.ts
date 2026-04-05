@@ -141,3 +141,12 @@ export const PERMIT_MODE_CONFIG: Record<string, { label: string; color: string; 
   'B': { label: 'Breakdown', color: '#f97316', icon: 'bolt' },
   'U': { label: 'Unplanned', color: '#ef4444', icon: 'priority_high' },
 };
+
+export interface PermitAnalytics {
+  statusCounts: { status: string; count: number }[];
+  typeCounts: { type: string; label: string; short_label: string; icon: string; color: string; count: number }[];
+  modeCounts: { mode: string; modeCode: string; count: number }[];
+  departmentBreakdown: { name: string; count: number }[];
+  dailyCounts: { date: string; count: number; closed: number }[];
+  monthlyTrend: { month: string; label: string; count: number; closed: number }[];
+}

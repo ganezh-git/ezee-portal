@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import {
   Permit, PermitDashboard, PermitListResponse, PermitType,
-  PermitLocation, Holiday, ReportResponse,
+  PermitLocation, Holiday, ReportResponse, PermitAnalytics,
   CreatePermitRequest, ConfirmPermitRequest,
 } from '../models/permit.models';
 
@@ -124,5 +124,10 @@ export class PermitService {
       if (val !== undefined && val !== '') httpParams = httpParams.set(key, String(val));
     });
     return this.http.get<ReportResponse>(`${this.API}/reports`, { params: httpParams });
+  }
+
+  // Analytics
+  getAnalytics(): Observable<PermitAnalytics> {
+    return this.http.get<PermitAnalytics>(`${this.API}/analytics`);
   }
 }

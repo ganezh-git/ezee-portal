@@ -1,0 +1,175 @@
+<div class="analytics-page">
+  <div class="page-header">
+    <div>
+      <h1>Permit Analytics</h1>
+      <p>Permit Portal — Performance Overview</p>
+    </div>
+  </div>
+
+  @if (loading) {
+    <div class="loading-state"><div class="spinner"></div><p>Loading analytics...</p></div>
+  }
+
+  @if (data) {
+    <!-- KPI Cards -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-icon blue"><span class="material-icons-round">assignment</span></div>
+        <div class="kpi-info">
+          <span class="kpi-value">{{ totalPermits }}</span>
+          <span class="kpi-label">Total Permits</span>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon cyan"><span class="material-icons-round">trending_up</span></div>
+        <div class="kpi-info">
+          <span class="kpi-value">{{ avgPerDay }}</span>
+          <span class="kpi-label">Avg / Day (30d)</span>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon green"><span class="material-icons-round">check_circle</span></div>
+        <div class="kpi-info">
+          <span class="kpi-value">{{ closureRate }}%</span>
+          <span class="kpi-label">Closure Rate</span>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon orange"><span class="material-icons-round">play_circle</span></div>
+        <div class="kpi-info">
+          <span class="kpi-value">{{ activeCount }}</span>
+          <span class="kpi-label">Active Now</span>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon purple"><span class="material-icons-round">domain</span></div>
+        <div class="kpi-info">
+          <span class="kpi-value kpi-text">{{ topDept }}</span>
+          <span class="kpi-label">Top Department</span>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon red"><span class="material-icons-round">local_fire_department</span></div>
+        <div class="kpi-info">
+          <span class="kpi-value kpi-text">{{ topType }}</span>
+          <span class="kpi-label">Top Permit Type</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts Row 1: Monthly Trend + Status Pie -->
+    <div class="charts-row">
+      <div class="chart-card wide">
+        <div class="card-header">
+          <h3>Monthly Trend (Created vs Closed)</h3>
+        </div>
+        <div class="canvas-wrap">
+          <canvas #trendChart></canvas>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="card-header">
+          <h3>Status Distribution</h3>
+        </div>
+        <div class="canvas-wrap">
+          <canvas #statusPie></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts Row 2: Daily Line + Type Bar -->
+    <div class="charts-row">
+      <div class="chart-card wide">
+        <div class="card-header">
+          <h3>Daily Activity (Last 15 Days)</h3>
+        </div>
+        <div class="canvas-wrap">
+          <canvas #dailyLine></canvas>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="card-header">
+          <h3>Permits by Type</h3>
+        </div>
+        <div class="canvas-wrap tall">
+          <canvas #typeBar></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Data Tables -->
+    <div class="tables-row">
+      <!-- Status Breakdown -->
+      <div class="table-card">
+        <div class="card-header">
+          <h3>Status Breakdown</h3>
+        </div>
+        <table class="data-table">
+          <thead><tr><th>Status</th><th>Count</th><th>Distribution</th></tr></thead>
+          <tbody>
+            @for (s of data.statusCounts; track s.status) {
+              @let st = getStatusStyle(s.status);
+              <tr>
+                <td>
+                  <span class="status-dot" [style.background]="st.color"></span>
+                  {{ st.label }}
+                </td>
+                <td class="num">{{ s.count }}</td>
+                <td>
+                  <div class="dist-bar">
+                    <div class="dist-fill" [style.width.%]="(s.count / totalPermits) * 100" [style.background]="st.color"></div>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Department Performance -->
+      <div class="table-card">
+        <div class="card-header">
+          <h3>Department Performance</h3>
+        </div>
+        <div class="dept-cards">
+          @for (d of data.departmentBreakdown; track d.name; let i = $index) {
+            <div class="dept-item">
+              <div class="dept-rank">#{{ i + 1 }}</div>
+              <div class="dept-info">
+                <span class="dept-name">{{ d.name }}</span>
+                <div class="dept-bar-wrap">
+                  <div class="dept-bar" [style.width.%]="(d.count / data.departmentBreakdown[0].count) * 100"></div>
+                </div>
+              </div>
+              <span class="dept-count">{{ d.count }}</span>
+            </div>
+          }
+          @if (!data.departmentBreakdown.length) {
+            <div class="empty-state">No department data available</div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Mode Distribution -->
+    <div class="mode-section">
+      <div class="card-header">
+        <h3>Mode Distribution</h3>
+      </div>
+      <div class="mode-grid">
+        @for (m of data.modeCounts; track m.mode) {
+          <div class="mode-card">
+            <span class="material-icons-round mode-icon" [class.normal]="m.modeCode === 'N'" [class.breakdown]="m.modeCode === 'B'" [class.unplanned]="m.modeCode === 'U'">
+              {{ m.modeCode === 'N' ? 'schedule' : m.modeCode === 'B' ? 'bolt' : 'priority_high' }}
+            </span>
+            <div class="mode-info">
+              <span class="mode-value">{{ m.count }}</span>
+              <span class="mode-label">{{ m.mode }}</span>
+            </div>
+            <span class="mode-pct">{{ totalPermits ? ((m.count / totalPermits) * 100).toFixed(0) : 0 }}%</span>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>

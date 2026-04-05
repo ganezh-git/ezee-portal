@@ -28,6 +28,7 @@ export class PermitLayoutComponent {
     { label: 'Security Gate', icon: 'security', route: 'security' },
     { label: 'Safety Admin', icon: 'admin_panel_settings', route: 'safety' },
     { label: 'Reports', icon: 'assessment', route: 'reports' },
+    { label: 'Analytics', icon: 'analytics', route: 'analytics' },
   ];
 
   constructor(public auth: AuthService) {}

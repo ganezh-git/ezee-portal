@@ -46,7 +46,7 @@ export const routes: Routes = [
     path: 'permit',
     loadChildren: () => import('./features/permit/permit.routes').then(m => m.permitRoutes),
     canActivate: [authGuard],
-    title: 'Asian Paints PTW - EZEE Portal',
+    title: 'Permit Portal - EZEE Portal',
   },
   {
     path: 'permit-birla',

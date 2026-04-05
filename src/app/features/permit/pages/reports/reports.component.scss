@@ -53,12 +53,17 @@
       background: #ede9fe; color: #7c3aed; padding: 4px 12px; border-radius: 8px;
       font-weight: 600; font-size: 0.85rem;
     }
+    .export-btns {
+      margin-left: auto; display: flex; gap: 6px;
+    }
     .btn-export {
-      margin-left: auto; display: inline-flex; align-items: center; gap: 4px;
-      padding: 8px 16px; border: none; border-radius: 8px; background: #16a34a; color: #fff;
-      font-weight: 600; font-size: 0.82rem; cursor: pointer; transition: all 0.2s;
-      .material-icons-round { font-size: 18px; }
-      &:hover { background: #15803d; }
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 7px 14px; border: none; border-radius: 8px; color: #fff;
+      font-weight: 600; font-size: 0.8rem; cursor: pointer; transition: all 0.2s;
+      .material-icons-round { font-size: 16px; }
+      &.csv { background: #16a34a; &:hover { background: #15803d; } }
+      &.excel { background: #0d9488; &:hover { background: #0f766e; } }
+      &.pdf { background: #dc2626; &:hover { background: #b91c1c; } }
     }
   }
 

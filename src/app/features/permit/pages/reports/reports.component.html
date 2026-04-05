@@ -68,9 +68,17 @@
       <div class="summary-header">
         <h3>Report Summary</h3>
         <span class="total-badge">{{ results.total }} permits found</span>
-        <button class="btn-export" (click)="exportCsv()">
-          <span class="material-icons-round">download</span> Export CSV
-        </button>
+        <div class="export-btns">
+          <button class="btn-export csv" (click)="exportCsv()" title="Download CSV">
+            <span class="material-icons-round">table_view</span> CSV
+          </button>
+          <button class="btn-export excel" (click)="exportExcel()" title="Download Excel">
+            <span class="material-icons-round">grid_on</span> Excel
+          </button>
+          <button class="btn-export pdf" (click)="exportPdf()" title="Download PDF">
+            <span class="material-icons-round">picture_as_pdf</span> PDF
+          </button>
+        </div>
       </div>
 
       <div class="summary-grid">

@@ -45,7 +45,7 @@ export interface SystemAccess {
 
 // All available systems in the portal
 export const PORTAL_SYSTEMS: SystemAccess[] = [
-  { slug: 'permit', name: 'Asian Paints PTW', icon: 'assignment', description: 'Asian Paints Permit-to-Work management', route: '/permit', color: '#3b82f6' },
+  { slug: 'permit', name: 'Permit Portal', icon: 'assignment', description: 'Safety Permit-to-Work management', route: '/permit', color: '#3b82f6' },
   { slug: 'permit-birla', name: 'Birla Opus PTW', icon: 'verified_user', description: 'Birla Opus Permit-to-Work system', route: '/permit-birla', color: '#e65100' },
   { slug: 'inventory', name: 'Inventory', icon: 'inventory_2', description: 'Purchase orders, RFQ, ASN & invoicing', route: '/inventory', color: '#8b5cf6' },
   { slug: 'vehicle', name: 'Vehicle', icon: 'local_shipping', description: 'Gate entry, dock & fleet management', route: '/vehicle', color: '#06b6d4' },

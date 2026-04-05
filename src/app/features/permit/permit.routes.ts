@@ -16,6 +16,7 @@ export const permitRoutes: Routes = [
       { path: 'security', loadComponent: () => import('./pages/security-gate/security-gate.component').then(m => m.SecurityGateComponent) },
       { path: 'safety', loadComponent: () => import('./pages/safety-admin/safety-admin.component').then(m => m.SafetyAdminComponent) },
       { path: 'reports', loadComponent: () => import('./pages/reports/reports.component').then(m => m.ReportsComponent) },
+      { path: 'analytics', loadComponent: () => import('./pages/analytics/permit-analytics.component').then(m => m.PermitAnalyticsComponent) },
     ],
   },
 ];
