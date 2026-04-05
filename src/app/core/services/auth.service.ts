@@ -145,6 +145,28 @@ export class AuthService {
     }
   }
 
+  getProfile(): Observable<any> {
+    return this.http.get(`${this.API_URL}/profile`);
+  }
+
+  updateProfile(data: { fullName: string; email: string; department: string; designation: string }): Observable<{ message: string }> {
+    return this.http.put<{ message: string }>(`${this.API_URL}/profile`, data).pipe(
+      tap(() => {
+        // Update local state with new profile info
+        const user = this.authState.value.user;
+        if (user) {
+          const updated = { ...user, fullName: data.fullName, email: data.email, department: data.department, designation: data.designation };
+          localStorage.setItem(this.USER_KEY, JSON.stringify(updated));
+          this.authState.next({ ...this.authState.value, user: updated });
+        }
+      })
+    );
+  }
+
+  changePassword(currentPassword: string, newPassword: string): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(`${this.API_URL}/change-password`, { currentPassword, newPassword });
+  }
+
   private decodeToken(token: string): any {
     try {
       const payload = token.split('.')[1];

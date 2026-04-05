@@ -52,15 +52,16 @@
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  color: #64748b;
+  color: rgba(255, 255, 255, 0.7);
   font-size: 0.85rem;
   font-weight: 500;
   margin-bottom: 3rem;
+  text-decoration: none;
   transition: color 0.2s;
 
   .material-icons-round { font-size: 18px; }
 
-  &:hover { color: #94a3b8; }
+  &:hover { color: #fff; }
 }
 
 .left-brand {

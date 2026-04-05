@@ -32,7 +32,7 @@ export class LoginComponent implements OnInit {
   };
 
   private moduleThemes: Record<string, typeof this.moduleTheme> = {
-    permit: { icon: 'assignment', color: '#ef4444', gradient: 'linear-gradient(135deg, #450a0a, #7f1d1d)', name: 'Permit System' },
+    permit: { icon: 'assignment', color: '#ef4444', gradient: 'linear-gradient(135deg, #450a0a, #7f1d1d)', name: 'Asian Paints PTW' },
     inventory: { icon: 'inventory_2', color: '#8b5cf6', gradient: 'linear-gradient(135deg, #1e1b4b, #312e81)', name: 'Inventory' },
     vehicle: { icon: 'local_shipping', color: '#06b6d4', gradient: 'linear-gradient(135deg, #083344, #164e63)', name: 'Vehicle Management' },
     safety: { icon: 'health_and_safety', color: '#10b981', gradient: 'linear-gradient(135deg, #022c22, #064e3b)', name: 'Safety Management' },

@@ -25,6 +25,14 @@ export const routes: Routes = [
     title: 'Dashboard - EZEE Portal',
   },
 
+  // User profile & password change
+  {
+    path: 'profile',
+    loadComponent: () => import('./features/profile/profile.component').then(m => m.ProfileComponent),
+    canActivate: [authGuard],
+    title: 'My Profile - EZEE Portal',
+  },
+
   // Admin console — requires super_admin or admin role
   {
     path: 'admin',
@@ -38,13 +46,13 @@ export const routes: Routes = [
     path: 'permit',
     loadChildren: () => import('./features/permit/permit.routes').then(m => m.permitRoutes),
     canActivate: [authGuard],
-    title: 'Permit System - EZEE Portal',
+    title: 'Asian Paints PTW - EZEE Portal',
   },
   {
     path: 'permit-birla',
     loadChildren: () => import('./features/permit-birla/permit-birla.routes').then(m => m.permitBirlaRoutes),
     canActivate: [authGuard],
-    title: 'Birla Opus - Permit to Work',
+    title: 'Birla Opus PTW - EZEE Portal',
   },
   // { path: 'inventory', loadChildren: ... , canActivate: [systemGuard('inventory')] },
   // { path: 'vehicle', loadChildren: ... , canActivate: [systemGuard('vehicle')] },

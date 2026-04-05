@@ -72,4 +72,5 @@ export class AdminService {
     if (params.user_id) httpParams = httpParams.set('user_id', params.user_id.toString());
     return this.http.get<{ logs: AuditLogEntry[]; total: number; page: number; limit: number }>(`${this.API}/audit-log`, { params: httpParams });
   }
+
 }
