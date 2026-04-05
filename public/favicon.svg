@@ -1,53 +1,31 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
   <defs>
-    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#0a1628"/>
-      <stop offset="50%" stop-color="#1565c0"/>
-      <stop offset="100%" stop-color="#29b6f6"/>
-    </linearGradient>
-    <linearGradient id="glow" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#29b6f6" stop-opacity="0.4"/>
-      <stop offset="100%" stop-color="#1565c0" stop-opacity="0"/>
+    <linearGradient id="bg2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="50%" stop-color="#1e40af"/>
+      <stop offset="100%" stop-color="#0ea5e9"/>
     </linearGradient>
   </defs>
-  <!-- Glow background -->
-  <circle cx="256" cy="256" r="220" fill="url(#glow)" opacity="0.3"/>
-  <!-- Main E shape - circuit board style -->
-  <g fill="none" stroke="url(#g)" stroke-width="32" stroke-linecap="round" stroke-linejoin="round">
-    <!-- Vertical bar of E -->
-    <path d="M 150,100 L 150,412"/>
-    <!-- Top horizontal -->
-    <path d="M 150,100 L 340,100"/>
-    <!-- Middle horizontal -->
-    <path d="M 150,256 L 310,256"/>
-    <!-- Bottom horizontal -->
-    <path d="M 150,412 L 340,412"/>
-    <!-- Top circuit trace going up-right -->
-    <path d="M 340,100 L 370,70"/>
-    <!-- Middle circuit trace -->
-    <path d="M 310,256 L 340,226"/>
-    <!-- Bottom circuit trace going down-right -->
-    <path d="M 340,412 L 370,442"/>
-    <!-- Left vertical trace going up -->
-    <path d="M 150,100 L 120,60"/>
-    <!-- Mid-left trace -->
-    <path d="M 150,180 L 210,180 L 240,210"/>
-    <!-- Inner trace 1 -->
-    <path d="M 150,330 L 200,330 L 220,310"/>
-  </g>
-  <!-- Circuit nodes (dots at endpoints) -->
-  <g fill="url(#g)">
-    <circle cx="120" cy="60" r="14"/>
-    <circle cx="370" cy="70" r="14"/>
-    <circle cx="240" cy="210" r="11"/>
-    <circle cx="340" cy="226" r="12"/>
-    <circle cx="220" cy="310" r="11"/>
-    <circle cx="370" cy="442" r="14"/>
-    <!-- Junction nodes -->
-    <circle cx="150" cy="100" r="10"/>
-    <circle cx="150" cy="256" r="10"/>
-    <circle cx="150" cy="412" r="10"/>
-    <circle cx="150" cy="180" r="8"/>
-    <circle cx="150" cy="330" r="8"/>
+  <rect width="256" height="256" rx="48" fill="url(#bg2)"/>
+  <g transform="translate(52, 38)">
+    <g fill="none" stroke="white" stroke-width="18" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M 12,10 L 12,170"/>
+      <path d="M 12,10 L 120,10"/>
+      <path d="M 12,90 L 100,90"/>
+      <path d="M 12,170 L 120,170"/>
+      <path d="M 120,10 L 140,0"/>
+      <path d="M 100,90 L 118,72"/>
+      <path d="M 120,170 L 140,180"/>
+    </g>
+    <g fill="white">
+      <circle cx="140" cy="0" r="9"/>
+      <circle cx="118" cy="72" r="8"/>
+      <circle cx="140" cy="180" r="9"/>
+    </g>
+    <g fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="2">
+      <circle cx="140" cy="0" r="9"/>
+      <circle cx="118" cy="72" r="8"/>
+      <circle cx="140" cy="180" r="9"/>
+    </g>
   </g>
 </svg>
