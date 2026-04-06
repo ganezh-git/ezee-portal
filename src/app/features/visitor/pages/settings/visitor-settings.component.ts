@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -158,9 +158,9 @@ export class VisitorSettingsComponent implements OnInit {
     { key: 'feature_special_instructions', label: 'Special Instructions' },
   ];
 
-  constructor(private svc: VisitorService, private router: Router) {}
+  constructor(private svc: VisitorService, private router: Router, private cdr: ChangeDetectorRef) {}
 
-  ngOnInit() { this.svc.getSettings().subscribe(s => this.s = s); }
+  ngOnInit() { this.svc.getSettings().subscribe(s => { this.s = s; this.cdr.markForCheck(); }); }
 
   goBack() { this.router.navigate(['/visitor/dashboard']); }
 
@@ -168,8 +168,8 @@ export class VisitorSettingsComponent implements OnInit {
     this.saving = true;
     this.saved = false;
     this.svc.updateSettings(this.s).subscribe({
-      next: () => { this.saving = false; this.saved = true; setTimeout(() => this.saved = false, 3000); },
-      error: () => { this.saving = false; }
+      next: () => { this.saving = false; this.saved = true; this.cdr.markForCheck(); setTimeout(() => { this.saved = false; this.cdr.markForCheck(); }, 3000); },
+      error: () => { this.saving = false; this.cdr.markForCheck(); }
     });
   }
 }

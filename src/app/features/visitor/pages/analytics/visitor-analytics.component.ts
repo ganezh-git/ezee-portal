@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -175,7 +175,7 @@ export class VisitorAnalyticsComponent implements OnInit {
   to = new Date().toISOString().slice(0, 10);
   maxDaily = 1; maxType = 1; maxDept = 1; maxStatus = 1; maxHour = 1;
 
-  constructor(private svc: VisitorService, private router: Router) {}
+  constructor(private svc: VisitorService, private router: Router, private cdr: ChangeDetectorRef) {}
 
   ngOnInit() { this.load(); }
 
@@ -189,6 +189,7 @@ export class VisitorAnalyticsComponent implements OnInit {
       this.maxDept = Math.max(1, ...d.deptBreakdown.map(x => x.count));
       this.maxStatus = Math.max(1, ...d.statusBreakdown.map(x => x.count));
       this.maxHour = Math.max(1, ...d.peakHours.map(x => x.count));
+      this.cdr.markForCheck();
     });
   }
 

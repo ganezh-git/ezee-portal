@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { VisitorService, DashboardStats, Visit } from '../../services/visitor.service';
@@ -158,13 +158,13 @@ export class VisitorDashboardComponent implements OnInit, OnDestroy {
   stats: DashboardStats | null = null;
   private interval: any;
 
-  constructor(private svc: VisitorService, private router: Router) {}
+  constructor(private svc: VisitorService, private router: Router, private cdr: ChangeDetectorRef) {}
 
   ngOnInit() { this.load(); this.interval = setInterval(() => this.load(), 30000); }
   ngOnDestroy() { clearInterval(this.interval); }
 
   load() {
-    this.svc.getStats().subscribe(s => this.stats = s);
+    this.svc.getStats().subscribe(s => { this.stats = s; this.cdr.markForCheck(); });
   }
 
   goBack() { this.router.navigate(['/portal']); }

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -490,16 +490,17 @@ export class VisitorEntryComponent implements OnInit, OnDestroy {
 
   private refreshTimer: any;
 
-  constructor(private svc: VisitorService, private auth: AuthService, private router: Router) {}
+  constructor(private svc: VisitorService, private auth: AuthService, private router: Router, private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
     this.loadAll();
-    this.svc.getGates().subscribe(g => this.gates = g);
+    this.svc.getGates().subscribe(g => { this.gates = g; this.cdr.markForCheck(); });
     this.svc.getSettings().subscribe(s => {
       this.s = s;
       this.visitorTypes = (s['visitor_types'] || '').split(',').map(t => t.trim()).filter(Boolean);
       this.departments = (s['departments'] || '').split(',').map(d => d.trim()).filter(Boolean);
       this.idTypes = (s['id_types'] || '').split(',').map(t => t.trim()).filter(Boolean);
+      this.cdr.markForCheck();
     });
     this.refreshTimer = setInterval(() => this.loadAll(), 30000);
   }
@@ -512,9 +513,9 @@ export class VisitorEntryComponent implements OnInit, OnDestroy {
   goBack() { this.router.navigate(['/visitor/dashboard']); }
 
   loadAll() {
-    this.svc.getCheckInQueue().subscribe(q => this.queue = q);
-    this.svc.getCurrentlyInside().subscribe(v => this.insideList = v);
-    this.svc.getUpcomingVisitors().subscribe(v => this.upcomingList = v);
+    this.svc.getCheckInQueue().subscribe(q => { this.queue = q; this.cdr.markForCheck(); });
+    this.svc.getCurrentlyInside().subscribe(v => { this.insideList = v; this.cdr.markForCheck(); });
+    this.svc.getUpcomingVisitors().subscribe(v => { this.upcomingList = v; this.cdr.markForCheck(); });
   }
 
   switchTab(t: string) {
@@ -542,6 +543,7 @@ export class VisitorEntryComponent implements OnInit, OnDestroy {
         this.lookupMsg = 'No previous records found';
         this.lookupFound = false;
       }
+      this.cdr.markForCheck();
     });
   }
 
@@ -553,6 +555,7 @@ export class VisitorEntryComponent implements OnInit, OnDestroy {
           this.lookupMsg = `Auto-filled from: ${r.visitor.visitor_name}`;
           this.lookupFound = true;
         }
+        this.cdr.markForCheck();
       });
     }
   }
@@ -583,7 +586,7 @@ export class VisitorEntryComponent implements OnInit, OnDestroy {
   }
 
   viewDetail(v: Visit) {
-    this.svc.getVisit(v.id).subscribe(full => { this.detailVisit = full; });
+    this.svc.getVisit(v.id).subscribe(full => { this.detailVisit = full; this.cdr.markForCheck(); });
   }
 
   startWalkIn() {
@@ -599,6 +602,7 @@ export class VisitorEntryComponent implements OnInit, OnDestroy {
     this.svc.getMyProfile().subscribe(p => {
       if (!this.ci.host_name && p.fullName) this.ci.host_name = p.fullName;
       if (!this.ci.host_department && p.department) this.ci.host_department = p.department;
+      this.cdr.markForCheck();
     });
     this.error = '';
     this.successMsg = '';
@@ -676,19 +680,21 @@ export class VisitorEntryComponent implements OnInit, OnDestroy {
           if (bookData.requires_approval && !bookData.bypass_approval) {
             this.successMsg = `Visit ${r.visit_no} booked. Status: Pending Approval`;
             this.saving = false;
+            this.cdr.markForCheck();
             this.loadAll();
           } else {
             this.svc.checkin(r.id, this.ci).subscribe({
               next: (cr) => {
                 this.successMsg = `Checked in! Badge: ${cr.badge_no}, Pass: ${cr.pass_no}`;
                 this.saving = false;
+                this.cdr.markForCheck();
                 this.loadAll();
               },
-              error: (e) => { this.error = e.error?.error || 'Check-in failed'; this.saving = false; }
+              error: (e) => { this.error = e.error?.error || 'Check-in failed'; this.saving = false; this.cdr.markForCheck(); }
             });
           }
         },
-        error: (e) => { this.error = e.error?.error || 'Booking failed'; this.saving = false; }
+        error: (e) => { this.error = e.error?.error || 'Booking failed'; this.saving = false; this.cdr.markForCheck(); }
       });
     } else if (this.selectedVisit) {
       if (this.ci.bypass && !this.ci.bypass_reason) {
@@ -703,9 +709,10 @@ export class VisitorEntryComponent implements OnInit, OnDestroy {
         next: (r) => {
           this.successMsg = `Checked in! Badge: ${r.badge_no}, Pass: ${r.pass_no}`;
           this.saving = false;
+          this.cdr.markForCheck();
           this.loadAll();
         },
-        error: (e) => { this.error = e.error?.error || 'Check-in failed'; this.saving = false; }
+        error: (e) => { this.error = e.error?.error || 'Check-in failed'; this.saving = false; this.cdr.markForCheck(); }
       });
     }
   }
@@ -744,8 +751,9 @@ export class VisitorEntryComponent implements OnInit, OnDestroy {
       this.loadAll();
       if (this.selectedVisit?.id === m.visitId) { this.selectedVisit = null; this.walkIn = false; }
       if (this.detailVisit?.id === m.visitId) { this.detailVisit = null; }
+      this.cdr.markForCheck();
     };
-    const fail = (e: any) => { m.saving = false; m.error = e.error?.error || 'Action failed'; };
+    const fail = (e: any) => { m.saving = false; m.error = e.error?.error || 'Action failed'; this.cdr.markForCheck(); };
 
     if (m.type === 'reject') {
       this.svc.approve(m.visitId, 'reject', m.reason).subscribe({ next: done, error: fail });

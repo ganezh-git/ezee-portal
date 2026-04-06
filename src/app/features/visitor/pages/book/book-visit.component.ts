@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -179,7 +179,7 @@ export class BookVisitComponent implements OnInit {
   successStatus = '';
   error = '';
 
-  constructor(private svc: VisitorService, private auth: AuthService, private router: Router) {}
+  constructor(private svc: VisitorService, private auth: AuthService, private router: Router, private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
     // Load settings
@@ -188,12 +188,14 @@ export class BookVisitComponent implements OnInit {
       this.visitorTypes = (s['visitor_types'] || '').split(',').map((t: string) => t.trim()).filter(Boolean);
       this.departments = (s['departments'] || '').split(',').map((d: string) => d.trim()).filter(Boolean);
       this.f.requires_approval = s['approval_default_required'] === 'yes';
+      this.cdr.markForCheck();
     });
 
     // Auto-fill host from login
     this.svc.getMyProfile().subscribe(p => {
       if (p.fullName) this.f.host_name = p.fullName;
       if (p.department) this.f.host_department = p.department;
+      this.cdr.markForCheck();
     });
   }
 
@@ -218,8 +220,8 @@ export class BookVisitComponent implements OnInit {
     this.saving = true;
     this.error = '';
     this.svc.bookVisit(this.f).subscribe({
-      next: (r) => { this.success = true; this.successNo = r.visit_no; this.successStatus = r.status; this.saving = false; },
-      error: (e) => { this.error = e.error?.error || 'Failed to book'; this.saving = false; }
+      next: (r) => { this.success = true; this.successNo = r.visit_no; this.successStatus = r.status; this.saving = false; this.cdr.markForCheck(); },
+      error: (e) => { this.error = e.error?.error || 'Failed to book'; this.saving = false; this.cdr.markForCheck(); }
     });
   }
 

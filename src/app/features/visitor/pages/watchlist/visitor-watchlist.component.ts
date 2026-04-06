@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -110,11 +110,11 @@ export class VisitorWatchlistComponent implements OnInit {
   wf: any = { priority: 'medium' };
   bf: any = { severity: 'high' };
 
-  constructor(private svc: VisitorService, private router: Router) {}
+  constructor(private svc: VisitorService, private router: Router, private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
-    this.svc.getWatchlist().subscribe(w => this.watchlist = w);
-    this.svc.getBlacklist().subscribe(b => this.blacklist = b);
+    this.svc.getWatchlist().subscribe(w => { this.watchlist = w; this.cdr.markForCheck(); });
+    this.svc.getBlacklist().subscribe(b => { this.blacklist = b; this.cdr.markForCheck(); });
   }
 
   goBack() { this.router.navigate(['/visitor/dashboard']); }
@@ -122,22 +122,22 @@ export class VisitorWatchlistComponent implements OnInit {
   addWatch() {
     this.svc.addToWatchlist(this.wf).subscribe(() => {
       this.wf = { priority: 'medium' };
-      this.svc.getWatchlist().subscribe(w => this.watchlist = w);
+      this.svc.getWatchlist().subscribe(w => { this.watchlist = w; this.cdr.markForCheck(); });
     });
   }
 
   removeWatch(id: number) {
-    this.svc.removeFromWatchlist(id).subscribe(() => this.svc.getWatchlist().subscribe(w => this.watchlist = w));
+    this.svc.removeFromWatchlist(id).subscribe(() => this.svc.getWatchlist().subscribe(w => { this.watchlist = w; this.cdr.markForCheck(); }));
   }
 
   addBlack() {
     this.svc.addToBlacklist(this.bf).subscribe(() => {
       this.bf = { severity: 'high' };
-      this.svc.getBlacklist().subscribe(b => this.blacklist = b);
+      this.svc.getBlacklist().subscribe(b => { this.blacklist = b; this.cdr.markForCheck(); });
     });
   }
 
   removeBlack(id: number) {
-    this.svc.removeFromBlacklist(id).subscribe(() => this.svc.getBlacklist().subscribe(b => this.blacklist = b));
+    this.svc.removeFromBlacklist(id).subscribe(() => this.svc.getBlacklist().subscribe(b => { this.blacklist = b; this.cdr.markForCheck(); }));
   }
 }

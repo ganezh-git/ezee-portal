@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -221,17 +221,17 @@ export class VisitorExitComponent implements OnInit {
 
   modal = { open: false, type: '', title: '', icon: '', color: '', visitId: 0, visitorName: '', reason: '', severity: 'high', saving: false, error: '' };
 
-  constructor(private svc: VisitorService, private router: Router) {}
+  constructor(private svc: VisitorService, private router: Router, private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
-    this.svc.getCurrentlyInside().subscribe(v => this.inside = v);
-    this.svc.getGates().subscribe(g => this.gates = g);
+    this.svc.getCurrentlyInside().subscribe(v => { this.inside = v; this.cdr.markForCheck(); });
+    this.svc.getGates().subscribe(g => { this.gates = g; this.cdr.markForCheck(); });
   }
 
   goBack() { this.router.navigate(['/visitor/dashboard']); }
 
   loadMyVisitors() {
-    this.svc.getMyVisitors().subscribe(v => this.myVisitors = v);
+    this.svc.getMyVisitors().subscribe(v => { this.myVisitors = v; this.cdr.markForCheck(); });
   }
 
   doCheckout(v: Visit) {
@@ -240,18 +240,18 @@ export class VisitorExitComponent implements OnInit {
     this.svc.checkout(v.id, this.exitGate[v.id], this.exitRemarks[v.id]).subscribe({
       next: () => {
         this.checkingOut[v.id] = false;
-        this.svc.getCurrentlyInside().subscribe(list => this.inside = list);
+        this.svc.getCurrentlyInside().subscribe(list => { this.inside = list; this.cdr.markForCheck(); });
       },
-      error: () => { this.checkingOut[v.id] = false; }
+      error: () => { this.checkingOut[v.id] = false; this.cdr.markForCheck(); }
     });
   }
 
   acknowledgeExit(v: Visit) {
-    this.svc.acknowledgeExit(v.id).subscribe(() => this.loadMyVisitors());
+    this.svc.acknowledgeExit(v.id).subscribe(() => { this.loadMyVisitors(); this.cdr.markForCheck(); });
   }
 
   viewDetail(v: Visit) {
-    this.svc.getVisit(v.id).subscribe(full => { this.detailVisit = full; });
+    this.svc.getVisit(v.id).subscribe(full => { this.detailVisit = full; this.cdr.markForCheck(); });
   }
 
   openBlockModal(v: Visit) {
@@ -270,10 +270,11 @@ export class VisitorExitComponent implements OnInit {
     const done = () => {
       this.modal.saving = false;
       this.modal.open = false;
-      this.svc.getCurrentlyInside().subscribe(v => this.inside = v);
+      this.svc.getCurrentlyInside().subscribe(v => { this.inside = v; this.cdr.markForCheck(); });
       this.loadMyVisitors();
+      this.cdr.markForCheck();
     };
-    const fail = (e: any) => { this.modal.saving = false; this.modal.error = e.error?.error || 'Action failed'; };
+    const fail = (e: any) => { this.modal.saving = false; this.modal.error = e.error?.error || 'Action failed'; this.cdr.markForCheck(); };
 
     if (this.modal.type === 'block') {
       this.svc.block(this.modal.visitId, this.modal.reason, this.modal.severity).subscribe({ next: done, error: fail });

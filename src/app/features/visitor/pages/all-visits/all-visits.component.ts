@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -170,11 +170,12 @@ export class AllVisitsComponent implements OnInit {
   search = ''; statusFilter = ''; typeFilter = '';
   dateFrom = ''; dateTo = '';
 
-  constructor(private svc: VisitorService, private router: Router) {}
+  constructor(private svc: VisitorService, private router: Router, private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
     this.svc.getSettings().subscribe(s => {
       this.visitorTypes = (s['visitor_types'] || '').split(',').map(t => t.trim()).filter(Boolean);
+      this.cdr.markForCheck();
     });
     this.load();
   }
@@ -188,11 +189,11 @@ export class AllVisitsComponent implements OnInit {
     if (this.typeFilter) params['type'] = this.typeFilter;
     if (this.dateFrom) params['from'] = this.dateFrom;
     if (this.dateTo) params['to'] = this.dateTo;
-    this.svc.getVisits(params).subscribe(v => this.visits = v);
+    this.svc.getVisits(params).subscribe(v => { this.visits = v; this.cdr.markForCheck(); });
   }
 
   selectVisit(v: Visit) {
-    this.svc.getVisit(v.id).subscribe(full => this.selected = full);
+    this.svc.getVisit(v.id).subscribe(full => { this.selected = full; this.cdr.markForCheck(); });
   }
 
   formatStatus(s: string) { return s.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()); }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -145,22 +145,23 @@ export class VisitorApprovalsComponent implements OnInit {
   remarks: Record<number, string> = {};
   actionModal = { open: false, type: '', title: '', icon: '', color: '', visitId: 0, visitorName: '', visitNo: '', reason: '', severity: 'high', saving: false, error: '' };
 
-  constructor(private svc: VisitorService, private router: Router) {}
+  constructor(private svc: VisitorService, private router: Router, private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
     this.svc.getSettings().subscribe(s => {
       this.departments = (s['departments'] || '').split(',').map(d => d.trim()).filter(Boolean);
+      this.cdr.markForCheck();
     });
     this.load();
   }
 
   load() {
-    this.svc.getPendingApprovals(this.deptFilter || undefined).subscribe(v => this.visits = v);
+    this.svc.getPendingApprovals(this.deptFilter || undefined).subscribe(v => { this.visits = v; this.cdr.markForCheck(); });
   }
 
   doApprove(v: Visit, action: string) {
     if (action === 'reject') { this.openModal('reject', v); return; }
-    this.svc.approve(v.id, action, this.remarks[v.id]).subscribe(() => this.load());
+    this.svc.approve(v.id, action, this.remarks[v.id]).subscribe(() => { this.load(); this.cdr.markForCheck(); });
   }
 
   goBack() { this.router.navigate(['/visitor/dashboard']); }
@@ -184,8 +185,8 @@ export class VisitorApprovalsComponent implements OnInit {
     if (!m.reason) { m.error = 'Reason is required'; return; }
     m.saving = true;
     m.error = '';
-    const done = () => { m.saving = false; m.open = false; this.load(); };
-    const fail = (e: any) => { m.saving = false; m.error = e.error?.error || 'Action failed'; };
+    const done = () => { m.saving = false; m.open = false; this.load(); this.cdr.markForCheck(); };
+    const fail = (e: any) => { m.saving = false; m.error = e.error?.error || 'Action failed'; this.cdr.markForCheck(); };
     if (m.type === 'reject') {
       this.svc.approve(m.visitId, 'reject', m.reason).subscribe({ next: done, error: fail });
     } else if (m.type === 'cancel') {
