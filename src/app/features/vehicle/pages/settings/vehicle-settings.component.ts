@@ -43,18 +43,18 @@ import { VehicleService } from '../../services/vehicle.service';
 
       <!-- General Settings -->
       <div class="card">
-        <h3>General Settings</h3>
+        <h3>Weighbridge Settings</h3>
         <div class="setting-row">
-          <label>Badge Prefix</label>
-          <input [(ngModel)]="s['badge_prefix']" class="small-input" placeholder="e.g. VB-" />
+          <label>Default Weight UOM</label>
+          <select [(ngModel)]="s['default_uom']">
+            <option value="KG">KG</option>
+            <option value="MT">MT</option>
+            <option value="LTR">LTR</option>
+          </select>
         </div>
         <div class="setting-row">
-          <label>Default Plant Entry Permission</label>
-          <select [(ngModel)]="s['default_plant_entry']">
-            <option value="permitted">Permitted</option>
-            <option value="not_permitted">Not Permitted</option>
-            <option value="restricted">Restricted</option>
-          </select>
+          <label>Weight Tolerance (%)</label>
+          <input type="number" [(ngModel)]="s['weight_tolerance']" class="small-input" placeholder="e.g. 2" />
         </div>
       </div>
 
@@ -62,24 +62,20 @@ import { VehicleService } from '../../services/vehicle.service';
       <div class="card">
         <h3>Configurable Lists</h3>
         <div class="setting-row">
-          <label>Visitor Types <small>(comma-separated)</small></label>
-          <textarea [(ngModel)]="s['visitor_types']" rows="2" placeholder="visitor, vendor, amc_vendor, oem_vendor, employee, contractor"></textarea>
-        </div>
-        <div class="setting-row">
           <label>Vehicle Types <small>(comma-separated)</small></label>
-          <textarea [(ngModel)]="s['vehicle_types']" rows="2" placeholder="truck, van, car, two_wheeler, auto, other"></textarea>
+          <textarea [(ngModel)]="s['vehicle_types']" rows="2" placeholder="truck, container, tanker, lorry, tractor, tipper, van, tata_ace, car, two_wheeler, other"></textarea>
         </div>
         <div class="setting-row">
           <label>Departments <small>(comma-separated)</small></label>
-          <textarea [(ngModel)]="s['departments']" rows="2" placeholder="Stores, Maintenance, Production, HR, Admin"></textarea>
+          <textarea [(ngModel)]="s['departments']" rows="2" placeholder="Stores, Maintenance, Production, HR, Admin, QA, Purchase"></textarea>
         </div>
         <div class="setting-row">
           <label>Purpose Options <small>(comma-separated)</small></label>
-          <textarea [(ngModel)]="s['purposes']" rows="2" placeholder="delivery, pickup, service, visitor, maintenance, other"></textarea>
+          <textarea [(ngModel)]="s['purposes']" rows="2" placeholder="delivery, pickup, loading, unloading, raw_material, dispatch, service, maintenance, other"></textarea>
         </div>
         <div class="setting-row">
-          <label>ID Types <small>(comma-separated)</small></label>
-          <textarea [(ngModel)]="s['id_types']" rows="2" placeholder="aadhar, driving_license, pan, voter_id, passport, company_id"></textarea>
+          <label>Shifts <small>(comma-separated)</small></label>
+          <textarea [(ngModel)]="s['shifts']" rows="1" placeholder="A, B, C"></textarea>
         </div>
       </div>
 
@@ -88,19 +84,18 @@ import { VehicleService } from '../../services/vehicle.service';
         <h3><span class="material-icons-round">history</span> Recent Activity Log</h3>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>Time</th><th>Entry #</th><th>Vehicle</th><th>Action</th><th>By</th><th>Details</th></tr></thead>
+            <thead><tr><th>Time</th><th>Vehicle</th><th>Action</th><th>By</th><th>Details</th></tr></thead>
             <tbody>
               @for (l of logs; track l.id) {
                 <tr>
-                  <td>{{ formatDT(l.created_at) }}</td>
-                  <td class="mono">{{ l.entry_no || '—' }}</td>
+                  <td>{{ formatDT(l.performed_at) }}</td>
                   <td>{{ l.vehicle_no || '—' }}</td>
                   <td><span class="action-badge">{{ l.action }}</span></td>
                   <td>{{ l.performed_by || '—' }}</td>
                   <td class="details-cell">{{ l.details || '—' }}</td>
                 </tr>
               }
-              @if (!logs.length) { <tr><td colspan="6" class="empty">No activity logged yet</td></tr> }
+              @if (!logs.length) { <tr><td colspan="5" class="empty">No activity logged yet</td></tr> }
             </tbody>
           </table>
         </div>
@@ -129,7 +124,6 @@ import { VehicleService } from '../../services/vehicle.service';
       }
       .subtitle { font-size: 0.8rem; color: #64748b; margin: 0 0 1rem; }
     }
-    // Toggle switches
     .toggle-list { display: flex; flex-direction: column; }
     .toggle-row { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid #f1f5f9;
       &:last-child { border-bottom: none; }
@@ -145,7 +139,6 @@ import { VehicleService } from '../../services/vehicle.service';
       input:checked + .slider { background: #0ea5e9; }
       input:checked + .slider::before { transform: translateX(20px); }
     }
-    // Settings rows
     .setting-row { display: flex; align-items: center; gap: 1rem; padding: 0.65rem 0; border-bottom: 1px solid #f8fafc;
       &:last-child { border-bottom: none; }
       label { flex: 1; font-size: 0.85rem; font-weight: 500; color: #334155;
@@ -159,7 +152,6 @@ import { VehicleService } from '../../services/vehicle.service';
       }
       .small-input { min-width: 100px; max-width: 150px; }
     }
-    // Activity log table
     .table-wrap { overflow-x: auto; }
     table { width: 100%; border-collapse: collapse; }
     th { text-align: left; font-size: 0.7rem; font-weight: 600; color: #64748b; text-transform: uppercase; padding: 0.5rem; border-bottom: 2px solid #e2e8f0; }
@@ -178,16 +170,15 @@ export class VehicleSettingsComponent implements OnInit {
   logs: any[] = [];
 
   features = [
-    { key: 'feature_ppe', label: 'PPE Tracking', desc: 'Track PPE issued and returned during entry/exit' },
-    { key: 'feature_photo', label: 'Photo Capture', desc: 'Capture driver/visitor photo at entry' },
-    { key: 'feature_id_proof', label: 'ID Proof Tracking', desc: 'Record driver ID type and number' },
-    { key: 'feature_weighbridge', label: 'Weighbridge', desc: 'Record vehicle weight at entry and exit' },
-    { key: 'feature_food', label: 'Food Requirement', desc: 'Track food/meal requirements for visitors' },
-    { key: 'feature_plant_entry', label: 'Plant Entry Permission', desc: 'Show plant entry permission field (Permitted/Not Permitted)' },
-    { key: 'feature_badge', label: 'Badge Number', desc: 'Auto-generate and assign badge numbers' },
-    { key: 'feature_host', label: 'Host Information', desc: 'Track host name, department and phone' },
-    { key: 'feature_visit_confirmation', label: 'Visit Confirmation', desc: 'Require host confirmation for visits' },
-    { key: 'feature_pass_print', label: 'Pass Printing', desc: 'Enable visitor/vehicle pass printing' },
+    { key: 'feature_weighbridge', label: 'Weighbridge', desc: 'Record gross/tare/net weight at entry and exit' },
+    { key: 'feature_officer_review', label: 'Officer Review', desc: 'Require store officer review before QA' },
+    { key: 'feature_qa_check', label: 'QA Check', desc: 'Require QA approval before loading/unloading' },
+    { key: 'feature_challan_tracking', label: 'Challan Tracking', desc: 'Track challan number, date, and weight' },
+    { key: 'feature_supplier_tracking', label: 'Supplier & Transporter', desc: 'Track supplier and transporter details' },
+    { key: 'feature_pollution_cert', label: 'Pollution Certificate', desc: 'Record vehicle pollution certificate details' },
+    { key: 'feature_license_tracking', label: 'License Tracking', desc: 'Record driver license number and validity' },
+    { key: 'feature_despatch_challan', label: 'Despatch Challan Print', desc: 'Enable vehicle inward cum despatch challan printing' },
+    { key: 'feature_pass_print', label: 'Gate Pass Printing', desc: 'Enable gate pass printing for vehicle exit' },
   ];
 
   constructor(private svc: VehicleService, private router: Router, private cdr: ChangeDetectorRef) {}

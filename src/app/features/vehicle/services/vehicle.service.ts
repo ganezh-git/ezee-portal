@@ -5,18 +5,24 @@ import { environment } from '../../../../environments/environment';
 
 export interface VehicleEntry {
   id: number; entry_no: string; vehicle_no: string; vehicle_type: string;
-  driver_name: string; driver_phone: string; driver_license: string;
-  driver_id_type: string; driver_id_number: string; contact_phone: string;
-  visitor_type: string; company: string; purpose: string; department: string;
+  driver_name: string; driver_phone: string; driver_mobile: string; driver_license: string;
+  license_validity: string; pollution_cert: string; pollution_cert_validity: string;
+  company: string; purpose: string; department: string;
   dock_id: number; dock_name: string; po_reference: string; material_desc: string;
+  product_code: string; product_name: string;
+  supplier_code: string; supplier_name: string;
+  transporter_code: string; transporter_name: string;
+  challan_no: string; challan_date: string; challan_weight: number; challan_uom: string;
+  delivery_note_no: string; shift: string;
+  gross_weight: number; tare_weight: number; net_weight: number;
   in_time: string; out_time: string; in_weight: number; out_weight: number;
   status: string; gate_pass_no: string; security_remarks: string;
-  badge_no: string; plant_entry: string; ppe_issued: string; ppe_returned: string;
-  food_required: string; food_count: number;
-  security_in: string; security_out: string;
-  host_name: string; host_department: string; host_phone: string;
-  visit_confirmed: boolean; visit_confirmed_by: string; visit_confirmed_at: string;
-  photo_data: string; id_proof_data: string; special_instructions: string;
+  security_in_by: string; security_in_time: string; security_in_comments: string;
+  officer_name: string; officer_comments: string; officer_update_time: string;
+  coa_percent: number; vehicle_returned: string;
+  qa_officer: string; qa_comments: string; qa_update_time: string;
+  weight_approved_by: string; weight_approved_at: string;
+  security_out_by: string; security_out_comments: string;
   created_at: string;
 }
 
@@ -56,6 +62,7 @@ export interface Dock {
 export interface VehicleStats {
   totalVehicles: number; activeEntries: number; todayEntries: number;
   pendingTrips: number; todayGateOut: number; currentlyOut: number;
+  waitingOfficer: number; waitingSecondWeight: number; readyToExit: number;
   purposeBreakdown: { purpose: string; count: number }[];
   vehicleStatus: { status: string; count: number }[];
   recentEntries: VehicleEntry[];
@@ -77,9 +84,17 @@ export class VehicleService {
     return this.http.get<any>(`${this.API}/entries`, { params: hp });
   }
   getEntry(id: number): Observable<VehicleEntry> { return this.http.get<VehicleEntry>(`${this.API}/entries/${id}`); }
-  createEntry(data: Record<string, any>): Observable<{ id: number; entry_no: string; badge_no: string; message: string }> { return this.http.post<any>(`${this.API}/entries`, data); }
+  createEntry(data: Record<string, any>): Observable<{ id: number; entry_no: string; status: string; message: string }> { return this.http.post<any>(`${this.API}/entries`, data); }
   checkoutEntry(id: number, data: Record<string, any>): Observable<{ message: string }> { return this.http.post<any>(`${this.API}/entries/${id}/checkout`, data); }
   updateEntryStatus(id: number, status: string): Observable<{ message: string }> { return this.http.post<any>(`${this.API}/entries/${id}/status`, { status }); }
+
+  // Workflow steps
+  officerApprove(id: number, data: Record<string, any>): Observable<{ message: string }> { return this.http.post<any>(`${this.API}/entries/${id}/officer-approve`, data); }
+  qaApprove(id: number, data: Record<string, any>): Observable<{ message: string }> { return this.http.post<any>(`${this.API}/entries/${id}/qa-approve`, data); }
+  secondWeight(id: number, data: { tare_weight: number }): Observable<{ message: string; gross_weight: number; tare_weight: number; net_weight: number }> { return this.http.post<any>(`${this.API}/entries/${id}/second-weight`, data); }
+
+  // By status
+  getByStatus(status: string): Observable<VehicleEntry[]> { return this.http.get<VehicleEntry[]>(`${this.API}/by-status/${status}`); }
 
   // Fleet
   getFleet(): Observable<Vehicle[]> { return this.http.get<Vehicle[]>(`${this.API}/fleet`); }
@@ -113,7 +128,7 @@ export class VehicleService {
   getSettings(): Observable<Record<string, string>> { return this.http.get<Record<string, string>>(`${this.API}/settings`); }
   updateSettings(data: Record<string, string>): Observable<{ success: boolean }> { return this.http.post<any>(`${this.API}/settings`, data); }
 
-  // Lookup (PPG-style auto-fill)
+  // Lookup (auto-fill from history)
   lookup(params: { phone?: string; vehicle_no?: string }): Observable<{ found: boolean; entry?: any; visitCount?: number }> {
     let hp = new HttpParams();
     if (params.phone) hp = hp.set('phone', params.phone);
@@ -123,10 +138,6 @@ export class VehicleService {
 
   // Currently inside
   getCurrentlyInside(): Observable<VehicleEntry[]> { return this.http.get<VehicleEntry[]>(`${this.API}/currently-inside`); }
-
-  // Visit confirmation
-  getPendingConfirmations(): Observable<VehicleEntry[]> { return this.http.get<VehicleEntry[]>(`${this.API}/pending-confirmations`); }
-  confirmVisit(id: number): Observable<{ message: string }> { return this.http.post<any>(`${this.API}/entries/${id}/confirm-visit`, {}); }
 
   // Reports
   getReports(from: string, to: string, type?: string): Observable<{ entries: VehicleEntry[]; summary: any; from: string; to: string }> {
@@ -142,6 +153,6 @@ export class VehicleService {
     return this.http.get<any[]>(`${this.API}/log`, { params: hp });
   }
 
-  // Print pass
+  // Print pass / despatch challan
   getPass(id: number): Observable<VehicleEntry> { return this.http.get<VehicleEntry>(`${this.API}/entries/${id}/pass`); }
 }

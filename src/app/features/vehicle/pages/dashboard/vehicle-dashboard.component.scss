@@ -69,12 +69,30 @@ tr:hover td { background: #f8fafc; }
   &.inactive { background: #f1f5f9; color: #64748b; }
 }
 .teal .stat-icon { background: linear-gradient(135deg, #14b8a6, #0d9488); }
-.badge-tag { background: #ede9fe; color: #5b21b6; padding: 2px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; font-family: 'JetBrains Mono', monospace; }
+.orange .stat-icon { background: linear-gradient(135deg, #f97316, #ea580c); }
 .cap { text-transform: capitalize; }
+.muted { color: #94a3b8; font-size: 0.72rem; }
 .duration { font-weight: 600; color: #0ea5e9; font-size: 0.82rem; }
-.alert-card { border: 1px solid #fde68a; background: #fffbeb; }
-.btn-confirm { display: inline-flex; align-items: center; gap: 4px; padding: 4px 12px; background: #10b981; color: #fff; border: none; border-radius: 6px; font-size: 0.78rem; font-weight: 600; cursor: pointer;
-  .material-icons-round { font-size: 16px; }
-  &:hover { background: #059669; }
+.weight { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; }
+.bold { font-weight: 700; }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: 0.72rem; }
+
+// Pipeline
+.pipeline-card { margin-bottom: 1rem; }
+.pipeline { display: flex; align-items: center; justify-content: center; gap: 0.5rem; flex-wrap: wrap; padding: 0.5rem 0; }
+.pipe-stage { text-align: center; min-width: 90px; padding: 0.75rem 0.5rem; border-radius: 12px; background: #f8fafc; border: 2px solid #e2e8f0; transition: all 0.3s;
+  &.active { background: #eff6ff; border-color: #3b82f6; }
 }
-@media (max-width: 768px) { .cards-row { grid-template-columns: 1fr; } }
+.pipe-count { font-size: 1.5rem; font-weight: 800; color: #1e293b; }
+.pipe-label { font-size: 0.7rem; color: #64748b; margin-top: 2px; }
+.pipe-arrow { font-size: 20px; color: #cbd5e1; }
+
+// Workflow statuses
+.status-badge {
+  &.with_officer { background: #fff7ed; color: #c2410c; }
+  &.with_qa { background: #f0fdfa; color: #0f766e; }
+  &.waiting_second_weight { background: #faf5ff; color: #7e22ce; }
+  &.ready_to_exit { background: #fef2f2; color: #b91c1c; }
+}
+
+@media (max-width: 768px) { .cards-row { grid-template-columns: 1fr; } .pipeline { gap: 0.3rem; } .pipe-stage { min-width: 70px; } }

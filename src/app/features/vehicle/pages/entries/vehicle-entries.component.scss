@@ -80,14 +80,38 @@ tr:hover td { background: #f8fafc; }
   &.docked { background: #e0f2fe; color: #0369a1; } &.loading { background: #fef3c7; color: #92400e; }
   &.unloading { background: #fce7f3; color: #9d174d; } &.cancelled { background: #fee2e2; color: #991b1b; }
 }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: 0.73rem; }
 .purpose-tag { background: #e0f2fe; color: #0369a1; padding: 2px 8px; border-radius: 6px; font-size: 0.73rem; text-transform: capitalize; }
-.badge-tag { background: #ede9fe; color: #5b21b6; padding: 2px 8px; border-radius: 6px; font-size: 0.73rem; font-weight: 700; font-family: 'JetBrains Mono', monospace; }
-.visitor-type { background: #fef3c7; color: #92400e; padding: 2px 8px; border-radius: 6px; font-size: 0.73rem; text-transform: capitalize; }
-.denied-tag { background: #fee2e2; color: #991b1b; padding: 2px 6px; border-radius: 4px; font-size: 0.68rem; font-weight: 600; }
-.ppe-badge { display: inline-block; padding: 1px 6px; border-radius: 4px; font-size: 0.68rem; font-weight: 600; margin-right: 2px;
-  &.issued { background: #e0f2fe; color: #0369a1; }
-  &.returned { background: #dcfce7; color: #166534; }
+.weight { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; text-align: right; }
+.bold { font-weight: 700; }
+.field.highlight { background: #eff6ff; border-radius: 8px; padding: 0.75rem; border: 2px solid #93c5fd; }
+.big-input { font-size: 1.1rem !important; font-weight: 700; text-align: center; }
+// Workflow statuses
+.status-badge {
+  &.with_officer { background: #fff7ed; color: #c2410c; }
+  &.with_qa { background: #f0fdfa; color: #0f766e; }
+  &.waiting_second_weight { background: #faf5ff; color: #7e22ce; }
+  &.ready_to_exit { background: #fef2f2; color: #b91c1c; }
+  &.waiting_entry { background: #f1f5f9; color: #475569; }
 }
+// Dialog info bar
+.dialog-info { display: flex; gap: 1rem; flex-wrap: wrap; padding: 0.6rem 0.75rem; background: #f8fafc; border-radius: 8px; margin-bottom: 1rem; font-size: 0.82rem; color: #475569;
+  strong { color: #0f172a; }
+}
+.btn-danger { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.5rem 0.9rem; background: #ef4444; color: #fff; border: none; border-radius: 8px; font-size: 0.82rem; font-weight: 600; cursor: pointer;
+  &:hover { background: #dc2626; }
+  .material-icons-round { font-size: 16px; }
+}
+// Net weight result
+.net-result { text-align: center; padding: 1rem; margin: 0.75rem 0; background: #f0fdf4; border: 2px solid #86efac; border-radius: 12px; }
+.net-label { font-size: 0.75rem; color: #64748b; text-transform: uppercase; display: block; }
+.net-value { font-size: 2rem; font-weight: 800; color: #166534; }
+// Detail sections
+.detail-sections { max-height: 65vh; overflow-y: auto; }
+.detail-section { margin-bottom: 1rem;
+  h4 { font-size: 0.78rem; font-weight: 700; color: #0ea5e9; text-transform: uppercase; letter-spacing: 0.04em; margin: 0 0 0.5rem; padding-bottom: 0.3rem; border-bottom: 2px solid #e0f2fe; }
+}
+.weight-big { font-family: 'JetBrains Mono', monospace; font-size: 1rem; font-weight: 700; }
 .actions { white-space: nowrap; }
 .icon-btn { width: 30px; height: 30px; border: none; border-radius: 8px; cursor: pointer; display: inline-grid; place-items: center; transition: all 0.15s; margin-right: 4px;
   .material-icons-round { font-size: 18px; }
@@ -95,6 +119,7 @@ tr:hover td { background: #f8fafc; }
   &.blue { background: #e0f2fe; color: #0369a1; &:hover { background: #bae6fd; } }
   &.red { background: #fee2e2; color: #991b1b; &:hover { background: #fecaca; } }
   &.purple { background: #ede9fe; color: #5b21b6; &:hover { background: #ddd6fe; } }
+  &.teal { background: #ccfbf1; color: #0f766e; &:hover { background: #99f6e4; } }
   &.amber { background: #fef3c7; color: #92400e; &:hover { background: #fde68a; } }
   &.grey { background: #f1f5f9; color: #475569; &:hover { background: #e2e8f0; } }
 }
