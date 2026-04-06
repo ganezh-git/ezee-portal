@@ -54,10 +54,20 @@ export const routes: Routes = [
     canActivate: [authGuard],
     title: 'Birla Opus PTW - EZEE Portal',
   },
+  {
+    path: 'vehicle',
+    loadChildren: () => import('./features/vehicle/vehicle.routes').then(m => m.vehicleRoutes),
+    canActivate: [authGuard],
+    title: 'Vehicle Entry - EZEE Portal',
+  },
+  {
+    path: 'visitor',
+    loadChildren: () => import('./features/visitor/visitor.routes').then(m => m.visitorRoutes),
+    canActivate: [authGuard],
+    title: 'Visitor Pass - EZEE Portal',
+  },
   // { path: 'inventory', loadChildren: ... , canActivate: [systemGuard('inventory')] },
-  // { path: 'vehicle', loadChildren: ... , canActivate: [systemGuard('vehicle')] },
   // { path: 'safety', loadChildren: ... , canActivate: [systemGuard('safety')] },
-  // { path: 'visitor', loadChildren: ... , canActivate: [systemGuard('visitor')] },
   // { path: 'reception', loadChildren: ... , canActivate: [systemGuard('reception')] },
   // { path: 'stationery', loadChildren: ... , canActivate: [systemGuard('stationery')] },
 

@@ -1,0 +1,42 @@
+$accent: #8b5cf6;
+$accent-hover: #7c3aed;
+$bg: #f8fafc;
+$sidebar-bg: #1e1b4b;
+$sidebar-text: #c4b5fd;
+
+.layout { display: flex; height: 100vh; background: $bg; }
+
+.sidebar {
+  width: 260px; min-width: 260px; background: $sidebar-bg; display: flex;
+  flex-direction: column; padding: 24px 16px 16px; overflow-y: auto;
+
+  .brand {
+    display: flex; align-items: center; gap: 12px; padding: 0 8px 24px; border-bottom: 1px solid rgba(255,255,255,.1); margin-bottom: 16px;
+    .brand-icon { font-size: 32px; color: $accent; }
+    h2 { font-size: 1rem; font-weight: 700; color: #fff; margin: 0; }
+    small { color: $sidebar-text; font-size: .7rem; text-transform: uppercase; letter-spacing: 1px; }
+  }
+
+  nav {
+    flex: 1; display: flex; flex-direction: column; gap: 2px;
+    a {
+      display: flex; align-items: center; gap: 12px; padding: 11px 14px; border-radius: 10px;
+      color: $sidebar-text; text-decoration: none; font-size: .85rem; font-weight: 500; transition: .2s;
+      .material-icons-round { font-size: 20px; }
+      &:hover { background: rgba(255,255,255,.06); color: #fff; }
+      &.active { background: $accent; color: #fff; font-weight: 600; box-shadow: 0 2px 8px rgba(139,92,246,.35); }
+    }
+  }
+
+  .sidebar-footer {
+    padding-top: 16px; border-top: 1px solid rgba(255,255,255,.1); margin-top: 16px;
+    a {
+      display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 10px;
+      color: $sidebar-text; text-decoration: none; font-size: .82rem; transition: .2s;
+      .material-icons-round { font-size: 18px; }
+      &:hover { background: rgba(255,255,255,.06); color: #fff; }
+    }
+  }
+}
+
+.content { flex: 1; overflow-y: auto; }
