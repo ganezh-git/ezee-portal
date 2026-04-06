@@ -1,0 +1,39 @@
+$accent: #1cc88a;
+.page { max-width: 1400px; margin: 0 auto; }
+.page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; h1 { font-size: 1.5rem; font-weight: 800; color: #0f172a; } }
+.btn { display: inline-flex; align-items: center; gap: 6px; padding: 0.55rem 1.1rem; border: none; border-radius: 10px; font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; .material-icons-round { font-size: 18px; } &:disabled { opacity: 0.5; } }
+.btn-primary { background: $accent; color: #fff; &:hover { background: darken($accent, 8%); } }
+.btn-secondary { background: #f1f5f9; color: #475569; &:hover { background: #e2e8f0; } }
+.filters { display: flex; gap: 0.5rem; margin-bottom: 1.25rem; flex-wrap: wrap;
+  input, select { padding: 0.5rem 0.75rem; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 0.85rem; background: #fff; } input { flex: 1; min-width: 200px; } }
+
+.contact-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1rem; }
+.contact-card {
+  background: #fff; border-radius: 14px; padding: 1.25rem; box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  display: flex; flex-wrap: wrap; gap: 12px; position: relative; transition: all 0.2s;
+  &:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+  &.inactive { opacity: 0.5; }
+}
+.cc-avatar { width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, #d1fae5, #a7f3d0); display: grid; place-items: center;
+  .material-icons-round { font-size: 24px; color: #065f46; } }
+.cc-info { flex: 1; min-width: 120px; }
+.cc-name { font-size: 1rem; font-weight: 700; color: #0f172a; }
+.cc-desig { font-size: 0.82rem; color: #64748b; }
+.cc-dept { font-size: 0.78rem; color: $accent; font-weight: 600; }
+.cc-contacts { width: 100%; display: flex; flex-direction: column; gap: 4px; }
+.cc-row { display: flex; align-items: center; gap: 6px; font-size: 0.82rem; color: #334155;
+  .material-icons-round { font-size: 16px; color: #94a3b8; } }
+.edit-btn { position: absolute; top: 12px; right: 12px; }
+.icon-btn { background: none; border: none; cursor: pointer; padding: 4px; border-radius: 6px;
+  .material-icons-round { font-size: 18px; color: #64748b; } &:hover { background: #f1f5f9; .material-icons-round { color: $accent; } } }
+.overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; display: grid; place-items: center; padding: 1rem; }
+.dialog { background: #fff; border-radius: 16px; max-height: 90vh; overflow-y: auto; width: 600px; }
+.dialog-header { display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 1.5rem; border-bottom: 1px solid #e2e8f0; h2 { font-size: 1.1rem; font-weight: 700; color: #0f172a; } }
+.close-btn { background: none; border: none; cursor: pointer; .material-icons-round { font-size: 22px; color: #94a3b8; } &:hover .material-icons-round { color: #ef4444; } }
+.dialog-body { padding: 1.5rem; }
+.dialog-footer { padding: 1rem 1.5rem; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end; gap: 0.5rem; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+.field { display: flex; flex-direction: column; gap: 4px; &.full { grid-column: 1 / -1; }
+  label { font-size: 0.78rem; font-weight: 600; color: #475569; }
+  input, select, textarea { padding: 0.5rem 0.75rem; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 0.85rem; font-family: inherit; &:focus { outline: none; border-color: $accent; box-shadow: 0 0 0 3px rgba(28,200,138,0.15); } } }
+.empty { text-align: center; padding: 2rem; color: #94a3b8; font-size: 0.88rem; }

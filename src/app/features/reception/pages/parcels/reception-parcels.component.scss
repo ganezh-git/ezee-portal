@@ -1,0 +1,44 @@
+$accent: #1cc88a;
+.page { max-width: 1400px; margin: 0 auto; }
+.page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; h1 { font-size: 1.5rem; font-weight: 800; color: #0f172a; } }
+.btn { display: inline-flex; align-items: center; gap: 6px; padding: 0.55rem 1.1rem; border: none; border-radius: 10px; font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; .material-icons-round { font-size: 18px; } &:disabled { opacity: 0.5; } }
+.btn-primary { background: $accent; color: #fff; &:hover { background: darken($accent, 8%); } }
+.btn-secondary { background: #f1f5f9; color: #475569; &:hover { background: #e2e8f0; } }
+.filters { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap;
+  input, select { padding: 0.5rem 0.75rem; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 0.85rem; background: #fff; } input { flex: 1; min-width: 200px; } }
+.table-wrap { background: #fff; border-radius: 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; }
+th { background: #f8fafc; padding: 0.75rem 1rem; font-size: 0.75rem; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.5px; text-align: left; white-space: nowrap; border-bottom: 2px solid #e2e8f0; }
+td { padding: 0.65rem 1rem; font-size: 0.85rem; color: #334155; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
+tbody tr:hover { background: #f8fafc; }
+.mono { font-family: 'Fira Mono', monospace; font-size: 0.78rem; color: #64748b; }
+.text-muted { color: #94a3b8; font-size: 0.75rem; }
+.fw-600 { font-weight: 600; }
+.badge { padding: 2px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 600; text-transform: capitalize; display: inline-block;
+  &.type { background: #e0e7ff; color: #3730a3; }
+  &[data-status="received"] { background: #dbeafe; color: #1e40af; }
+  &[data-status="notified"] { background: #fef3c7; color: #92400e; }
+  &[data-status="collected"] { background: #d1fae5; color: #065f46; }
+  &[data-status="returned"] { background: #fee2e2; color: #991b1b; }
+}
+.actions-cell { white-space: nowrap; }
+.action-btn { padding: 4px 12px; border: none; border-radius: 8px; cursor: pointer; font-size: 0.78rem; font-weight: 600; display: inline-flex; align-items: center; gap: 4px;
+  .material-icons-round { font-size: 16px; }
+  &.collect { background: #d1fae5; color: #065f46; &:hover { background: #a7f3d0; } }
+}
+.icon-btn { background: none; border: none; cursor: pointer; padding: 4px; border-radius: 6px;
+  .material-icons-round { font-size: 18px; color: #64748b; } &:hover { background: #f1f5f9; .material-icons-round { color: $accent; } } }
+.pagination { display: flex; align-items: center; justify-content: center; gap: 1rem; margin-top: 1rem;
+  button { padding: 0.4rem 0.8rem; border: 1px solid #e2e8f0; border-radius: 8px; background: #fff; cursor: pointer; font-size: 0.82rem; &:disabled { opacity: 0.4; } &:hover:not(:disabled) { background: #f1f5f9; } }
+  span { font-size: 0.82rem; color: #64748b; } }
+.overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; display: grid; place-items: center; padding: 1rem; }
+.dialog { background: #fff; border-radius: 16px; max-height: 90vh; overflow-y: auto; width: 600px; &.large { width: 800px; } }
+.dialog-header { display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 1.5rem; border-bottom: 1px solid #e2e8f0; h2 { font-size: 1.1rem; font-weight: 700; color: #0f172a; } }
+.close-btn { background: none; border: none; cursor: pointer; .material-icons-round { font-size: 22px; color: #94a3b8; } &:hover .material-icons-round { color: #ef4444; } }
+.dialog-body { padding: 1.5rem; }
+.dialog-footer { padding: 1rem 1.5rem; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end; gap: 0.5rem; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+.field { display: flex; flex-direction: column; gap: 4px; &.full { grid-column: 1 / -1; }
+  label { font-size: 0.78rem; font-weight: 600; color: #475569; }
+  input, select, textarea { padding: 0.5rem 0.75rem; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 0.85rem; font-family: inherit; &:focus { outline: none; border-color: $accent; box-shadow: 0 0 0 3px rgba(28,200,138,0.15); } } textarea { resize: vertical; } }
+.empty { text-align: center; padding: 2rem; color: #94a3b8; font-size: 0.88rem; }

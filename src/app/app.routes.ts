@@ -78,8 +78,13 @@ export const routes: Routes = [
     canActivate: [authGuard],
     title: 'Safety Management - EZEE Portal',
   },
+  {
+    path: 'reception',
+    loadChildren: () => import('./features/reception/reception.routes').then(m => m.receptionRoutes),
+    canActivate: [authGuard],
+    title: 'Reception Management - EZEE Portal',
+  },
   // { path: 'inventory', loadChildren: ... , canActivate: [systemGuard('inventory')] },
-  // { path: 'reception', loadChildren: ... , canActivate: [systemGuard('reception')] },
   // { path: 'stationery', loadChildren: ... , canActivate: [systemGuard('stationery')] },
 
   // Catch-all redirect
