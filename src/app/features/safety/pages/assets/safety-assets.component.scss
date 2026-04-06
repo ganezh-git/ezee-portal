@@ -1,0 +1,101 @@
+@use '../../pages/incidents/safety-incidents.component' as base;
+
+/* Stats strip */
+.asset-stats { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
+.stat-chip { display: flex; align-items: center; gap: 5px; background: #fff; border-radius: 10px; padding: 0.55rem 0.9rem; font-size: 0.8rem; color: #475569; box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  .material-icons-round { font-size: 17px; color: #94a3b8; }
+  strong { font-size: 1rem; color: #0f172a; margin-right: 2px; }
+  &.green { .material-icons-round { color: #10b981; } strong { color: #10b981; } }
+  &.amber { .material-icons-round { color: #f59e0b; } strong { color: #f59e0b; } }
+  &.red   { .material-icons-round { color: #ef4444; } strong { color: #ef4444; } }
+  &.dark  { .material-icons-round { color: #64748b; } strong { color: #64748b; } }
+  &.purple { .material-icons-round { color: #8b5cf6; } strong { color: #8b5cf6; } }
+}
+
+/* Cards Grid */
+.asset-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(420px, 1fr)); gap: 1rem; }
+.asset-card { background: #fff; border-radius: 14px; padding: 1rem 1.15rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); border-left: 4px solid #10b981; transition: all 0.2s;
+  &:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.1); transform: translateY(-2px); }
+  &.overdue { border-left-color: #ef4444; background: #fef2f2; }
+  &.due { border-left-color: #f59e0b; }
+  &.failed { border-left-color: #64748b; background: #f8fafc; }
+}
+.asset-card-header { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 0.6rem; }
+.cat-icon { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; background: #f1f5f9; border-radius: 10px;
+  .material-icons-round { font-size: 22px; }
+  &.lg { width: 48px; height: 48px; .material-icons-round { font-size: 26px; } }
+}
+.asset-title { flex: 1; min-width: 0;
+  h3 { margin: 0; font-size: 0.9rem; font-weight: 700; color: #0f172a; line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+}
+.asset-no { font-size: 0.7rem; color: #94a3b8; font-family: 'JetBrains Mono', monospace; }
+.card-actions { display: flex; gap: 2px; }
+.asset-meta { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-bottom: 0.65rem; font-size: 0.73rem; color: #64748b;
+  span { display: flex; align-items: center; gap: 3px; }
+  .material-icons-round { font-size: 14px; color: #94a3b8; }
+}
+.asset-inspection-bar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; padding-top: 0.55rem; border-top: 1px solid #f1f5f9; }
+.insp-left { display: flex; gap: 5px; }
+.insp-right { font-size: 0.72rem; color: #64748b; }
+.next-insp { display: flex; align-items: center; gap: 5px; }
+.days-tag { padding: 1px 6px; border-radius: 6px; font-size: 0.65rem; font-weight: 700; background: #ecfdf5; color: #10b981;
+  &.soon { background: #fffbeb; color: #d97706; }
+  &.urgent { background: #fef2f2; color: #ef4444; }
+}
+
+/* Inspection status badges */
+[data-insp="valid"] { background: #d1fae5; color: #065f46; }
+[data-insp="due"] { background: #fef3c7; color: #92400e; }
+[data-insp="overdue"] { background: #fee2e2; color: #991b1b; }
+[data-insp="failed"] { background: #fecaca; color: #7f1d1d; }
+[data-insp="not_inspected"] { background: #e2e8f0; color: #475569; }
+
+/* Condition badges */
+[data-cond="good"] { background: #dbeafe; color: #1e40af; }
+[data-cond="fair"] { background: #fef3c7; color: #92400e; }
+[data-cond="poor"] { background: #fed7aa; color: #9a3412; }
+[data-cond="condemned"] { background: #374151; color: #f9fafb; }
+[data-cond="under_repair"] { background: #e0e7ff; color: #3730a3; }
+
+/* Result badges */
+[data-result="pass"] { background: #d1fae5; color: #065f46; }
+[data-result="fail"] { background: #fee2e2; color: #991b1b; }
+[data-result="conditional"] { background: #fef3c7; color: #92400e; }
+
+/* Detail dialog */
+.detail-title-row { display: flex; align-items: center; gap: 10px; }
+.detail-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.85rem;
+  .detail-item { display: flex; flex-direction: column; gap: 3px;
+    label { font-size: 0.68rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; }
+    span, p { font-size: 0.85rem; color: #0f172a; }
+    &.full { grid-column: 1/-1; }
+  }
+}
+.mono { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; }
+
+/* Inspection History Timeline */
+.history-section { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #e2e8f0;
+  h3 { font-size: 0.95rem; color: #0f172a; display: flex; align-items: center; gap: 6px; margin-bottom: 0.75rem;
+    .material-icons-round { font-size: 20px; color: #10b981; }
+  }
+}
+.history-timeline { display: flex; flex-direction: column; gap: 0; }
+.timeline-item { display: flex; gap: 12px; padding: 0.75rem 0; border-bottom: 1px solid #f1f5f9; position: relative;
+  &:last-child { border-bottom: none; }
+}
+.timeline-dot { display: flex; align-items: flex-start; padding-top: 2px;
+  .material-icons-round { font-size: 20px; color: #10b981; }
+  [data-result="fail"] & .material-icons-round { color: #ef4444; }
+  [data-result="conditional"] & .material-icons-round { color: #f59e0b; }
+}
+.timeline-content { flex: 1; }
+.timeline-header { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 0.82rem;
+  strong { color: #0f172a; font-family: 'JetBrains Mono', monospace; }
+}
+.timeline-date { font-size: 0.72rem; color: #94a3b8; margin-left: auto; }
+.timeline-details { font-size: 0.78rem; color: #475569; margin-top: 3px; }
+.timeline-score { font-size: 0.78rem; color: #64748b; margin-top: 2px; }
+
+/* XL dialog */
+.dialog.xl { max-width: 900px; width: 95vw; }
+@media (max-width: 900px) { .asset-grid { grid-template-columns: 1fr; } .detail-grid { grid-template-columns: 1fr 1fr; } }

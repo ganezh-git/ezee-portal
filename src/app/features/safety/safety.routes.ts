@@ -14,6 +14,8 @@ export const safetyRoutes: Routes = [
       { path: 'observations', loadComponent: () => import('./pages/observations/safety-observations.component').then(m => m.SafetyObservationsComponent) },
       { path: 'training', loadComponent: () => import('./pages/training/safety-training.component').then(m => m.SafetyTrainingComponent) },
       { path: 'ppe', loadComponent: () => import('./pages/ppe/safety-ppe.component').then(m => m.SafetyPpeComponent) },
+      { path: 'assets', loadComponent: () => import('./pages/assets/safety-assets.component').then(m => m.SafetyAssetsComponent) },
+      { path: 'asset-inspections', loadComponent: () => import('./pages/asset-inspections/asset-inspections.component').then(m => m.AssetInspectionsComponent) },
       { path: 'audits', loadComponent: () => import('./pages/audits/safety-audits.component').then(m => m.SafetyAuditsComponent) },
       { path: 'reports', loadComponent: () => import('./pages/reports/safety-reports.component').then(m => m.SafetyReportsComponent) },
       { path: 'settings', loadComponent: () => import('./pages/settings/safety-settings.component').then(m => m.SafetySettingsComponent) },

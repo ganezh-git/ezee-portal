@@ -57,6 +57,8 @@ export class SafetyLayoutComponent {
     { label: 'Observations',    icon: 'visibility',         route: 'observations' },
     { label: 'Training',        icon: 'school',             route: 'training' },
     { label: 'PPE Tracker',     icon: 'masks',              route: 'ppe' },
+    { label: 'Assets',          icon: 'inventory_2',        route: 'assets' },
+    { label: 'Asset Inspections', icon: 'playlist_add_check', route: 'asset-inspections' },
     { label: 'Audits',          icon: 'verified',           route: 'audits' },
     { label: 'Reports',         icon: 'assessment',         route: 'reports' },
     { label: 'Settings',        icon: 'settings',           route: 'settings' },

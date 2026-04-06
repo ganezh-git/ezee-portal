@@ -73,6 +73,33 @@ export interface SafetyAudit {
   status: string; summary: string; created_at: string;
 }
 
+export interface SafetyAsset {
+  id: number; asset_no: string; asset_name: string; asset_category: string;
+  make: string; model: string; serial_no: string;
+  purchase_date: string; warranty_expiry: string;
+  department: string; location: string; assigned_to: string;
+  rated_capacity: string; specifications: string;
+  last_inspection_date: string; next_inspection_date: string;
+  inspection_frequency_days: number;
+  inspection_status: string; condition_status: string;
+  is_active: number; photo_path: string; qr_code: string;
+  remarks: string; created_at: string; updated_at: string;
+}
+
+export interface AssetInspection {
+  id: number; inspection_no: string; asset_id: number;
+  inspection_type: string; inspection_date: string; next_due_date: string;
+  inspector_name: string; inspector_company: string; inspector_certification: string;
+  checklist_items: string; findings: string;
+  defects_found: number; critical_defects: number;
+  corrective_actions: string; result: string; overall_score: number;
+  certificate_no: string; certificate_expiry: string;
+  status: string; remarks: string; created_at: string;
+  // Joined fields
+  asset_name?: string; asset_no?: string; asset_category?: string;
+  asset_location?: string; asset_department?: string;
+}
+
 export interface SafetyStats {
   totalIncidents: number; openIncidents: number; criticalIncidents: number;
   daysSinceLastLTI: number;
@@ -157,6 +184,21 @@ export class SafetyService {
   // Settings
   getSettings(): Observable<Record<string, string>> { return this.http.get<Record<string, string>>(`${this.API}/settings`); }
   saveSettings(data: Record<string, string>): Observable<{ success: boolean }> { return this.http.post<any>(`${this.API}/settings`, data); }
+
+  // Safety Assets
+  getAssets(params: Record<string, any> = {}): Observable<{ assets: SafetyAsset[]; total: number; page: number; stats: any }> {
+    return this.http.get<any>(`${this.API}/assets`, { params: this.toParams(params) });
+  }
+  getAsset(id: number): Observable<SafetyAsset & { inspections: AssetInspection[] }> { return this.http.get<any>(`${this.API}/assets/${id}`); }
+  createAsset(data: Record<string, any>): Observable<{ id: number; asset_no: string; message: string }> { return this.http.post<any>(`${this.API}/assets`, data); }
+  updateAsset(id: number, data: Record<string, any>): Observable<{ message: string }> { return this.http.put<any>(`${this.API}/assets/${id}`, data); }
+
+  // Asset Inspections
+  getAssetInspections(params: Record<string, any> = {}): Observable<{ inspections: AssetInspection[]; total: number; page: number }> {
+    return this.http.get<any>(`${this.API}/asset-inspections`, { params: this.toParams(params) });
+  }
+  createAssetInspection(data: Record<string, any>): Observable<{ id: number; inspection_no: string; message: string }> { return this.http.post<any>(`${this.API}/asset-inspections`, data); }
+  updateAssetInspection(id: number, data: Record<string, any>): Observable<{ message: string }> { return this.http.put<any>(`${this.API}/asset-inspections/${id}`, data); }
 
   private toParams(obj: Record<string, any>): HttpParams {
     let hp = new HttpParams();
