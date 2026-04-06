@@ -66,6 +66,12 @@ export const routes: Routes = [
     canActivate: [authGuard],
     title: 'Visitor Pass - EZEE Portal',
   },
+  {
+    path: 'library',
+    loadChildren: () => import('./features/library/library.routes').then(m => m.libraryRoutes),
+    canActivate: [authGuard],
+    title: 'Library - EZEE Portal',
+  },
   // { path: 'inventory', loadChildren: ... , canActivate: [systemGuard('inventory')] },
   // { path: 'safety', loadChildren: ... , canActivate: [systemGuard('safety')] },
   // { path: 'reception', loadChildren: ... , canActivate: [systemGuard('reception')] },
