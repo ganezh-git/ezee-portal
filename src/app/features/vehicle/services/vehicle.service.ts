@@ -6,10 +6,18 @@ import { environment } from '../../../../environments/environment';
 export interface VehicleEntry {
   id: number; entry_no: string; vehicle_no: string; vehicle_type: string;
   driver_name: string; driver_phone: string; driver_license: string;
-  company: string; purpose: string; department: string; dock_id: number;
-  dock_name: string; po_reference: string; material_desc: string;
+  driver_id_type: string; driver_id_number: string; contact_phone: string;
+  visitor_type: string; company: string; purpose: string; department: string;
+  dock_id: number; dock_name: string; po_reference: string; material_desc: string;
   in_time: string; out_time: string; in_weight: number; out_weight: number;
-  status: string; gate_pass_no: string; security_remarks: string; created_at: string;
+  status: string; gate_pass_no: string; security_remarks: string;
+  badge_no: string; plant_entry: string; ppe_issued: string; ppe_returned: string;
+  food_required: string; food_count: number;
+  security_in: string; security_out: string;
+  host_name: string; host_department: string; host_phone: string;
+  visit_confirmed: boolean; visit_confirmed_by: string; visit_confirmed_at: string;
+  photo_data: string; id_proof_data: string; special_instructions: string;
+  created_at: string;
 }
 
 export interface Vehicle {
@@ -69,7 +77,7 @@ export class VehicleService {
     return this.http.get<any>(`${this.API}/entries`, { params: hp });
   }
   getEntry(id: number): Observable<VehicleEntry> { return this.http.get<VehicleEntry>(`${this.API}/entries/${id}`); }
-  createEntry(data: Record<string, any>): Observable<{ id: number; entry_no: string; message: string }> { return this.http.post<any>(`${this.API}/entries`, data); }
+  createEntry(data: Record<string, any>): Observable<{ id: number; entry_no: string; badge_no: string; message: string }> { return this.http.post<any>(`${this.API}/entries`, data); }
   checkoutEntry(id: number, data: Record<string, any>): Observable<{ message: string }> { return this.http.post<any>(`${this.API}/entries/${id}/checkout`, data); }
   updateEntryStatus(id: number, status: string): Observable<{ message: string }> { return this.http.post<any>(`${this.API}/entries/${id}/status`, { status }); }
 
@@ -101,5 +109,39 @@ export class VehicleService {
   createTrip(data: Record<string, any>): Observable<{ id: number; request_no: string; message: string }> { return this.http.post<any>(`${this.API}/trips`, data); }
   approveTrip(id: number, action: string, data: Record<string, any> = {}): Observable<{ message: string }> { return this.http.post<any>(`${this.API}/trips/${id}/approve`, { action, ...data }); }
 
+  // Settings
   getSettings(): Observable<Record<string, string>> { return this.http.get<Record<string, string>>(`${this.API}/settings`); }
+  updateSettings(data: Record<string, string>): Observable<{ success: boolean }> { return this.http.post<any>(`${this.API}/settings`, data); }
+
+  // Lookup (PPG-style auto-fill)
+  lookup(params: { phone?: string; vehicle_no?: string }): Observable<{ found: boolean; entry?: any; visitCount?: number }> {
+    let hp = new HttpParams();
+    if (params.phone) hp = hp.set('phone', params.phone);
+    if (params.vehicle_no) hp = hp.set('vehicle_no', params.vehicle_no);
+    return this.http.get<any>(`${this.API}/lookup`, { params: hp });
+  }
+
+  // Currently inside
+  getCurrentlyInside(): Observable<VehicleEntry[]> { return this.http.get<VehicleEntry[]>(`${this.API}/currently-inside`); }
+
+  // Visit confirmation
+  getPendingConfirmations(): Observable<VehicleEntry[]> { return this.http.get<VehicleEntry[]>(`${this.API}/pending-confirmations`); }
+  confirmVisit(id: number): Observable<{ message: string }> { return this.http.post<any>(`${this.API}/entries/${id}/confirm-visit`, {}); }
+
+  // Reports
+  getReports(from: string, to: string, type?: string): Observable<{ entries: VehicleEntry[]; summary: any; from: string; to: string }> {
+    let hp = new HttpParams().set('from', from).set('to', to);
+    if (type) hp = hp.set('type', type);
+    return this.http.get<any>(`${this.API}/reports`, { params: hp });
+  }
+
+  // Activity log
+  getLog(entryId?: number): Observable<any[]> {
+    let hp = new HttpParams();
+    if (entryId) hp = hp.set('entry_id', String(entryId));
+    return this.http.get<any[]>(`${this.API}/log`, { params: hp });
+  }
+
+  // Print pass
+  getPass(id: number): Observable<VehicleEntry> { return this.http.get<VehicleEntry>(`${this.API}/entries/${id}/pass`); }
 }

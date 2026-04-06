@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { VehicleService, GateLogEntry, Vehicle, Driver } from '../../services/vehicle.service';
 
@@ -86,15 +86,15 @@ export class GateLogComponent implements OnInit {
   gateInLog: GateLogEntry | null = null;
   inForm: any = {};
 
-  constructor(private svc: VehicleService) {}
-  ngOnInit() { this.svc.getFleet().subscribe(v => this.vehicles = v); this.load(); }
+  constructor(private svc: VehicleService, private cdr: ChangeDetectorRef) {}
+  ngOnInit() { this.svc.getFleet().subscribe(v => { this.vehicles = v; this.cdr.markForCheck(); }); this.load(); }
 
-  load() { this.svc.getGateLog({ date: this.filterDate || undefined, pending: this.pendingOnly || undefined }).subscribe(l => this.logs = l); }
+  load() { this.svc.getGateLog({ date: this.filterDate || undefined, pending: this.pendingOnly || undefined }).subscribe(l => { this.logs = l; this.cdr.markForCheck(); }); }
 
   recordGateOut() {
     this.svc.gateOut(this.outForm).subscribe({
-      next: () => { this.showGateOut = false; this.outForm = { vehicle_id: null, gate_name: 'Main Gate' }; this.load(); },
-      error: () => alert('Failed'),
+      next: () => { this.showGateOut = false; this.outForm = { vehicle_id: null, gate_name: 'Main Gate' }; this.load(); this.cdr.markForCheck(); },
+      error: () => { alert('Failed'); this.cdr.markForCheck(); },
     });
   }
 
@@ -103,8 +103,8 @@ export class GateLogComponent implements OnInit {
   recordGateIn() {
     if (!this.gateInLog) return;
     this.svc.gateIn(this.gateInLog.id, this.inForm).subscribe({
-      next: () => { this.gateInLog = null; this.load(); },
-      error: () => alert('Failed'),
+      next: () => { this.gateInLog = null; this.load(); this.cdr.markForCheck(); },
+      error: () => { alert('Failed'); this.cdr.markForCheck(); },
     });
   }
 

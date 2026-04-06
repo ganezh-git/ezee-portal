@@ -55,6 +55,8 @@ export class VehicleLayoutComponent {
     { label: 'Fleet',          icon: 'directions_car',  route: 'fleet' },
     { label: 'Gate Log',       icon: 'swap_horiz',      route: 'gate-log' },
     { label: 'Trip Requests',  icon: 'route',           route: 'trips' },
+    { label: 'Reports',        icon: 'assessment',      route: 'reports' },
+    { label: 'Settings',       icon: 'settings',        route: 'settings' },
   ];
 
   constructor(private auth: AuthService) {}

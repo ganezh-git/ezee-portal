@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { VehicleService, TripRequest, Vehicle, Driver } from '../../services/vehicle.service';
@@ -74,19 +74,19 @@ export class TripRequestsComponent implements OnInit {
   filterStatus = '';
   form: any = { passengers: 1 };
 
-  constructor(private svc: VehicleService) {}
+  constructor(private svc: VehicleService, private cdr: ChangeDetectorRef) {}
   ngOnInit() { this.load(); }
-  load() { this.svc.getTrips({ status: this.filterStatus || undefined }).subscribe(t => this.trips = t); }
+  load() { this.svc.getTrips({ status: this.filterStatus || undefined }).subscribe(t => { this.trips = t; this.cdr.markForCheck(); }); }
 
   createTrip() {
     this.svc.createTrip(this.form).subscribe({
-      next: () => { this.showForm = false; this.form = { passengers: 1 }; this.load(); },
-      error: () => alert('Failed'),
+      next: () => { this.showForm = false; this.form = { passengers: 1 }; this.load(); this.cdr.markForCheck(); },
+      error: () => { alert('Failed'); this.cdr.markForCheck(); },
     });
   }
 
   approve(t: TripRequest, action: string) {
     const remarks = action === 'reject' ? prompt('Reason for rejection?') : null;
-    this.svc.approveTrip(t.id, action, { remarks }).subscribe(() => this.load());
+    this.svc.approveTrip(t.id, action, { remarks }).subscribe(() => { this.load(); this.cdr.markForCheck(); });
   }
 }

@@ -12,6 +12,8 @@ export const vehicleRoutes: Routes = [
       { path: 'fleet', loadComponent: () => import('./pages/fleet/vehicle-fleet.component').then(m => m.VehicleFleetComponent) },
       { path: 'gate-log', loadComponent: () => import('./pages/gate-log/gate-log.component').then(m => m.GateLogComponent) },
       { path: 'trips', loadComponent: () => import('./pages/trips/trip-requests.component').then(m => m.TripRequestsComponent) },
+      { path: 'reports', loadComponent: () => import('./pages/reports/vehicle-reports.component').then(m => m.VehicleReportsComponent) },
+      { path: 'settings', loadComponent: () => import('./pages/settings/vehicle-settings.component').then(m => m.VehicleSettingsComponent) },
     ],
   },
 ];

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DecimalPipe } from '@angular/common';
 import { VehicleService, Vehicle } from '../../services/vehicle.service';
@@ -70,15 +70,15 @@ export class VehicleFleetComponent implements OnInit {
   showForm = false;
   form: any = { vehicle_type: 'car', fuel_type: 'diesel', seating_capacity: 4 };
 
-  constructor(private svc: VehicleService) {}
+  constructor(private svc: VehicleService, private cdr: ChangeDetectorRef) {}
   ngOnInit() { this.load(); }
 
-  load() { this.svc.getFleet().subscribe(v => this.vehicles = v); }
+  load() { this.svc.getFleet().subscribe(v => { this.vehicles = v; this.cdr.markForCheck(); }); }
 
   addVehicle() {
     this.svc.addVehicle(this.form).subscribe({
-      next: () => { this.showForm = false; this.form = { vehicle_type: 'car', fuel_type: 'diesel', seating_capacity: 4 }; this.load(); },
-      error: () => alert('Failed to add vehicle'),
+      next: () => { this.showForm = false; this.form = { vehicle_type: 'car', fuel_type: 'diesel', seating_capacity: 4 }; this.load(); this.cdr.markForCheck(); },
+      error: () => { alert('Failed to add vehicle'); this.cdr.markForCheck(); },
     });
   }
 
