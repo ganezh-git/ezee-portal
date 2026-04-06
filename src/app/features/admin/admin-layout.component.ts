@@ -31,6 +31,10 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
             <span class="material-icons-round">history</span>
             <span>Audit Log</span>
           </a>
+          <a routerLink="/admin/login-log" routerLinkActive="active" class="nav-item">
+            <span class="material-icons-round">login</span>
+            <span>Login Log</span>
+          </a>
         </nav>
 
         <div class="sidebar-footer">

@@ -63,6 +63,13 @@ export class AdminService {
     return this.http.get<AdminLocation[]>(`${this.API}/locations`);
   }
 
+  // Login Log
+  getLoginLog(params: { search?: string; action?: string; success?: string; page?: number; limit?: number; from?: string; to?: string } = {}): Observable<{ logs: any[]; total: number; page: number; limit: number; stats: any }> {
+    let httpParams = new HttpParams();
+    Object.entries(params).forEach(([k, v]) => { if (v !== undefined && v !== '') httpParams = httpParams.set(k, String(v)); });
+    return this.http.get<any>(`${this.API}/login-log`, { params: httpParams });
+  }
+
   // Audit Log
   getAuditLog(params: { page?: number; limit?: number; action?: string; user_id?: number } = {}): Observable<{ logs: AuditLogEntry[]; total: number; page: number; limit: number }> {
     let httpParams = new HttpParams();

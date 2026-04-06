@@ -20,6 +20,11 @@ export const ADMIN_ROUTES: Routes = [
         loadComponent: () => import('./audit-log/audit-log.component').then(m => m.AuditLogComponent),
         title: 'Audit Log - EZEE Portal',
       },
+      {
+        path: 'login-log',
+        loadComponent: () => import('./login-log/login-log.component').then(m => m.LoginLogComponent),
+        title: 'Login Log - EZEE Portal',
+      },
     ],
   },
 ];
