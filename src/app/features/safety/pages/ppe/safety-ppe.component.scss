@@ -1,0 +1,17 @@
+@use '../../pages/incidents/safety-incidents.component' as base;
+
+.ppe-summary { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 0.75rem; margin-bottom: 1.5rem; }
+.ppe-sum-card { background: #fff; border-radius: 12px; padding: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.06); text-align: center; }
+.ppe-icon { font-size: 32px; color: #10b981; }
+.ppe-sum-name { font-size: 0.82rem; font-weight: 700; color: #0f172a; margin: 4px 0; }
+.ppe-sum-stats { display: flex; justify-content: center; gap: 8px; font-size: 0.7rem; color: #64748b;
+  .active { color: #10b981; font-weight: 600; }
+  .expired { color: #ef4444; font-weight: 600; }
+}
+.ppe-tbl-icon { font-size: 16px; color: #10b981; vertical-align: middle; margin-right: 4px; }
+.expired-row { background: #fef2f2; }
+.expiry-warn { color: #f59e0b; font-weight: 600; }
+.expiry-danger { color: #ef4444; font-weight: 600; }
+[data-cond="new"] { background: #d1fae5; color: #065f46; }
+[data-cond="good"] { background: #dbeafe; color: #1e40af; }
+[data-cond="fair"] { background: #fef3c7; color: #92400e; }

@@ -1,0 +1,14 @@
+@use '../../pages/incidents/safety-incidents.component' as base;
+.cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 1rem; margin-bottom: 1rem; }
+.training-card { background: #fff; border-radius: 14px; padding: 1.25rem; box-shadow: 0 1px 3px rgba(0,0,0,0.06); border-left: 5px solid #e2e8f0; position: relative; transition: all 0.2s;
+  &:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+  &.completed { border-color: #10b981; } &.upcoming { border-color: #3b82f6; }
+}
+.tc-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.tc-type { display: flex; align-items: center; gap: 4px; font-size: 0.75rem; font-weight: 600; color: #475569; .material-icons-round { font-size: 16px; } }
+.tc-no { margin-left: auto; font-size: 0.72rem; color: #94a3b8; font-family: monospace; }
+.tc-title { font-size: 1rem; font-weight: 700; color: #0f172a; margin-bottom: 8px; }
+.tc-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-bottom: 8px;
+  div { display: flex; align-items: center; gap: 4px; font-size: 0.78rem; color: #64748b; .material-icons-round { font-size: 14px; color: #94a3b8; } }
+}
+.tc-topics { font-size: 0.78rem; color: #475569; background: #f8fafc; padding: 6px 10px; border-radius: 6px; strong { color: #0f172a; } }

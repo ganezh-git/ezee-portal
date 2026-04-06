@@ -1,0 +1,3 @@
+@use '../../pages/incidents/safety-incidents.component' as base;
+.score { font-weight: 700; font-size: 0.88rem; &.good { color: #10b981; } &.warn { color: #f59e0b; } &.bad { color: #ef4444; } }
+.nc-red { color: #ef4444; font-weight: 700; }

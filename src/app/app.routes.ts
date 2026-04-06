@@ -72,8 +72,13 @@ export const routes: Routes = [
     canActivate: [authGuard],
     title: 'Library - EZEE Portal',
   },
+  {
+    path: 'safety',
+    loadChildren: () => import('./features/safety/safety.routes').then(m => m.safetyRoutes),
+    canActivate: [authGuard],
+    title: 'Safety Management - EZEE Portal',
+  },
   // { path: 'inventory', loadChildren: ... , canActivate: [systemGuard('inventory')] },
-  // { path: 'safety', loadChildren: ... , canActivate: [systemGuard('safety')] },
   // { path: 'reception', loadChildren: ... , canActivate: [systemGuard('reception')] },
   // { path: 'stationery', loadChildren: ... , canActivate: [systemGuard('stationery')] },
 

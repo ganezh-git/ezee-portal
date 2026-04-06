@@ -1,0 +1,43 @@
+@use '../../pages/incidents/safety-incidents.component' as base;
+
+.permit-stats { display: flex; gap: 0.75rem; margin-bottom: 1rem; }
+.ps-card { padding: 0.75rem 1.25rem; border-radius: 10px; background: #fff; border: 2px solid #e2e8f0; cursor: pointer; text-align: center; transition: all 0.2s;
+  &:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+  &[data-status="pending"] { border-color: #fbbf24; } &[data-status="approved"] { border-color: #34d399; }
+  &[data-status="active"] { border-color: #60a5fa; } &[data-status="completed"] { border-color: #94a3b8; }
+  &[data-status="cancelled"] { border-color: #f87171; }
+}
+.ps-count { font-size: 1.5rem; font-weight: 900; color: #0f172a; }
+.ps-label { font-size: 0.72rem; color: #64748b; font-weight: 600; text-transform: uppercase; }
+
+.cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 1rem; margin-bottom: 1rem; }
+.permit-card {
+  background: #fff; border-radius: 14px; padding: 1.25rem; box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  border-left: 5px solid #e2e8f0; transition: all 0.2s;
+  &:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+  &[data-type="hot_work"] { border-color: #ef4444; }
+  &[data-type="confined_space"] { border-color: #8b5cf6; }
+  &[data-type="height"] { border-color: #f59e0b; }
+  &[data-type="electrical"] { border-color: #3b82f6; }
+  &[data-type="excavation"] { border-color: #a16207; }
+  &[data-type="general"] { border-color: #10b981; }
+}
+.pc-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.pc-type { display: flex; align-items: center; gap: 4px; font-size: 0.75rem; font-weight: 600; color: #475569;
+  .material-icons-round { font-size: 16px; }
+}
+.pc-no { margin-left: auto; font-size: 0.72rem; color: #94a3b8; font-family: monospace; }
+.pc-title { font-size: 1rem; font-weight: 700; color: #0f172a; margin-bottom: 8px; }
+.pc-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-bottom: 8px;
+  div { display: flex; align-items: center; gap: 4px; font-size: 0.78rem; color: #64748b;
+    .material-icons-round { font-size: 14px; color: #94a3b8; }
+  }
+}
+.pc-hazards { font-size: 0.78rem; color: #dc2626; background: #fef2f2; padding: 6px 10px; border-radius: 6px; margin-bottom: 8px;
+  strong { color: #991b1b; }
+}
+.pc-actions { display: flex; gap: 6px; align-items: center; }
+.btn-sm { padding: 4px 10px; font-size: 0.75rem; border-radius: 6px; border: none; font-weight: 600; cursor: pointer; }
+.btn-approve { background: #d1fae5; color: #065f46; &:hover { background: #a7f3d0; } }
+.btn-close { background: #f1f5f9; color: #475569; &:hover { background: #e2e8f0; } }
+.full-col { grid-column: 1 / -1; }

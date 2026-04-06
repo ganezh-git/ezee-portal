@@ -1,0 +1,33 @@
+@use '../../pages/incidents/safety-incidents.component' as base;
+
+.obs-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; margin-bottom: 1.5rem; }
+.os-card { display: flex; align-items: center; gap: 0.75rem; padding: 1rem; border-radius: 12px; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  .material-icons-round { font-size: 32px; }
+  &.safe { border-left: 4px solid #10b981; .material-icons-round { color: #10b981; } }
+  &.unsafe { border-left: 4px solid #ef4444; .material-icons-round { color: #ef4444; } }
+  &.open { border-left: 4px solid #f59e0b; .material-icons-round { color: #f59e0b; } }
+  &.ratio { border-left: 4px solid #3b82f6; .material-icons-round { color: #3b82f6; } }
+}
+.os-val { font-size: 1.4rem; font-weight: 900; color: #0f172a; }
+.os-lbl { font-size: 0.72rem; color: #64748b; }
+
+.cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 1rem; }
+.obs-card { background: #fff; border-radius: 12px; padding: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.06); border-left: 4px solid #e2e8f0; position: relative;
+  &.safe { border-color: #10b981; background: #f0fdf4; }
+  &.unsafe { border-color: #ef4444; background: #fef2f2; }
+}
+.oc-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.oc-icon { font-size: 20px; }
+.safe .oc-icon { color: #10b981; }
+.unsafe .oc-icon { color: #ef4444; }
+.oc-type { font-size: 0.78rem; font-weight: 700; color: #0f172a; }
+.oc-desc { font-size: 0.85rem; color: #334155; margin-bottom: 8px; line-height: 1.5; }
+.oc-meta { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 6px;
+  span { display: flex; align-items: center; gap: 3px; font-size: 0.72rem; color: #64748b;
+    .material-icons-round { font-size: 14px; }
+  }
+}
+.oc-action { font-size: 0.78rem; color: #065f46; background: rgba(16,185,129,0.1); padding: 6px 10px; border-radius: 6px; strong { color: #064e3b; } }
+.obs-card .icon-btn { position: absolute; top: 8px; right: 8px; }
+.full-col { grid-column: 1 / -1; }
+@media (max-width: 768px) { .obs-stats { grid-template-columns: 1fr 1fr; } }

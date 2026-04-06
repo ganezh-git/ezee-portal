@@ -1,0 +1,30 @@
+@use '../../pages/incidents/safety-incidents.component' as base;
+
+.stats-strip { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+.stat-pill { display: flex; align-items: center; gap: 6px; background: #fff; border-radius: 10px; padding: 0.6rem 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.06); font-size: 0.82rem; color: #475569;
+  .material-icons-round { font-size: 18px; color: #64748b; }
+  strong { font-size: 1rem; color: #0f172a; }
+  &.green .material-icons-round { color: #10b981; }
+  &.blue .material-icons-round { color: #3b82f6; }
+  &.amber .material-icons-round { color: #f59e0b; }
+  &.purple .material-icons-round { color: #8b5cf6; }
+}
+.score { font-weight: 700; font-size: 0.9rem;
+  &.good { color: #10b981; }
+  &.warn { color: #f59e0b; }
+  &.bad { color: #ef4444; }
+}
+.nc-red { color: #ef4444; font-weight: 700; }
+.critical-row { background: #fef2f2; }
+[data-audit="internal"] { background: #dbeafe; color: #1e40af; }
+[data-audit="external"] { background: #fce7f3; color: #9d174d; }
+[data-audit="regulatory"] { background: #fef3c7; color: #92400e; }
+[data-audit="management"] { background: #e0e7ff; color: #3730a3; }
+[data-audit="iso"] { background: #d1fae5; color: #065f46; }
+[data-audit="ohsas"] { background: #f3e8ff; color: #6b21a8; }
+.detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+  .detail-item { display: flex; flex-direction: column; gap: 4px;
+    label { font-size: 0.7rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
+    &.full { grid-column: 1/-1; }
+  }
+}
